@@ -1,0 +1,7 @@
+{
+  "name": "com.agnesdigital.rpc",
+  "description": "Agnes Digital Discord RPC bridge",
+  "path": "REPLACE_WITH_PATH\\host.bat",
+  "type": "stdio",
+  "allowed_origins": ["chrome-extension://iehgkdjegmopkpcodjckacgbobpomfoc/"]
+}

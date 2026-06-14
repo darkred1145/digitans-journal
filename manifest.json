@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "Agnes Digital",
+  "version": "1.0.0",
+  "description": "Shows what you're browsing as Discord Rich Presence",
+  "permissions": [
+    "nativeMessaging",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://nhentai.net/*"],
+      "js": ["content-scripts/nhentai.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://gametora.com/umamusume*"],
+      "js": ["content-scripts/gametora.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://raggooneropen.web.app/*"],
+      "js": ["content-scripts/raggooner.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
