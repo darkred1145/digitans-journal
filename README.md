@@ -2,12 +2,6 @@
 
 A browser extension that shows what you're browsing as Discord Rich Presence.
 
-## Supported Sites
-
-- **nhentai.net** — gallery title, page count, search queries
-- **gametora.com/umamusume** — character/support/event pages, tool names
-- **raggooneropen.web.app** — tournament pages, analytics, tools
-
 ## Architecture
 
 Extension (Manifest V3) → Native Messaging Host (Node.js) → Discord RPC (IPC)
