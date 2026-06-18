@@ -1,3 +1,3 @@
 @echo off
 cd /d "%~dp0"
-node host.js
+"C:\Program Files\nodejs\node.exe" host.js
