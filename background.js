@@ -4,6 +4,7 @@ let currentActivity = null;
 let currentSite = null;
 let lastError = null;
 let settings = { enabled: true, sites: {} };
+let trackedTabs = new Set();
 
 function loadSettings() {
   chrome.storage.sync.get({ enabled: true, sites: {} }, (s) => { settings = s; });
@@ -66,8 +67,15 @@ function sendActivity(site, data) {
   }
 }
 
+chrome.tabs.onRemoved.addListener((tabId) => {
+  if (trackedTabs.delete(tabId) && trackedTabs.size === 0) {
+    clearActivity();
+  }
+});
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === 'presence') {
+    if (sender.tab && sender.tab.id) trackedTabs.add(sender.tab.id);
     sendActivity(msg.site, msg.data);
     sendResponse({ ok: true });
   }
