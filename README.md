@@ -1,4 +1,4 @@
-# Agnes Digital
+# Digitan's Journal
 
 A browser extension that shows what you're browsing as Discord Rich Presence.
 
