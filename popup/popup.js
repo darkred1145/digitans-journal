@@ -4,16 +4,24 @@ function updateUI(status) {
   const userId = document.getElementById('userIdInfo');
   const activityEmpty = document.getElementById('activityEmpty');
   const activityContent = document.getElementById('activityContent');
+  const errorMsg = document.getElementById('errorMsg');
 
   if (status.rpcConnected) {
     dot.className = 'status-dot connected';
     text.textContent = 'Connected to Discord';
     if (status.userId) userId.textContent = `User ID: ${status.userId}`;
     else userId.textContent = '';
+    errorMsg.style.display = 'none';
   } else {
     dot.className = 'status-dot disconnected';
     text.textContent = 'Disconnected';
     userId.textContent = '';
+    if (status.lastError) {
+      errorMsg.textContent = status.lastError;
+      errorMsg.style.display = 'block';
+    } else {
+      errorMsg.style.display = 'none';
+    }
   }
 
   if (status.currentActivity) {
@@ -45,5 +53,11 @@ document.getElementById('reconnectBtn').addEventListener('click', () => {
         btn.disabled = false;
       });
     }, 1500);
+  });
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  chrome.runtime.sendMessage({ type: 'clearActivity' }, () => {
+    chrome.runtime.sendMessage({ type: 'getStatus' }, (status) => updateUI(status));
   });
 });
