@@ -6,7 +6,7 @@ let currentSite = null;
 function connectNative() {
   if (nativePort) return;
   try {
-    nativePort = chrome.runtime.connectNative('com.agnesdigital.rpc');
+    nativePort = chrome.runtime.connectNative('com.digitansjournal.rpc');
     nativePort.onMessage.addListener((msg) => {
       if (msg.type === 'rpcStatus') {
         chrome.storage.local.set({ rpcConnected: msg.connected, userId: msg.userId || null });

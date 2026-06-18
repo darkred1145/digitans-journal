@@ -1,8 +1,8 @@
 @echo off
 setlocal enabledelayedexpansion
 
-set REG_KEY=HKEY_CURRENT_USER\Software\Google\Chrome\NativeMessagingHosts\com.agnesdigital.rpc
-set MANIFEST=%~dp0com.agnesdigital.rpc.json
+set REG_KEY=HKEY_CURRENT_USER\Software\Google\Chrome\NativeMessagingHosts\com.digitansjournal.rpc
+set MANIFEST=%~dp0com.digitansjournal.rpc.json
 
 echo === Digitan's Journal - Native Host Installer ===
 echo.

@@ -1,5 +1,5 @@
 {
-  "name": "com.agnesdigital.rpc",
+  "name": "com.digitansjournal.rpc",
   "description": "Digitan's Journal Discord RPC bridge",
   "path": "REPLACE_WITH_PATH\\host.bat",
   "type": "stdio",

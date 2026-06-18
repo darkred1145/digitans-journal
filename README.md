@@ -35,7 +35,7 @@ Extension (Manifest V3) → Native Messaging Host (Node.js) → Discord RPC (IPC
 ## Uninstall
 
 - Remove the extension from `chrome://extensions`
-- Delete the registry key: `HKCU\Software\Google\Chrome\NativeMessagingHosts\com.agnesdigital.rpc`
+- Delete the registry key: `HKCU\Software\Google\Chrome\NativeMessagingHosts\com.digitansjournal.rpc`
 - Delete the `agnes-digital-extension` folder
 
 ## Manual Registration
@@ -43,8 +43,8 @@ Extension (Manifest V3) → Native Messaging Host (Node.js) → Discord RPC (IPC
 If the installer fails, you can manually create a registry key:
 
 ```
-HKEY_CURRENT_USER\Software\Google\Chrome\NativeMessagingHosts\com.agnesdigital.rpc
-Default value: full path to com.agnesdigital.rpc.json
+HKEY_CURRENT_USER\Software\Google\Chrome\NativeMessagingHosts\com.digitansjournal.rpc
+Default value: full path to com.digitansjournal.rpc.json
 ```
 
 And update `allowed_origins` in the JSON with your extension ID.
