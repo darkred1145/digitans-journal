@@ -1,4 +1,5 @@
 const SITE = 'gametora';
+function truncate(s, n = 128) { return s && s.length > n ? s.slice(0, n - 1) + '…' : s; }
 let lastUpdate = 0;
 
 function sendPresence(data) {
@@ -19,7 +20,7 @@ function getPageInfo() {
       state: 'Browsing GameTora',
       largeImageKey: 'digitan',
       largeImageText: 'gametora.com/umamusume · Digitan\'s Journal',
-      smallImageKey: 'https://www.google.com/s2/favicons?domain=gametora.com&sz=64',
+      smallImageKey: 'gametora',
       smallImageText: 'GameTora',
     };
   }
@@ -39,11 +40,11 @@ function getPageInfo() {
     else if (category === 'guides') state = 'Reading guide';
 
     return {
-      details: label,
-      state,
+      details: truncate(label),
+      state: truncate(state),
       largeImageKey: 'digitan',
       largeImageText: 'gametora.com/umamusume · Digitan\'s Journal',
-      smallImageKey: 'https://www.google.com/s2/favicons?domain=gametora.com&sz=64',
+      smallImageKey: 'gametora',
       smallImageText: 'GameTora',
     };
   }
@@ -93,17 +94,17 @@ function getPageInfo() {
   const label = pageLabels[page];
   if (label) {
     return {
-      details: h1Text || label,
+      details: truncate(h1Text || label),
       state: 'Browsing GameTora',
       largeImageKey: 'digitan',
       largeImageText: 'gametora.com/umamusume · Digitan\'s Journal',
-      smallImageKey: 'https://www.google.com/s2/favicons?domain=gametora.com&sz=64',
+      smallImageKey: 'gametora',
       smallImageText: 'GameTora',
     };
   }
 
   return {
-    details: h1Text || 'GameTora Uma Musume',
+    details: truncate(h1Text || 'GameTora Uma Musume'),
     state: 'Browsing GameTora',
     largeImageKey: 'digitan',
     largeImageText: 'gametora.com/umamusume · Digitan\'s Journal',

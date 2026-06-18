@@ -1,4 +1,5 @@
 const SITE = 'raggooner';
+function truncate(s, n = 128) { return s && s.length > n ? s.slice(0, n - 1) + '…' : s; }
 let lastUpdate = 0;
 
 function sendPresence(data) {
@@ -16,7 +17,7 @@ function getPageInfo() {
   const base = {
     largeImageKey: 'digitan',
     largeImageText: 'raggooneropen.web.app · Digitan\'s Journal',
-    smallImageKey: 'https://www.google.com/s2/favicons?domain=raggooneropen.web.app&sz=64',
+    smallImageKey: 'raggooner',
     smallImageText: 'Raccoon Open',
   };
 
@@ -26,7 +27,7 @@ function getPageInfo() {
 
   const tourneyMatch = path.match(/^\/t\/(.+)/);
   if (tourneyMatch) {
-    return { ...base, details: h1Text || 'Tournament', state: 'Viewing tournament' };
+    return { ...base, details: truncate(h1Text || 'Tournament'), state: 'Viewing tournament' };
   }
 
   const pageMap = {

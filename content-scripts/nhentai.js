@@ -1,4 +1,5 @@
 const SITE = 'nhentai';
+function truncate(s, n = 128) { return s && s.length > n ? s.slice(0, n - 1) + '…' : s; }
 let lastUpdate = 0;
 let galleryCache = {};
 
@@ -46,11 +47,11 @@ function getPageInfo() {
       }
     }
     return {
-      details: title,
-      state: `Page ${currentPage} / ${totalPages}`,
+      details: truncate(title),
+      state: truncate(`Page ${currentPage} / ${totalPages}`),
       largeImageKey: 'digitan',
       largeImageText: 'nhentai.net · Digitan\'s Journal',
-      smallImageKey: 'https://www.google.com/s2/favicons?domain=nhentai.net&sz=64',
+      smallImageKey: 'nhentai',
       smallImageText: 'nhentai.net',
       buttons: [{ label: 'View Gallery', url: `https://nhentai.net/g/${id}/` }],
     };
@@ -60,10 +61,10 @@ function getPageInfo() {
     const params = new URLSearchParams(window.location.search);
     return {
       details: 'Searching',
-      state: params.get('q') || 'nhentai',
+      state: truncate(params.get('q')) || 'nhentai',
       largeImageKey: 'digitan',
       largeImageText: 'nhentai.net · Digitan\'s Journal',
-      smallImageKey: 'https://www.google.com/s2/favicons?domain=nhentai.net&sz=64',
+      smallImageKey: 'nhentai',
       smallImageText: 'nhentai.net',
     };
   }
@@ -72,10 +73,10 @@ function getPageInfo() {
     const labelEl = document.querySelector('h1 .name');
     return {
       details: 'Browsing nhentai',
-      state: labelEl ? labelEl.textContent.trim() : path.split('/').filter(Boolean).pop(),
+      state: truncate(labelEl ? labelEl.textContent.trim() : path.split('/').filter(Boolean).pop()),
       largeImageKey: 'digitan',
       largeImageText: 'nhentai.net · Digitan\'s Journal',
-      smallImageKey: 'https://www.google.com/s2/favicons?domain=nhentai.net&sz=64',
+      smallImageKey: 'nhentai',
       smallImageText: 'nhentai.net',
     };
   }

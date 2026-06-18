@@ -35,15 +35,17 @@ async function connectRPC(id) {
   }
 }
 
+function truncate(s, n = 128) { return s && s.length > n ? s.slice(0, n - 1) + '…' : s; }
+
 function setActivity(presence) {
   if (!rpc || !rpcConnected) return;
   const payload = {
-    details: presence.details || 'Digitan\'s Journal',
+    details: truncate(presence.details) || 'Digitan\'s Journal',
     startTimestamp: presence.startTimestamp || Date.now(),
     largeImageKey: presence.largeImageKey || 'digitan',
     largeImageText: presence.largeImageText || 'Digitan\'s Journal',
   };
-  if (presence.state) payload.state = presence.state;
+  if (presence.state) payload.state = truncate(presence.state);
   if (presence.smallImageKey) payload.smallImageKey = presence.smallImageKey;
   if (presence.smallImageText) payload.smallImageText = presence.smallImageText;
   if (presence.buttons) payload.buttons = presence.buttons;
