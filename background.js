@@ -3,6 +3,18 @@ let nativePort = null;
 let currentActivity = null;
 let currentSite = null;
 let lastError = null;
+let settings = { enabled: true, sites: {} };
+
+function loadSettings() {
+  chrome.storage.sync.get({ enabled: true, sites: {} }, (s) => { settings = s; });
+}
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'sync') {
+    if (changes.enabled) settings.enabled = changes.enabled.newValue;
+    if (changes.sites) settings.sites = changes.sites.newValue || {};
+  }
+});
 
 function connectNative() {
   if (nativePort) return;
@@ -41,6 +53,7 @@ function clearActivity() {
 }
 
 function sendActivity(site, data) {
+  if (!settings.enabled || settings.sites[site] === false) return;
   currentSite = site;
   currentActivity = data;
   if (!nativePort) connectNative();
@@ -83,5 +96,6 @@ chrome.commands.onCommand.addListener((command) => {
 });
 
 chrome.runtime.onInstalled.addListener(() => {
+  loadSettings();
   connectNative();
 });
