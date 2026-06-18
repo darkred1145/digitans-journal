@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digitan's Journal - Settings</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1b2e;
+      color: #e0e0e0;
+      padding: 24px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    h1 { font-size: 20px; font-weight: 600; color: #fff; margin-bottom: 20px; }
+    h2 { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 8px; }
+    .section { background: #232540; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
+    .row + .row { border-top: 1px solid #2a2c4a; }
+    label { font-size: 13px; cursor: pointer; }
+    .desc { font-size: 11px; color: #999; margin-top: 2px; }
+    .toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; inset: 0; cursor: pointer; background: #3a3c56;
+      border-radius: 22px; transition: .2s;
+    }
+    .slider::before {
+      content: ''; position: absolute; width: 18px; height: 18px; left: 2px; bottom: 2px;
+      background: #fff; border-radius: 50%; transition: .2s;
+    }
+    .toggle input:checked + .slider { background: #5865f2; }
+    .toggle input:checked + .slider::before { transform: translateX(18px); }
+    .kbd {
+      display: inline-block; padding: 2px 6px; font-size: 11px;
+      background: #2a2c4a; border-radius: 4px; color: #aaa;
+    }
+    .status { font-size: 12px; color: #999; margin-top: 16px; text-align: center; }
+  </style>
+</head>
+<body>
+  <h1>Digitan's Journal</h1>
+
+  <div class="section">
+    <div class="row">
+      <div>
+        <label for="masterToggle">Rich Presence</label>
+        <div class="desc">Show browsing activity on Discord</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="masterToggle" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Tracked Sites</h2>
+    <div class="row">
+      <label for="site-nhentai">nhentai.net</label>
+      <label class="toggle">
+        <input type="checkbox" class="site-toggle" id="site-nhentai" data-site="nhentai" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="row">
+      <label for="site-gametora">gametora.com/umamusume</label>
+      <label class="toggle">
+        <input type="checkbox" class="site-toggle" id="site-gametora" data-site="gametora" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="row">
+      <label for="site-raggooner">raggooneropen.web.app</label>
+      <label class="toggle">
+        <input type="checkbox" class="site-toggle" id="site-raggooner" data-site="raggooner" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Shortcuts</h2>
+    <div class="row">
+      <span>Clear Activity</span>
+      <span class="kbd">Alt + C</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Native Host</h2>
+    <div class="desc" style="margin-bottom:8px">
+      Run <code style="background:#2a2c4a;padding:1px 4px;border-radius:3px">native-host\install-host.bat</code>
+      with your extension ID to set up the Discord RPC bridge.
+    </div>
+    <div class="desc">
+      Extension ID: <code id="extId" style="background:#2a2c4a;padding:1px 4px;border-radius:3px;user-select:all"></code>
+    </div>
+  </div>
+
+  <div class="status" id="saveStatus"></div>
+
+  <script src="options.js"></script>
+</body>
+</html>
