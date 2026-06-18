@@ -17,7 +17,7 @@ function getPageInfo() {
   const base = {
     largeImageKey: 'digitan',
     largeImageText: 'raggooneropen.web.app · Digitan\'s Journal',
-    smallImageKey: 'raggooner',
+    smallImageKey: 'raggooner_small',
     smallImageText: 'Raccoon Open',
   };
 

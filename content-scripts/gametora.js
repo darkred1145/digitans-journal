@@ -20,7 +20,7 @@ function getPageInfo() {
       state: 'Browsing GameTora',
       largeImageKey: 'digitan',
       largeImageText: 'gametora.com/umamusume · Digitan\'s Journal',
-      smallImageKey: 'gametora',
+      smallImageKey: 'gametora_small',
       smallImageText: 'GameTora',
     };
   }
@@ -44,7 +44,7 @@ function getPageInfo() {
       state: truncate(state),
       largeImageKey: 'digitan',
       largeImageText: 'gametora.com/umamusume · Digitan\'s Journal',
-      smallImageKey: 'gametora',
+      smallImageKey: 'gametora_small',
       smallImageText: 'GameTora',
     };
   }
@@ -98,7 +98,7 @@ function getPageInfo() {
       state: 'Browsing GameTora',
       largeImageKey: 'digitan',
       largeImageText: 'gametora.com/umamusume · Digitan\'s Journal',
-      smallImageKey: 'gametora',
+      smallImageKey: 'gametora_small',
       smallImageText: 'GameTora',
     };
   }
