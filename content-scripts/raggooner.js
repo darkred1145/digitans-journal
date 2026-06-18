@@ -1,13 +1,4 @@
 const SITE = 'raggooner';
-function truncate(s, n = 128) { return s && s.length > n ? s.slice(0, n - 1) + '…' : s; }
-let lastUpdate = 0;
-
-function sendPresence(data) {
-  const now = Date.now();
-  if (now - lastUpdate < 2000) return;
-  lastUpdate = now;
-  chrome.runtime.sendMessage({ type: 'presence', site: SITE, data });
-}
 
 function getPageInfo() {
   const path = window.location.pathname.replace(/\/$/, '') || '/';
@@ -16,7 +7,7 @@ function getPageInfo() {
 
   const base = {
     largeImageKey: 'digitan',
-    largeImageText: 'raggooneropen.web.app · Digitan\'s Journal',
+    largeImageText: 'raggooneropen.web.app \u00b7 Digitan\'s Journal',
     smallImageKey: 'raggooner_small',
     smallImageText: 'Raccoon Open',
   };
@@ -27,7 +18,7 @@ function getPageInfo() {
 
   const tourneyMatch = path.match(/^\/t\/(.+)/);
   if (tourneyMatch) {
-    return { ...base, details: truncate(h1Text || 'Tournament'), state: 'Viewing tournament' };
+    return { ...base, details: h1Text || 'Tournament', state: 'Viewing tournament' };
   }
 
   const pageMap = {
@@ -45,21 +36,4 @@ function getPageInfo() {
   return { ...base, details: h1Text || 'Raccoon Open', state: 'Browsing Raccoon Open' };
 }
 
-function update() {
-  try {
-    const presence = getPageInfo();
-    sendPresence(presence);
-  } catch (_) {
-  }
-}
-
-setTimeout(update, 1000);
-setInterval(update, 5000);
-
-let lastUrl = location.href;
-new MutationObserver(() => {
-  if (location.href !== lastUrl) {
-    lastUrl = location.href;
-    setTimeout(update, 1000);
-  }
-}).observe(document, { subtree: true, childList: true });
+harvest(SITE, {}, getPageInfo);

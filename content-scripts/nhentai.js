@@ -1,14 +1,5 @@
 const SITE = 'nhentai';
-function truncate(s, n = 128) { return s && s.length > n ? s.slice(0, n - 1) + '…' : s; }
-let lastUpdate = 0;
 let galleryCache = {};
-
-function sendPresence(data) {
-  const now = Date.now();
-  if (now - lastUpdate < 2000) return;
-  lastUpdate = now;
-  chrome.runtime.sendMessage({ type: 'presence', site: SITE, data });
-}
 
 function getPageInfo() {
   const path = window.location.pathname;
@@ -47,10 +38,10 @@ function getPageInfo() {
       }
     }
     return {
-      details: truncate(title),
-      state: currentPage !== '?' ? truncate(`Page ${currentPage} / ${totalPages}`) : undefined,
+      details: title,
+      state: currentPage !== '?' ? `Page ${currentPage} / ${totalPages}` : undefined,
       largeImageKey: 'digitan',
-      largeImageText: 'nhentai.net · Digitan\'s Journal',
+      largeImageText: 'nhentai.net \u00b7 Digitan\'s Journal',
       smallImageKey: 'nhentai_small',
       smallImageText: 'nhentai.net',
       buttons: [{ label: 'View Gallery', url: `https://nhentai.net/g/${id}/` }],
@@ -62,9 +53,9 @@ function getPageInfo() {
     const params = new URLSearchParams(window.location.search);
     return {
       details: 'Searching',
-      state: truncate(params.get('q')) || 'nhentai',
+      state: params.get('q') || 'nhentai',
       largeImageKey: 'digitan',
-      largeImageText: 'nhentai.net · Digitan\'s Journal',
+      largeImageText: 'nhentai.net \u00b7 Digitan\'s Journal',
       smallImageKey: 'nhentai_small',
       smallImageText: 'nhentai.net',
     };
@@ -74,9 +65,9 @@ function getPageInfo() {
     const labelEl = document.querySelector('h1 .name');
     return {
       details: 'Browsing nhentai',
-      state: truncate(labelEl ? labelEl.textContent.trim() : path.split('/').filter(Boolean).pop()),
+      state: labelEl ? labelEl.textContent.trim() : path.split('/').filter(Boolean).pop(),
       largeImageKey: 'digitan',
-      largeImageText: 'nhentai.net · Digitan\'s Journal',
+      largeImageText: 'nhentai.net \u00b7 Digitan\'s Journal',
       smallImageKey: 'nhentai_small',
       smallImageText: 'nhentai.net',
     };
@@ -85,27 +76,10 @@ function getPageInfo() {
   return {
     details: 'Browsing nhentai',
     largeImageKey: 'digitan',
-    largeImageText: 'nhentai.net · Digitan\'s Journal',
+    largeImageText: 'nhentai.net \u00b7 Digitan\'s Journal',
     smallImageKey: 'nhentai_small',
     smallImageText: 'nhentai.net',
   };
 }
 
-function update() {
-  try {
-    const presence = getPageInfo();
-    sendPresence(presence);
-  } catch (_) {
-  }
-}
-
-setTimeout(update, 1000);
-setInterval(update, 5000);
-
-let lastUrl = location.href;
-new MutationObserver(() => {
-  if (location.href !== lastUrl) {
-    lastUrl = location.href;
-    setTimeout(update, 1000);
-  }
-}).observe(document, { subtree: true, childList: true });
+harvest(SITE, {}, getPageInfo);

@@ -44,17 +44,17 @@
   "content_scripts": [
     {
       "matches": ["https://nhentai.net/*"],
-      "js": ["content-scripts/nhentai.js"],
+      "js": ["content-scripts/harvester.js", "content-scripts/nhentai.js"],
       "run_at": "document_idle"
     },
     {
       "matches": ["https://gametora.com/umamusume*"],
-      "js": ["content-scripts/gametora.js"],
+      "js": ["content-scripts/harvester.js", "content-scripts/gametora.js"],
       "run_at": "document_idle"
     },
     {
       "matches": ["https://raggooneropen.web.app/*"],
-      "js": ["content-scripts/raggooner.js"],
+      "js": ["content-scripts/harvester.js", "content-scripts/raggooner.js"],
       "run_at": "document_idle"
     }
   ]

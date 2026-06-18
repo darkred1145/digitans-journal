@@ -1,13 +1,4 @@
 const SITE = 'gametora';
-function truncate(s, n = 128) { return s && s.length > n ? s.slice(0, n - 1) + '…' : s; }
-let lastUpdate = 0;
-
-function sendPresence(data) {
-  const now = Date.now();
-  if (now - lastUpdate < 2000) return;
-  lastUpdate = now;
-  chrome.runtime.sendMessage({ type: 'presence', site: SITE, data });
-}
 
 function getPageInfo() {
   const path = window.location.pathname;
@@ -16,10 +7,10 @@ function getPageInfo() {
 
   if (path === '/umamusume' || path === '/umamusume/') {
     return {
-      details: 'GameTora · Uma Musume',
+      details: 'GameTora \u00b7 Uma Musume',
       state: 'Browsing GameTora',
       largeImageKey: 'digitan',
-      largeImageText: 'gametora.com/umamusume · Digitan\'s Journal',
+      largeImageText: 'gametora.com/umamusume \u00b7 Digitan\'s Journal',
       smallImageKey: 'gametora_small',
       smallImageText: 'GameTora',
     };
@@ -40,10 +31,10 @@ function getPageInfo() {
     else if (category === 'guides') state = 'Reading guide';
 
     return {
-      details: truncate(label),
-      state: truncate(state),
+      details: label,
+      state,
       largeImageKey: 'digitan',
-      largeImageText: 'gametora.com/umamusume · Digitan\'s Journal',
+      largeImageText: 'gametora.com/umamusume \u00b7 Digitan\'s Journal',
       smallImageKey: 'gametora_small',
       smallImageText: 'GameTora',
     };
@@ -94,40 +85,23 @@ function getPageInfo() {
   const label = pageLabels[page];
   if (label) {
     return {
-      details: truncate(h1Text || label),
+      details: h1Text || label,
       state: 'Browsing GameTora',
       largeImageKey: 'digitan',
-      largeImageText: 'gametora.com/umamusume · Digitan\'s Journal',
+      largeImageText: 'gametora.com/umamusume \u00b7 Digitan\'s Journal',
       smallImageKey: 'gametora_small',
       smallImageText: 'GameTora',
     };
   }
 
   return {
-    details: truncate(h1Text || 'GameTora Uma Musume'),
+    details: h1Text || 'GameTora Uma Musume',
     state: 'Browsing GameTora',
     largeImageKey: 'digitan',
-    largeImageText: 'gametora.com/umamusume · Digitan\'s Journal',
+    largeImageText: 'gametora.com/umamusume \u00b7 Digitan\'s Journal',
     smallImageKey: 'gametora_small',
     smallImageText: 'GameTora',
   };
 }
 
-function update() {
-  try {
-    const presence = getPageInfo();
-    sendPresence(presence);
-  } catch (_) {
-  }
-}
-
-setTimeout(update, 1000);
-setInterval(update, 5000);
-
-let lastUrl = location.href;
-new MutationObserver(() => {
-  if (location.href !== lastUrl) {
-    lastUrl = location.href;
-    setTimeout(update, 1000);
-  }
-}).observe(document, { subtree: true, childList: true });
+harvest(SITE, {}, getPageInfo);
