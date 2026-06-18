@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="color-scheme:dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Digitan's Journal — Settings</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -122,6 +123,7 @@
       transition: border-color 0.2s;
     }
     .input-number:focus { border-color: var(--accent); }
+    .input-number:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
     .input-text {
       flex: 1;
@@ -136,6 +138,7 @@
       transition: border-color 0.2s;
     }
     .input-text:focus { border-color: var(--accent); }
+    .input-text:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
     .input-text::placeholder { color: var(--text-muted); }
 
     /* ── Template ── */
@@ -227,7 +230,7 @@
 <body>
   <div class="page-header">
     <h1 class="page-title">Digitan's Journal</h1>
-    <p class="page-subtitle">Configure what gets logged and how it appears on Discord.</p>
+    <p class="page-subtitle">Choose what gets logged and how it appears on Discord.</p>
   </div>
 
   <div class="section">
@@ -277,7 +280,7 @@
         <div class="row-desc">Set to 0 to disable</div>
       </div>
       <div style="display:flex;align-items:center;gap:6px">
-        <input type="number" class="input-number" id="idleTimeout" min="0" max="999" value="0">
+        <input type="number" class="input-number" id="idleTimeout" min="0" max="999" value="0" aria-label="Idle timeout in minutes">
         <span style="font-size:12px;color:var(--text-muted)">min</span>
       </div>
     </div>
@@ -288,7 +291,7 @@
     <div class="row">
       <div>
         <label class="row-label" for="privacyMode">Privacy Mode</label>
-        <div class="row-desc">Show "Browsing [site]" on Discord instead of page titles</div>
+        <div class="row-desc">Show \u201cBrowsing [site]\u201d on Discord instead of page titles</div>
       </div>
       <label class="toggle">
         <input type="checkbox" id="privacyMode">
@@ -307,11 +310,11 @@
       <div class="template-label">nhentai.net</div>
       <div class="template-row">
         <span class="template-prefix">details</span>
-        <input type="text" class="input-text template-details" placeholder='e.g. {title}'>
+        <input type="text" class="input-text template-details" placeholder='e.g. {title}' aria-label="Details template">
       </div>
       <div class="template-row">
         <span class="template-prefix">state</span>
-        <input type="text" class="input-text template-state" placeholder='e.g. Page {page} / {total}'>
+        <input type="text" class="input-text template-state" placeholder='e.g. Page {page} / {total}' aria-label="State template">
       </div>
     </div>
 
@@ -319,11 +322,11 @@
       <div class="template-label">gametora.com/umamusume</div>
       <div class="template-row">
         <span class="template-prefix">details</span>
-        <input type="text" class="input-text template-details" placeholder='e.g. {title}'>
+        <input type="text" class="input-text template-details" placeholder='e.g. {title}' aria-label="Details template">
       </div>
       <div class="template-row">
         <span class="template-prefix">state</span>
-        <input type="text" class="input-text template-state" placeholder='e.g. Viewing {title}'>
+        <input type="text" class="input-text template-state" placeholder='e.g. Viewing {title}' aria-label="State template">
       </div>
     </div>
 
@@ -331,11 +334,11 @@
       <div class="template-label">raggooneropen.web.app</div>
       <div class="template-row">
         <span class="template-prefix">details</span>
-        <input type="text" class="input-text template-details" placeholder='e.g. {title}'>
+        <input type="text" class="input-text template-details" placeholder='e.g. {title}' aria-label="Details template">
       </div>
       <div class="template-row">
         <span class="template-prefix">state</span>
-        <input type="text" class="input-text template-state" placeholder='e.g. Browsing {title}'>
+        <input type="text" class="input-text template-state" placeholder='e.g. Browsing {title}' aria-label="State template">
       </div>
     </div>
 
@@ -374,7 +377,7 @@
     </div>
   </div>
 
-  <div class="status" id="saveStatus"></div>
+  <div class="status" id="saveStatus" aria-live="polite"></div>
 
   <script src="options.js"></script>
 </body>
