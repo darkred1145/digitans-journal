@@ -20,10 +20,9 @@ function updateUI(status) {
     activityEmpty.style.display = 'none';
     activityContent.style.display = 'block';
     const a = status.currentActivity;
-    activityContent.innerHTML = `
-      <h3>${a.details || ''}</h3>
-      <p>${a.state || ''}</p>
-    `;
+    activityContent.innerHTML = '<h3></h3><p></p>';
+    activityContent.querySelector('h3').textContent = a.details || '';
+    activityContent.querySelector('p').textContent = a.state || '';
   } else {
     activityEmpty.style.display = 'block';
     activityContent.style.display = 'none';

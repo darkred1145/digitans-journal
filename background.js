@@ -9,15 +9,20 @@ function connectNative() {
     nativePort = chrome.runtime.connectNative('com.digitansjournal.rpc');
     nativePort.onMessage.addListener((msg) => {
       if (msg.type === 'rpcStatus') {
-        chrome.storage.local.set({ rpcConnected: msg.connected, userId: msg.userId || null });
+        chrome.storage.local.set({ rpcConnected: msg.connected, userId: msg.userId || null }, () => {
+          if (chrome.runtime.lastError) console.error('storage set failed', chrome.runtime.lastError);
+        });
       }
     });
     nativePort.onDisconnect.addListener(() => {
       nativePort = null;
-      chrome.storage.local.set({ rpcConnected: false, userId: null });
+      chrome.storage.local.set({ rpcConnected: false, userId: null }, () => {
+        if (chrome.runtime.lastError) console.error('storage set failed', chrome.runtime.lastError);
+      });
     });
     nativePort.postMessage({ action: 'connect', clientId: CLIENT_ID });
-  } catch (_) {
+  } catch (err) {
+    console.error('native connect failed', err);
   }
 }
 
@@ -27,7 +32,9 @@ function sendActivity(site, data) {
   if (!nativePort) connectNative();
   if (nativePort) {
     nativePort.postMessage({ action: 'setActivity', presence: data });
-    chrome.storage.local.set({ currentSite: site, currentActivity: data });
+    chrome.storage.local.set({ currentSite: site, currentActivity: data }, () => {
+      if (chrome.runtime.lastError) console.error('storage set failed', chrome.runtime.lastError);
+    });
   }
 }
 
