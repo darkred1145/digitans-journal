@@ -101,10 +101,21 @@ function connectNative() {
   }
 }
 
+function postMessage(msg) {
+  if (!nativePort) return false;
+  try {
+    nativePort.postMessage(msg);
+    return true;
+  } catch (e) {
+    nativePort = null;
+    return false;
+  }
+}
+
 function clearActivity() {
   currentSite = null;
   currentActivity = null;
-  if (nativePort) nativePort.postMessage({ action: 'disconnect' });
+  postMessage({ action: 'disconnect' });
   chrome.storage.local.set({ currentSite: null, currentActivity: null }, () => {
     if (chrome.runtime.lastError) console.error('storage set failed', chrome.runtime.lastError);
   });
@@ -124,14 +135,14 @@ function sendActivity(site, data) {
   const finalData = formatPresence(site, data);
   currentSite = site;
   currentActivity = finalData;
-  if (!nativePort) connectNative();
-  if (nativePort) {
-    nativePort.postMessage({ action: 'setActivity', presence: finalData });
-    lastError = null;
-    chrome.storage.local.set({ currentSite: site, currentActivity: finalData, lastError: null }, () => {
-      if (chrome.runtime.lastError) console.error('storage set failed', chrome.runtime.lastError);
-    });
+  if (!nativePort || !postMessage({ action: 'setActivity', presence: finalData })) {
+    connectNative();
+    postMessage({ action: 'setActivity', presence: finalData });
   }
+  lastError = null;
+  chrome.storage.local.set({ currentSite: site, currentActivity: finalData, lastError: null }, () => {
+    if (chrome.runtime.lastError) console.error('storage set failed', chrome.runtime.lastError);
+  });
   resetIdleTimer();
 }
 

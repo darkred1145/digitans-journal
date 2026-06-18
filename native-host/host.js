@@ -3,6 +3,7 @@ const DiscordRPC = require('discord-rpc');
 let rpc = null;
 let rpcConnected = false;
 let clientId = null;
+let pendingActivity = null;
 
 function sendMessage(msg) {
   const json = JSON.stringify(msg);
@@ -20,6 +21,11 @@ async function connectRPC(id) {
     rpc = new DiscordRPC.Client({ transport: 'ipc' });
     rpc.on('ready', () => {
       rpcConnected = true;
+      if (pendingActivity) {
+        const p = pendingActivity;
+        pendingActivity = null;
+        setActivity(p);
+      }
       sendMessage({ type: 'rpcStatus', connected: true, userId: rpc.user ? rpc.user.id : null });
     });
     rpc.on('disconnected', () => {
@@ -38,7 +44,7 @@ async function connectRPC(id) {
 function truncate(s, n = 128) { return s && s.length > n ? s.slice(0, n - 1) + '…' : s; }
 
 function setActivity(presence) {
-  if (!rpc || !rpcConnected) return;
+  if (!rpc || !rpcConnected) { pendingActivity = presence; return; }
   const payload = {
     details: truncate(presence.details) || 'Digitan\'s Journal',
     startTimestamp: presence.startTimestamp || Date.now(),
@@ -55,6 +61,7 @@ function setActivity(presence) {
 }
 
 function disconnectRPC() {
+  pendingActivity = null;
   if (rpc) {
     rpc.destroy();
     rpc = null;
