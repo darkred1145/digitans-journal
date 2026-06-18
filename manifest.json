@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Agnes Digital",
+  "name": "Digitan's Journal",
   "version": "1.0.0",
   "description": "Shows what you're browsing as Discord Rich Presence",
   "permissions": [

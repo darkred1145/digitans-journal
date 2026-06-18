@@ -4,7 +4,7 @@ setlocal enabledelayedexpansion
 set REG_KEY=HKEY_CURRENT_USER\Software\Google\Chrome\NativeMessagingHosts\com.agnesdigital.rpc
 set MANIFEST=%~dp0com.agnesdigital.rpc.json
 
-echo === Agnes Digital - Native Host Installer ===
+echo === Digitan's Journal - Native Host Installer ===
 echo.
 echo Enter your Chrome extension ID:
 echo (Load the extension unpacked in chrome://extensions,

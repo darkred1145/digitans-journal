@@ -38,10 +38,10 @@ async function connectRPC(id) {
 function setActivity(presence) {
   if (!rpc || !rpcConnected) return;
   const payload = {
-    details: presence.details || 'Agnes Digital',
+    details: presence.details || 'Digitan\'s Journal',
     startTimestamp: presence.startTimestamp || Date.now(),
     largeImageKey: presence.largeImageKey || 'digitan',
-    largeImageText: presence.largeImageText || 'Agnes Digital',
+    largeImageText: presence.largeImageText || 'Digitan\'s Journal',
   };
   if (presence.state) payload.state = presence.state;
   if (presence.smallImageKey) payload.smallImageKey = presence.smallImageKey;

@@ -18,7 +18,7 @@ function getPageInfo() {
       details: 'GameTora · Uma Musume',
       state: 'Browsing GameTora',
       largeImageKey: 'digitan',
-      largeImageText: 'gametora.com/umamusume · Agnes Digital',
+      largeImageText: 'gametora.com/umamusume · Digitan\'s Journal',
       smallImageKey: 'gametora_small',
       smallImageText: 'GameTora',
     };
@@ -42,7 +42,7 @@ function getPageInfo() {
       details: label,
       state,
       largeImageKey: 'digitan',
-      largeImageText: 'gametora.com/umamusume · Agnes Digital',
+      largeImageText: 'gametora.com/umamusume · Digitan\'s Journal',
       smallImageKey: 'gametora_small',
       smallImageText: 'GameTora',
     };
@@ -96,7 +96,7 @@ function getPageInfo() {
       details: h1Text || label,
       state: 'Browsing GameTora',
       largeImageKey: 'digitan',
-      largeImageText: 'gametora.com/umamusume · Agnes Digital',
+      largeImageText: 'gametora.com/umamusume · Digitan\'s Journal',
       smallImageKey: 'gametora_small',
       smallImageText: 'GameTora',
     };
@@ -106,7 +106,7 @@ function getPageInfo() {
     details: h1Text || 'GameTora Uma Musume',
     state: 'Browsing GameTora',
     largeImageKey: 'digitan',
-    largeImageText: 'gametora.com/umamusume · Agnes Digital',
+    largeImageText: 'gametora.com/umamusume · Digitan\'s Journal',
     smallImageKey: 'gametora_small',
     smallImageText: 'GameTora',
   };

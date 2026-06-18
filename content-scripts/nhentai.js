@@ -49,7 +49,7 @@ function getPageInfo() {
       details: title,
       state: `Page ${currentPage} / ${totalPages}`,
       largeImageKey: 'digitan',
-      largeImageText: 'nhentai.net · Agnes Digital',
+      largeImageText: 'nhentai.net · Digitan\'s Journal',
       smallImageKey: 'nhentai_small',
       smallImageText: 'nhentai.net',
       buttons: [{ label: 'View Gallery', url: `https://nhentai.net/g/${id}/` }],
@@ -62,7 +62,7 @@ function getPageInfo() {
       details: 'Searching',
       state: params.get('q') || 'nhentai',
       largeImageKey: 'digitan',
-      largeImageText: 'nhentai.net · Agnes Digital',
+      largeImageText: 'nhentai.net · Digitan\'s Journal',
       smallImageKey: 'nhentai_small',
       smallImageText: 'nhentai.net',
     };
@@ -74,7 +74,7 @@ function getPageInfo() {
       details: 'Browsing nhentai',
       state: labelEl ? labelEl.textContent.trim() : path.split('/').filter(Boolean).pop(),
       largeImageKey: 'digitan',
-      largeImageText: 'nhentai.net · Agnes Digital',
+      largeImageText: 'nhentai.net · Digitan\'s Journal',
       smallImageKey: 'nhentai_small',
       smallImageText: 'nhentai.net',
     };
@@ -83,7 +83,7 @@ function getPageInfo() {
   return {
     details: 'Browsing nhentai',
     largeImageKey: 'digitan',
-    largeImageText: 'nhentai.net · Agnes Digital',
+    largeImageText: 'nhentai.net · Digitan\'s Journal',
     smallImageKey: 'nhentai_small',
     smallImageText: 'nhentai.net',
   };

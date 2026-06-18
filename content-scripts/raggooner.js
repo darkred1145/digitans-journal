@@ -15,7 +15,7 @@ function getPageInfo() {
 
   const base = {
     largeImageKey: 'digitan',
-    largeImageText: 'raggooneropen.web.app · Agnes Digital',
+    largeImageText: 'raggooneropen.web.app · Digitan\'s Journal',
     smallImageKey: 'raggooner_small',
     smallImageText: 'Raccoon Open',
   };
@@ -30,11 +30,11 @@ function getPageInfo() {
   }
 
   const pageMap = {
-    '/analytics':  { details: 'Analytics',        state: 'Browsing stats' },
-    '/tools':      { details: 'Tools',             state: 'Using tools' },
-    '/profile':    { details: 'Profile',           state: 'Viewing profile' },
-    '/admin/users':{ details: 'Admin',             state: 'Managing users' },
-    '/settings':   { details: 'Settings',          state: 'Configuring' },
+    '/analytics': { details: 'Analytics', state: 'Browsing stats' },
+    '/tools': { details: 'Tools', state: 'Using tools' },
+    '/profile': { details: 'Profile', state: 'Viewing profile' },
+    '/admin/users': { details: 'Admin', state: 'Managing users' },
+    '/settings': { details: 'Settings', state: 'Configuring' },
   };
 
   if (pageMap[path]) {
