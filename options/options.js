@@ -1,11 +1,3 @@
-const DEFAULTS = {
-  enabled: true,
-  sites: { nhentai: true, gametora: true, raggooner: true },
-  idleTimeout: 0,
-  privacyMode: false,
-  templates: {},
-};
-
 async function loadSettings() {
   return new Promise((resolve) => {
     chrome.storage.sync.get(DEFAULTS, resolve);

@@ -43,7 +43,17 @@ async function connectRPC(id) {
 
 function truncate(s, n = 128) { return s && s.length > n ? s.slice(0, n - 1) + '…' : s; }
 
+function clearPresence() {
+  pendingActivity = null;
+  if (rpc && rpcConnected) {
+    rpc.setActivity(null).catch((err) => {
+      sendMessage({ type: 'rpcStatus', connected: true, error: err.message });
+    });
+  }
+}
+
 function setActivity(presence) {
+  if (!presence) { clearPresence(); return; }
   if (!rpc || !rpcConnected) { pendingActivity = presence; return; }
   const payload = {
     details: truncate(presence.details) || 'Digitan\'s Journal',
