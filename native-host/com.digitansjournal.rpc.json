@@ -1,7 +1,7 @@
 {
   "name": "com.digitansjournal.rpc",
   "description": "Digitan's Journal Discord RPC bridge",
-  "path": "REPLACE_WITH_PATH\\host.bat",
+  "path": "C:\Users\Admin\Desktop\Code Projects\digitans-journal\native-host\\host.bat",
   "type": "stdio",
-  "allowed_origins": ["chrome-extension://iehgkdjegmopkpcodjckacgbobpomfoc/"]
+  "allowed_origins": ["chrome-extension://kapeiohfapilooelhknlikniefgkonpg/"]
 }

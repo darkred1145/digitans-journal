@@ -11,7 +11,7 @@ Extension (Manifest V3) → Native Messaging Host (Node.js) → Discord RPC (IPC
 1. **Install Node.js dependencies**
 
    ```bash
-   cd agnes-digital-extension/native-host
+   cd digitans-journal/native-host
    npm install
    ```
 
@@ -20,7 +20,7 @@ Extension (Manifest V3) → Native Messaging Host (Node.js) → Discord RPC (IPC
    - Go to `chrome://extensions`
    - Enable Developer Mode
    - Click "Load unpacked"
-   - Select the `agnes-digital-extension` folder
+   - Select the `digitans-journal` folder
    - Copy the extension ID shown on the card
 
 3. **Install the native host**
@@ -36,7 +36,7 @@ Extension (Manifest V3) → Native Messaging Host (Node.js) → Discord RPC (IPC
 
 - Remove the extension from `chrome://extensions`
 - Delete the registry key: `HKCU\Software\Google\Chrome\NativeMessagingHosts\com.digitansjournal.rpc`
-- Delete the `agnes-digital-extension` folder
+- Delete the `digitans-journal` folder
 
 ## Manual Registration
 
