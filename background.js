@@ -1,21 +1,78 @@
 const CLIENT_ID = '1513880949220311181';
+const SETTINGS_DEFAULTS = {
+  enabled: true,
+  sites: {},
+  idleTimeout: 0,
+  privacyMode: false,
+  templates: {},
+};
+
 let nativePort = null;
 let currentActivity = null;
 let currentSite = null;
 let lastError = null;
-let settings = { enabled: true, sites: {} };
+let settings = { ...SETTINGS_DEFAULTS };
 let trackedTabs = new Set();
+let idleTimer = null;
 
 function loadSettings() {
-  chrome.storage.sync.get({ enabled: true, sites: {} }, (s) => { settings = s; });
+  chrome.storage.sync.get(SETTINGS_DEFAULTS, (s) => { settings = s; });
 }
 
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'sync') {
     if (changes.enabled) settings.enabled = changes.enabled.newValue;
     if (changes.sites) settings.sites = changes.sites.newValue || {};
+    if (changes.idleTimeout) {
+      settings.idleTimeout = changes.idleTimeout.newValue || 0;
+      resetIdleTimer();
+    }
+    if (changes.privacyMode) settings.privacyMode = changes.privacyMode.newValue || false;
+    if (changes.templates) settings.templates = changes.templates.newValue || {};
   }
 });
+
+function truncate(s, n = 128) {
+  return s && s.length > n ? s.slice(0, n - 1) + '…' : s;
+}
+
+function formatPresence(site, data) {
+  if (settings.privacyMode) {
+    return {
+      details: truncate(`Browsing ${site}`),
+      state: undefined,
+      largeImageKey: data.largeImageKey || 'digitan',
+      largeImageText: data.largeImageText || '',
+      smallImageKey: data.smallImageKey,
+      smallImageText: data.smallImageText,
+    };
+  }
+
+  const raw = data.raw || {};
+  const tmpl = settings.templates && settings.templates[site];
+  let details = data.details;
+  let state = data.state;
+
+  if (tmpl) {
+    const r = (s) => (raw[s] !== undefined && raw[s] !== null ? String(raw[s]) : '');
+    if (tmpl.details) {
+      details = tmpl.details
+        .replace(/\{title\}/g, r('title'))
+        .replace(/\{page\}/g, r('page'))
+        .replace(/\{total\}/g, r('totalPages'))
+        .replace(/\{site\}/g, site);
+    }
+    if (tmpl.state) {
+      state = tmpl.state
+        .replace(/\{title\}/g, r('title'))
+        .replace(/\{page\}/g, r('page'))
+        .replace(/\{total\}/g, r('totalPages'))
+        .replace(/\{site\}/g, site);
+    }
+  }
+
+  return { ...data, details: truncate(details), state: state ? truncate(state) : undefined };
+}
 
 function connectNative() {
   if (nativePort) return;
@@ -53,18 +110,29 @@ function clearActivity() {
   });
 }
 
+function resetIdleTimer() {
+  if (idleTimer) clearTimeout(idleTimer);
+  if (settings.idleTimeout > 0) {
+    idleTimer = setTimeout(() => {
+      clearActivity();
+    }, settings.idleTimeout * 60 * 1000);
+  }
+}
+
 function sendActivity(site, data) {
   if (!settings.enabled || settings.sites[site] === false) return;
+  const finalData = formatPresence(site, data);
   currentSite = site;
-  currentActivity = data;
+  currentActivity = finalData;
   if (!nativePort) connectNative();
   if (nativePort) {
-    nativePort.postMessage({ action: 'setActivity', presence: data });
+    nativePort.postMessage({ action: 'setActivity', presence: finalData });
     lastError = null;
-    chrome.storage.local.set({ currentSite: site, currentActivity: data, lastError: null }, () => {
+    chrome.storage.local.set({ currentSite: site, currentActivity: finalData, lastError: null }, () => {
       if (chrome.runtime.lastError) console.error('storage set failed', chrome.runtime.lastError);
     });
   }
+  resetIdleTimer();
 }
 
 chrome.tabs.onRemoved.addListener((tabId) => {

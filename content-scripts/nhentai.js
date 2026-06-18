@@ -48,12 +48,13 @@ function getPageInfo() {
     }
     return {
       details: truncate(title),
-      state: truncate(`Page ${currentPage} / ${totalPages}`),
+      state: currentPage !== '?' ? truncate(`Page ${currentPage} / ${totalPages}`) : undefined,
       largeImageKey: 'digitan',
       largeImageText: 'nhentai.net · Digitan\'s Journal',
       smallImageKey: 'nhentai_small',
       smallImageText: 'nhentai.net',
       buttons: [{ label: 'View Gallery', url: `https://nhentai.net/g/${id}/` }],
+      raw: { title, page: currentPage, totalPages },
     };
   }
 

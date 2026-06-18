@@ -82,6 +82,86 @@
   </div>
 
   <div class="section">
+    <h2>Idle Timeout</h2>
+    <div class="row">
+      <div>
+        <label for="idleTimeout">Auto-clear activity after</label>
+        <div class="desc">Set to 0 to disable</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" id="idleTimeout" min="0" max="999" style="width:60px;padding:4px 6px;border:none;border-radius:4px;background:#3a3c56;color:#fff;font-size:13px;text-align:center">
+        <span style="font-size:12px;color:#999">min</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="row">
+      <div>
+        <label for="privacyMode">Privacy Mode</label>
+        <div class="desc">Show generic "Browsing [site]" instead of page titles on Discord</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="privacyMode">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Presence Templates <span style="font-size:11px;color:#999;font-weight:400">(optional)</span></h2>
+    <div class="desc" style="margin-bottom:12px">
+      Placeholders: <code style="background:#2a2c4a;padding:1px 4px;border-radius:3px">{title}</code>
+      <code style="background:#2a2c4a;padding:1px 4px;border-radius:3px">{page}</code>
+      <code style="background:#2a2c4a;padding:1px 4px;border-radius:3px">{total}</code>
+      <code style="background:#2a2c4a;padding:1px 4px;border-radius:3px">{site}</code>
+      &nbsp;— leave blank to use defaults
+    </div>
+
+    <div class="template-group" data-site="nhentai">
+      <div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:6px">nhentai.net</div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;color:#999;width:44px;flex-shrink:0">Details</span>
+          <input type="text" class="template-details" placeholder="e.g. {title}" style="flex:1;padding:4px 6px;border:none;border-radius:4px;background:#3a3c56;color:#fff;font-size:12px">
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;color:#999;width:44px;flex-shrink:0">State</span>
+          <input type="text" class="template-state" placeholder="e.g. Page {page} / {total}" style="flex:1;padding:4px 6px;border:none;border-radius:4px;background:#3a3c56;color:#fff;font-size:12px">
+        </div>
+      </div>
+    </div>
+
+    <div class="template-group" data-site="gametora">
+      <div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:6px">gametora.com</div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;color:#999;width:44px;flex-shrink:0">Details</span>
+          <input type="text" class="template-details" placeholder="e.g. {title}" style="flex:1;padding:4px 6px;border:none;border-radius:4px;background:#3a3c56;color:#fff;font-size:12px">
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;color:#999;width:44px;flex-shrink:0">State</span>
+          <input type="text" class="template-state" placeholder="e.g. Viewing {title}" style="flex:1;padding:4px 6px;border:none;border-radius:4px;background:#3a3c56;color:#fff;font-size:12px">
+        </div>
+      </div>
+    </div>
+
+    <div class="template-group" data-site="raggooner">
+      <div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:6px">raggooneropen.web.app</div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;color:#999;width:44px;flex-shrink:0">Details</span>
+          <input type="text" class="template-details" placeholder="e.g. {title}" style="flex:1;padding:4px 6px;border:none;border-radius:4px;background:#3a3c56;color:#fff;font-size:12px">
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;color:#999;width:44px;flex-shrink:0">State</span>
+          <input type="text" class="template-state" placeholder="e.g. Browsing {title}" style="flex:1;padding:4px 6px;border:none;border-radius:4px;background:#3a3c56;color:#fff;font-size:12px">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
     <h2>Shortcuts</h2>
     <div class="row">
       <span>Clear Activity</span>
