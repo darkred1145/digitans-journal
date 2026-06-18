@@ -47,7 +47,9 @@ function setActivity(presence) {
   if (presence.smallImageKey) payload.smallImageKey = presence.smallImageKey;
   if (presence.smallImageText) payload.smallImageText = presence.smallImageText;
   if (presence.buttons) payload.buttons = presence.buttons;
-  rpc.setActivity(payload);
+  rpc.setActivity(payload).catch((err) => {
+    sendMessage({ type: 'rpcStatus', connected: true, error: err.message });
+  });
 }
 
 function disconnectRPC() {
@@ -58,6 +60,10 @@ function disconnectRPC() {
   rpcConnected = false;
   clientId = null;
 }
+
+process.on('unhandledRejection', (err) => {
+  sendMessage({ type: 'error', message: err.message });
+});
 
 let buffer = Buffer.alloc(0);
 
@@ -70,7 +76,7 @@ process.stdin.on('data', (chunk) => {
     buffer = buffer.slice(4 + len);
     try {
       const msg = JSON.parse(json);
-      if (msg.action === 'connect') connectRPC(msg.clientId);
+      if (msg.action === 'connect') connectRPC(msg.clientId).catch((err) => sendMessage({ type: 'rpcStatus', connected: false, error: err.message }));
       else if (msg.action === 'setActivity') setActivity(msg.presence);
       else if (msg.action === 'disconnect') disconnectRPC();
       else if (msg.action === 'ping') sendMessage({ type: 'pong' });
