@@ -3,51 +3,239 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Digitan's Journal - Settings</title>
+  <title>Digitan's Journal — Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #1a1b2e;
-      color: #e0e0e0;
-      padding: 24px;
-      max-width: 480px;
-      margin: 0 auto;
+    :root {
+      --bg: #0E0C17;
+      --surface: #1B1728;
+      --border: #2C2740;
+      --border-light: #3D3855;
+      --text: #E8E0D0;
+      --text-secondary: #9B8FA8;
+      --text-muted: #63597A;
+      --accent: #E35D6B;
+      --accent-green: #4CC48A;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace;
     }
-    h1 { font-size: 20px; font-weight: 600; color: #fff; margin-bottom: 20px; }
-    h2 { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 8px; }
-    .section { background: #232540; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-    .row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
-    .row + .row { border-top: 1px solid #2a2c4a; }
-    label { font-size: 13px; cursor: pointer; }
-    .desc { font-size: 11px; color: #999; margin-top: 2px; }
-    .toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 14px;
+      background: var(--bg);
+      color: var(--text);
+      padding: 40px 24px;
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    .page-header {
+      margin-bottom: 36px;
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 700;
+      font-style: italic;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* ── Ruled section ── */
+    .section {
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+      margin-bottom: 24px;
+    }
+
+    .section-header {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+    }
+    .row + .row { border-top: 1px solid var(--border); }
+
+    .row-label {
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .row-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ── Toggle ── */
+    .toggle { position: relative; width: 38px; height: 20px; flex-shrink: 0; }
     .toggle input { opacity: 0; width: 0; height: 0; }
     .slider {
-      position: absolute; inset: 0; cursor: pointer; background: #3a3c56;
-      border-radius: 22px; transition: .2s;
+      position: absolute; inset: 0; cursor: pointer;
+      background: var(--border); border-radius: 20px; transition: .25s;
     }
     .slider::before {
-      content: ''; position: absolute; width: 18px; height: 18px; left: 2px; bottom: 2px;
-      background: #fff; border-radius: 50%; transition: .2s;
+      content: '';
+      position: absolute;
+      width: 16px; height: 16px;
+      left: 2px; bottom: 2px;
+      background: var(--text-secondary);
+      border-radius: 50%;
+      transition: .25s;
     }
-    .toggle input:checked + .slider { background: #5865f2; }
-    .toggle input:checked + .slider::before { transform: translateX(18px); }
+    .toggle input:checked + .slider { background: rgba(227,93,107,0.3); }
+    .toggle input:checked + .slider::before { background: var(--accent); transform: translateX(18px); }
+
+    /* ── Input ── */
+    .input-number {
+      width: 60px;
+      padding: 5px 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-number:focus { border-color: var(--accent); }
+
+    .input-text {
+      flex: 1;
+      padding: 5px 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-text:focus { border-color: var(--accent); }
+    .input-text::placeholder { color: var(--text-muted); }
+
+    /* ── Template ── */
+    .template-group {
+      margin-bottom: 16px;
+    }
+    .template-group:last-child { margin-bottom: 0; }
+
+    .template-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .template-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .template-row:last-child { margin-bottom: 0; }
+
+    .template-prefix {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      width: 52px;
+      flex-shrink: 0;
+    }
+
+    .placeholders {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      font-family: var(--font-mono);
+    }
+    .placeholders code {
+      background: var(--surface);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    /* ── Extras section ── */
+    .extras-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+    }
+    .extras-row + .extras-row { border-top: 1px solid var(--border); }
+
+    .extras-content { flex: 1; min-width: 0; }
+
     .kbd {
-      display: inline-block; padding: 2px 6px; font-size: 11px;
-      background: #2a2c4a; border-radius: 4px; color: #aaa;
+      display: inline-block;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-secondary);
     }
-    .status { font-size: 12px; color: #999; margin-top: 16px; text-align: center; }
+
+    .code {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: var(--surface);
+      padding: 1px 5px;
+      border-radius: 3px;
+      color: var(--text-secondary);
+      word-break: break-all;
+      user-select: all;
+    }
+
+    .status {
+      font-size: 12px;
+      color: var(--accent-green);
+      text-align: center;
+      margin-top: 24px;
+      height: 20px;
+      font-weight: 500;
+    }
   </style>
 </head>
 <body>
-  <h1>Digitan's Journal</h1>
+  <div class="page-header">
+    <h1 class="page-title">Digitan's Journal</h1>
+    <p class="page-subtitle">Configure what gets logged and how it appears on Discord.</p>
+  </div>
 
   <div class="section">
+    <div class="section-header">General</div>
     <div class="row">
       <div>
-        <label for="masterToggle">Rich Presence</label>
-        <div class="desc">Show browsing activity on Discord</div>
+        <label class="row-label" for="masterToggle">Rich Presence</label>
+        <div class="row-desc">Show browsing activity on Discord</div>
       </div>
       <label class="toggle">
         <input type="checkbox" id="masterToggle" checked>
@@ -57,23 +245,23 @@
   </div>
 
   <div class="section">
-    <h2>Tracked Sites</h2>
+    <div class="section-header">Tracked Sites</div>
     <div class="row">
-      <label for="site-nhentai">nhentai.net</label>
+      <label class="row-label" for="site-nhentai">nhentai.net</label>
       <label class="toggle">
         <input type="checkbox" class="site-toggle" id="site-nhentai" data-site="nhentai" checked>
         <span class="slider"></span>
       </label>
     </div>
     <div class="row">
-      <label for="site-gametora">gametora.com/umamusume</label>
+      <label class="row-label" for="site-gametora">gametora.com/umamusume</label>
       <label class="toggle">
         <input type="checkbox" class="site-toggle" id="site-gametora" data-site="gametora" checked>
         <span class="slider"></span>
       </label>
     </div>
     <div class="row">
-      <label for="site-raggooner">raggooneropen.web.app</label>
+      <label class="row-label" for="site-raggooner">raggooneropen.web.app</label>
       <label class="toggle">
         <input type="checkbox" class="site-toggle" id="site-raggooner" data-site="raggooner" checked>
         <span class="slider"></span>
@@ -82,24 +270,25 @@
   </div>
 
   <div class="section">
-    <h2>Idle Timeout</h2>
+    <div class="section-header">Idle Timeout</div>
     <div class="row">
       <div>
-        <label for="idleTimeout">Auto-clear activity after</label>
-        <div class="desc">Set to 0 to disable</div>
+        <span class="row-label">Auto-clear activity after</span>
+        <div class="row-desc">Set to 0 to disable</div>
       </div>
       <div style="display:flex;align-items:center;gap:6px">
-        <input type="number" id="idleTimeout" min="0" max="999" style="width:60px;padding:4px 6px;border:none;border-radius:4px;background:#3a3c56;color:#fff;font-size:13px;text-align:center">
-        <span style="font-size:12px;color:#999">min</span>
+        <input type="number" class="input-number" id="idleTimeout" min="0" max="999" value="0">
+        <span style="font-size:12px;color:var(--text-muted)">min</span>
       </div>
     </div>
   </div>
 
   <div class="section">
+    <div class="section-header">Privacy</div>
     <div class="row">
       <div>
-        <label for="privacyMode">Privacy Mode</label>
-        <div class="desc">Show generic "Browsing [site]" instead of page titles on Discord</div>
+        <label class="row-label" for="privacyMode">Privacy Mode</label>
+        <div class="row-desc">Show "Browsing [site]" on Discord instead of page titles</div>
       </div>
       <label class="toggle">
         <input type="checkbox" id="privacyMode">
@@ -109,74 +298,79 @@
   </div>
 
   <div class="section">
-    <h2>Presence Templates <span style="font-size:11px;color:#999;font-weight:400">(optional)</span></h2>
-    <div class="desc" style="margin-bottom:12px">
-      Placeholders: <code style="background:#2a2c4a;padding:1px 4px;border-radius:3px">{title}</code>
-      <code style="background:#2a2c4a;padding:1px 4px;border-radius:3px">{page}</code>
-      <code style="background:#2a2c4a;padding:1px 4px;border-radius:3px">{total}</code>
-      <code style="background:#2a2c4a;padding:1px 4px;border-radius:3px">{site}</code>
-      &nbsp;— leave blank to use defaults
-    </div>
+    <div class="section-header">Presence Templates <span style="font-weight:400;color:var(--text-muted)">(optional)</span></div>
+    <p class="row-desc" style="margin-bottom:16px">
+      Customize how activity text reads on Discord. Leave blank to use defaults.
+    </p>
 
     <div class="template-group" data-site="nhentai">
-      <div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:6px">nhentai.net</div>
-      <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px">
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:11px;color:#999;width:44px;flex-shrink:0">Details</span>
-          <input type="text" class="template-details" placeholder="e.g. {title}" style="flex:1;padding:4px 6px;border:none;border-radius:4px;background:#3a3c56;color:#fff;font-size:12px">
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:11px;color:#999;width:44px;flex-shrink:0">State</span>
-          <input type="text" class="template-state" placeholder="e.g. Page {page} / {total}" style="flex:1;padding:4px 6px;border:none;border-radius:4px;background:#3a3c56;color:#fff;font-size:12px">
-        </div>
+      <div class="template-label">nhentai.net</div>
+      <div class="template-row">
+        <span class="template-prefix">details</span>
+        <input type="text" class="input-text template-details" placeholder='e.g. {title}'>
+      </div>
+      <div class="template-row">
+        <span class="template-prefix">state</span>
+        <input type="text" class="input-text template-state" placeholder='e.g. Page {page} / {total}'>
       </div>
     </div>
 
     <div class="template-group" data-site="gametora">
-      <div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:6px">gametora.com</div>
-      <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px">
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:11px;color:#999;width:44px;flex-shrink:0">Details</span>
-          <input type="text" class="template-details" placeholder="e.g. {title}" style="flex:1;padding:4px 6px;border:none;border-radius:4px;background:#3a3c56;color:#fff;font-size:12px">
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:11px;color:#999;width:44px;flex-shrink:0">State</span>
-          <input type="text" class="template-state" placeholder="e.g. Viewing {title}" style="flex:1;padding:4px 6px;border:none;border-radius:4px;background:#3a3c56;color:#fff;font-size:12px">
-        </div>
+      <div class="template-label">gametora.com/umamusume</div>
+      <div class="template-row">
+        <span class="template-prefix">details</span>
+        <input type="text" class="input-text template-details" placeholder='e.g. {title}'>
+      </div>
+      <div class="template-row">
+        <span class="template-prefix">state</span>
+        <input type="text" class="input-text template-state" placeholder='e.g. Viewing {title}'>
       </div>
     </div>
 
     <div class="template-group" data-site="raggooner">
-      <div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:6px">raggooneropen.web.app</div>
-      <div style="display:flex;flex-direction:column;gap:4px">
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:11px;color:#999;width:44px;flex-shrink:0">Details</span>
-          <input type="text" class="template-details" placeholder="e.g. {title}" style="flex:1;padding:4px 6px;border:none;border-radius:4px;background:#3a3c56;color:#fff;font-size:12px">
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:11px;color:#999;width:44px;flex-shrink:0">State</span>
-          <input type="text" class="template-state" placeholder="e.g. Browsing {title}" style="flex:1;padding:4px 6px;border:none;border-radius:4px;background:#3a3c56;color:#fff;font-size:12px">
-        </div>
+      <div class="template-label">raggooneropen.web.app</div>
+      <div class="template-row">
+        <span class="template-prefix">details</span>
+        <input type="text" class="input-text template-details" placeholder='e.g. {title}'>
       </div>
+      <div class="template-row">
+        <span class="template-prefix">state</span>
+        <input type="text" class="input-text template-state" placeholder='e.g. Browsing {title}'>
+      </div>
+    </div>
+
+    <div class="placeholders">
+      <code>{title}</code> <code>{page}</code> <code>{total}</code> <code>{site}</code>
     </div>
   </div>
 
   <div class="section">
-    <h2>Shortcuts</h2>
-    <div class="row">
-      <span>Clear Activity</span>
+    <div class="section-header">Shortcuts</div>
+    <div class="extras-row">
+      <div class="extras-content">
+        <div class="row-label">Clear Activity</div>
+        <div class="row-desc">Clears the current Discord presence</div>
+      </div>
       <span class="kbd">Alt + C</span>
     </div>
   </div>
 
   <div class="section">
-    <h2>Native Host</h2>
-    <div class="desc" style="margin-bottom:8px">
-      Run <code style="background:#2a2c4a;padding:1px 4px;border-radius:3px">native-host\install-host.bat</code>
-      with your extension ID to set up the Discord RPC bridge.
+    <div class="section-header">Native Host</div>
+    <div class="extras-row">
+      <div class="extras-content">
+        <div class="row-label">Extension ID</div>
+        <div class="code" id="extId"></div>
+      </div>
     </div>
-    <div class="desc">
-      Extension ID: <code id="extId" style="background:#2a2c4a;padding:1px 4px;border-radius:3px;user-select:all"></code>
+    <div class="extras-row">
+      <div class="extras-content">
+        <div class="row-label">Setup</div>
+        <div class="row-desc">Run this in your terminal to (re)configure the native messaging host:</div>
+        <div style="margin-top:6px">
+          <code class="code">scripts\setup-native-host.ps1</code>
+        </div>
+      </div>
     </div>
   </div>
 

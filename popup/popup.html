@@ -4,72 +4,246 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Digitan's Journal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #0E0C17;
+      --surface: #1B1728;
+      --border: #2C2740;
+      --border-light: #3D3855;
+      --text: #E8E0D0;
+      --text-secondary: #9B8FA8;
+      --text-muted: #63597A;
+      --accent: #E35D6B;
+      --accent-green: #4CC48A;
+      --accent-amber: #F0A345;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
       width: 320px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #1a1b2e;
-      color: #e0e0e0;
-      padding: 16px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      background: var(--bg);
+      color: var(--text);
+      padding: 16px 16px 12px;
+      line-height: 1.5;
     }
+
+    /* ── Header ── */
     .header {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
+      justify-content: space-between;
+      margin-bottom: 2px;
     }
-    .header img { width: 48px; height: 48px; border-radius: 8px; }
-    .header h1 { font-size: 18px; font-weight: 600; color: #fff; }
-    .status { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 13px; }
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-    .status-dot.connected { background: #43b581; }
-    .status-dot.disconnected { background: #f04747; }
-    .status-dot.connecting { background: #faa61a; }
-    .info { font-size: 12px; color: #999; margin-bottom: 16px; }
-    .activity { background: #232540; border-radius: 8px; padding: 12px; margin-bottom: 16px; }
-    .activity h3 { font-size: 14px; color: #fff; margin-bottom: 4px; }
-    .activity p { font-size: 12px; color: #aaa; }
-    .activity .empty { color: #666; font-style: italic; }
-    .btn {
-      width: 100%;
-      padding: 8px;
-      border: none;
-      border-radius: 6px;
-      background: #5865f2;
-      color: #fff;
+
+    .title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      font-style: italic;
+      color: var(--text);
+      letter-spacing: -0.4px;
+      line-height: 1.3;
+    }
+
+    .status-line {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 14px;
+      min-height: 18px;
+    }
+
+    .status-text {
+      font-size: 11px;
+      color: var(--text-muted);
+      transition: color 0.3s;
+    }
+    .status-text.connected { color: var(--accent-green); }
+    .status-text.disconnected { color: var(--text-muted); }
+    .status-text.connecting { color: var(--accent-amber); }
+
+    /* ── Wax Seal ── */
+    .seal {
+      position: relative;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .seal-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      box-shadow:
+        inset 0 1px 3px rgba(0,0,0,0.5),
+        0 1px 2px rgba(0,0,0,0.3);
+      transition: border-color 0.4s, box-shadow 0.4s;
+    }
+
+    .seal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      position: relative;
+      z-index: 1;
+      transition: background 0.4s, box-shadow 0.4s;
+    }
+    .seal-dot.disconnected { background: var(--text-muted); }
+    .seal-dot.connecting { background: var(--accent-amber); animation: pulse-amber 1.5s ease-in-out infinite; }
+    .seal-dot.connected { background: var(--accent-green); animation: pulse-green 2s ease-in-out infinite; }
+    .seal.connected .seal-ring { border-color: rgba(76,196,138,0.3); box-shadow: inset 0 0 8px rgba(76,196,138,0.15), 0 0 4px rgba(76,196,138,0.1); }
+
+    @keyframes pulse-green {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(76,196,138,0.35); }
+      50% { box-shadow: 0 0 0 6px rgba(76,196,138,0); }
+    }
+    @keyframes pulse-amber {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(240,163,69,0.35); }
+      50% { box-shadow: 0 0 0 6px rgba(240,163,69,0); }
+    }
+
+    /* ── Ruled Section (journal divider) ── */
+    .ruled {
+      border-top: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    /* ── Entry ── */
+    .entry {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .entry-message {
       font-size: 13px;
-      cursor: pointer;
+      color: var(--text-secondary);
     }
-    .btn:hover { background: #4752c4; }
-    .btn:active { background: #3c45a5; }
-    .hint { font-size: 11px; color: #666; margin-top: 8px; text-align: center; }
-    .error { font-size: 11px; color: #f04747; margin-top: 8px; text-align: center; word-break: break-all; display: none; }
+
+    .entry-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .entry-site {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+
+    .entry-details {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 3px;
+      word-wrap: break-word;
+    }
+
+    .entry-state {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* ── Footer info ── */
+    .footer-info {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 10px;
+      font-family: var(--font-mono);
+      word-break: break-all;
+    }
+    .footer-info.error {
+      color: var(--accent);
+    }
+
+    /* ── Actions ── */
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 7px 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-secondary);
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .btn:hover { background: var(--surface); color: var(--text); border-color: var(--border-light); }
+    .btn:active { background: var(--border); }
+    .btn:disabled { opacity: 0.4; cursor: default; }
+    .btn-primary { color: var(--accent); border-color: rgba(227,93,107,0.3); }
+    .btn-primary:hover { background: rgba(227,93,107,0.1); border-color: var(--accent); }
+
+    /* ── Shortcut hint ── */
+    .hint {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 6px;
+    }
   </style>
 </head>
 <body>
-  <div class="header">
-    <img src="../icons/icon128.png" alt="Digitan's Journal">
-    <h1>Digitan's Journal</h1>
+  <header class="header">
+    <h1 class="title">Digitan's Journal</h1>
+    <div class="seal" id="seal" data-status="disconnected">
+      <div class="seal-dot disconnected" id="sealDot"></div>
+      <div class="seal-ring"></div>
+    </div>
+  </header>
+
+  <div class="status-line">
+    <span class="status-text disconnected" id="statusText">Disconnected</span>
   </div>
-  <div class="status">
-    <span class="status-dot disconnected" id="statusDot"></span>
-    <span id="statusText">Disconnected</span>
+
+  <div class="ruled">
+    <div class="entry" id="activityContainer">
+      <div id="emptyState">
+        <p class="entry-message" id="emptyMessage">Your journal is ready.</p>
+        <p class="entry-hint" id="emptyHint">Open a tracked site to begin logging.</p>
+      </div>
+      <div id="activeEntry" style="display:none">
+        <p class="entry-site" id="entrySite"></p>
+        <p class="entry-details" id="entryDetails"></p>
+        <p class="entry-state" id="entryState"></p>
+      </div>
+    </div>
   </div>
-  <div class="info">
-    <span id="userIdInfo"></span>
+
+  <div class="footer-info" id="footerInfo"></div>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="reconnectBtn">Reconnect</button>
+    <button class="btn" id="clearBtn">Clear</button>
   </div>
-  <div class="activity" id="activityContainer">
-    <h3>Current Activity</h3>
-    <p class="empty" id="activityEmpty">No activity</p>
-    <div id="activityContent" style="display:none"></div>
-  </div>
-  <button class="btn" id="reconnectBtn">Reconnect</button>
-  <button class="btn" id="clearBtn" style="margin-top:8px;background:#3a3c56">Clear Activity</button>
-  <div class="error" id="errorMsg"></div>
-  <div class="hint">
-    Requires: Native Host installed, Discord app running
-  </div>
+
+  <div class="hint">Alt + C to clear</div>
+
   <script src="popup.js"></script>
 </body>
 </html>

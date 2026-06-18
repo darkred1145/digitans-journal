@@ -1,39 +1,41 @@
 function updateUI(status) {
-  const dot = document.getElementById('statusDot');
+  const seal = document.getElementById('seal');
+  const dot = document.getElementById('sealDot');
   const text = document.getElementById('statusText');
-  const userId = document.getElementById('userIdInfo');
-  const activityEmpty = document.getElementById('activityEmpty');
-  const activityContent = document.getElementById('activityContent');
-  const errorMsg = document.getElementById('errorMsg');
+  const footer = document.getElementById('footerInfo');
+  const empty = document.getElementById('emptyState');
+  const active = document.getElementById('activeEntry');
 
   if (status.rpcConnected) {
-    dot.className = 'status-dot connected';
-    text.textContent = 'Connected to Discord';
-    if (status.userId) userId.textContent = `User ID: ${status.userId}`;
-    else userId.textContent = '';
-    errorMsg.style.display = 'none';
+    seal.dataset.status = 'connected';
+    dot.className = 'seal-dot connected';
+    text.className = 'status-text connected';
+    text.textContent = 'Connected';
+    footer.textContent = status.userId ? `User ${status.userId}` : '';
+    footer.className = 'footer-info';
   } else {
-    dot.className = 'status-dot disconnected';
-    text.textContent = 'Disconnected';
-    userId.textContent = '';
-    if (status.lastError) {
-      errorMsg.textContent = status.lastError;
-      errorMsg.style.display = 'block';
-    } else {
-      errorMsg.style.display = 'none';
-    }
+    seal.dataset.status = 'disconnected';
+    dot.className = 'seal-dot disconnected';
+    text.className = 'status-text disconnected';
+    text.textContent = status.lastError || 'Disconnected';
+    footer.className = 'footer-info error';
+    footer.textContent = status.lastError || '';
   }
 
   if (status.currentActivity) {
-    activityEmpty.style.display = 'none';
-    activityContent.style.display = 'block';
+    empty.style.display = 'none';
+    active.style.display = 'block';
     const a = status.currentActivity;
-    activityContent.innerHTML = '<h3></h3><p></p>';
-    activityContent.querySelector('h3').textContent = a.details || '';
-    activityContent.querySelector('p').textContent = a.state || '';
+    document.getElementById('entrySite').textContent = status.currentSite || '';
+    document.getElementById('entryDetails').textContent = a.details || '';
+    document.getElementById('entryState').textContent = a.state || '';
   } else {
-    activityEmpty.style.display = 'block';
-    activityContent.style.display = 'none';
+    empty.style.display = 'block';
+    active.style.display = 'none';
+    document.getElementById('emptyMessage').textContent =
+      status.rpcConnected ? 'Your journal is ready.' : 'No connection.';
+    document.getElementById('emptyHint').textContent =
+      status.rpcConnected ? 'Open a tracked site to begin logging.' : 'Click Reconnect to try again.';
   }
 }
 
@@ -43,7 +45,7 @@ chrome.runtime.sendMessage({ type: 'getStatus' }, (status) => {
 
 document.getElementById('reconnectBtn').addEventListener('click', () => {
   const btn = document.getElementById('reconnectBtn');
-  btn.textContent = 'Reconnecting...';
+  btn.textContent = 'Reconnecting…';
   btn.disabled = true;
   chrome.runtime.sendMessage({ type: 'reconnect' }, () => {
     setTimeout(() => {
