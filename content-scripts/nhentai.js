@@ -50,7 +50,7 @@ function getPageInfo() {
       state: `Page ${currentPage} / ${totalPages}`,
       largeImageKey: 'digitan',
       largeImageText: 'nhentai.net · Digitan\'s Journal',
-      smallImageKey: 'nhentai_small',
+      smallImageKey: 'https://www.google.com/s2/favicons?domain=nhentai.net&sz=64',
       smallImageText: 'nhentai.net',
       buttons: [{ label: 'View Gallery', url: `https://nhentai.net/g/${id}/` }],
     };
@@ -63,7 +63,7 @@ function getPageInfo() {
       state: params.get('q') || 'nhentai',
       largeImageKey: 'digitan',
       largeImageText: 'nhentai.net · Digitan\'s Journal',
-      smallImageKey: 'nhentai_small',
+      smallImageKey: 'https://www.google.com/s2/favicons?domain=nhentai.net&sz=64',
       smallImageText: 'nhentai.net',
     };
   }
@@ -75,7 +75,7 @@ function getPageInfo() {
       state: labelEl ? labelEl.textContent.trim() : path.split('/').filter(Boolean).pop(),
       largeImageKey: 'digitan',
       largeImageText: 'nhentai.net · Digitan\'s Journal',
-      smallImageKey: 'nhentai_small',
+      smallImageKey: 'https://www.google.com/s2/favicons?domain=nhentai.net&sz=64',
       smallImageText: 'nhentai.net',
     };
   }

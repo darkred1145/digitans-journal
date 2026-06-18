@@ -16,7 +16,7 @@ function getPageInfo() {
   const base = {
     largeImageKey: 'digitan',
     largeImageText: 'raggooneropen.web.app · Digitan\'s Journal',
-    smallImageKey: 'raggooner_small',
+    smallImageKey: 'https://www.google.com/s2/favicons?domain=raggooneropen.web.app&sz=64',
     smallImageText: 'Raccoon Open',
   };
 
