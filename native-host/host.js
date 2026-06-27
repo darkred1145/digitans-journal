@@ -32,28 +32,34 @@ async function connectRPC(id) {
         pendingActivity = null;
         setActivity(p);
       }
-      sendMessage({ type: 'rpcStatus', connected: true, userId: rpc.user ? rpc.user.id : null });
+      sendMessage(rpcStatus(true, { userId: rpc.user ? rpc.user.id : null }));
     });
     rpc.on('disconnected', () => {
       rpcConnected = false;
       rpc = null;
-      sendMessage({ type: 'rpcStatus', connected: false });
+      sendMessage(rpcStatus(false));
     });
     await rpc.login({ clientId });
   } catch (err) {
     rpcConnected = false;
     rpc = null;
-    sendMessage({ type: 'rpcStatus', connected: false, error: err.message });
+    sendMessage(rpcStatus(false, { error: err.message }));
   }
 }
 
 const { truncate } = require('../shared/truncate');
+const {
+  ACTION_CONNECT, ACTION_SET_ACTIVITY, ACTION_DISCONNECT,
+  TYPE_RPC_STATUS, TYPE_ERROR,
+  validateNativeMessage, validateHostMessage,
+  rpcStatus, connectMsg, setActivityMsg, disconnectMsg,
+} = require('../shared/rpc-protocol');
 
 function clearPresence() {
   pendingActivity = null;
   if (rpc && rpcConnected) {
     rpc.setActivity(null).catch((err) => {
-      sendMessage({ type: 'rpcStatus', connected: true, error: err.message });
+      sendMessage(rpcStatus(true, { error: err.message }));
     });
   }
 }
@@ -72,7 +78,7 @@ function setActivity(presence) {
   if (presence.smallImageText) payload.smallImageText = presence.smallImageText;
   if (presence.buttons) payload.buttons = presence.buttons;
   rpc.setActivity(payload).catch((err) => {
-    sendMessage({ type: 'rpcStatus', connected: true, error: err.message });
+    sendMessage(rpcStatus(true, { error: err.message }));
   });
 }
 
@@ -87,7 +93,7 @@ function disconnectRPC() {
 }
 
 process.on('unhandledRejection', (err) => {
-  sendMessage({ type: 'error', message: err.message });
+  sendMessage({ type: TYPE_ERROR, message: err.message });
 });
 
 // === Native messaging stdin handler ===
@@ -103,11 +109,12 @@ process.stdin.on('data', (chunk) => {
     buffer = buffer.slice(4 + len);
     try {
       const msg = JSON.parse(json);
-      if (msg.action === 'connect') connectRPC(msg.clientId);
-      else if (msg.action === 'setActivity') setActivity(msg.presence);
-      else if (msg.action === 'disconnect') disconnectRPC();
+      if (!validateNativeMessage(msg)) { sendMessage({ type: TYPE_ERROR, message: 'invalid message' }); return; }
+      if (msg.action === ACTION_CONNECT) connectRPC(msg.clientId);
+      else if (msg.action === ACTION_SET_ACTIVITY) setActivity(msg.presence);
+      else if (msg.action === ACTION_DISCONNECT) disconnectRPC();
     } catch (e) {
-      sendMessage({ type: 'error', message: e.message });
+      sendMessage({ type: TYPE_ERROR, message: e.message });
     }
   }
 });

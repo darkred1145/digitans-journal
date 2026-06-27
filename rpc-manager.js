@@ -26,7 +26,7 @@ class RPCManager {
     this.port = chrome.runtime.connectNative(this.hostName);
     this._emit({ connected: false, connecting: true, userId: null, error: null });
     this.port.onMessage.addListener((msg) => {
-      if (msg.type === 'rpcStatus') {
+      if (msg.type === TYPE_RPC_STATUS) {
         if (msg.connected) this._backoff = 0;
         this._emit({ connected: msg.connected, connecting: false, userId: msg.userId || null, error: msg.error || null });
       }
@@ -35,7 +35,7 @@ class RPCManager {
       this.port = null;
       this._emit({ connected: false, connecting: false, userId: null, error: 'Native host disconnected' });
     });
-    this.port.postMessage({ action: 'connect', clientId: this.clientId });
+    this.port.postMessage(connectMsg(this.clientId));
   }
 
   _scheduleReconnect() {
@@ -66,7 +66,7 @@ class RPCManager {
     }
     this._backoff = 0;
     if (this.port) {
-      try { this.port.postMessage({ action: 'disconnect' }); } catch (_) {}
+      try { this.port.postMessage(disconnectMsg()); } catch (_) {}
       this.port.disconnect();
       this.port = null;
     }
@@ -78,7 +78,7 @@ class RPCManager {
   setActivity(presence) {
     if (!this.port) { this.connect(); return; }
     try {
-      this.port.postMessage({ action: 'setActivity', presence });
+      this.port.postMessage(setActivityMsg(presence));
     } catch (e) {
       this.port = null;
       this._scheduleReconnect();
@@ -87,7 +87,7 @@ class RPCManager {
 
   clearActivity() {
     if (this.port) {
-      try { this.port.postMessage({ action: 'setActivity', presence: null }); } catch (_) {}
+      try { this.port.postMessage(setActivityMsg(null)); } catch (_) {}
     }
   }
 }

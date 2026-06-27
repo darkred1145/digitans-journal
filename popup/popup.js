@@ -43,9 +43,9 @@ function updateUI(status) {
     empty.style.display = 'block';
     active.style.display = 'none';
     document.getElementById('emptyMessage').textContent =
-      status.rpcConnected ? 'Your journal is ready.' : 'No connection.';
+      status.rpcConnected ? 'Hewwo! Your journal is ready~♪' : 'No connection.';
     document.getElementById('emptyHint').textContent =
-      status.rpcConnected ? 'Open a tracked site to begin logging.' : 'Click Reconnect to try again.';
+      status.rpcConnected ? 'Open a tracked site to start logging sparkling content!' : 'Click Reconnect to try again.';
   }
 }
 

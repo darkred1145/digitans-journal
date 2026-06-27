@@ -1,6 +1,10 @@
 {
   "private": true,
   "scripts": {
+    "build": "node scripts/build.js",
+    "dev": "node scripts/build.js --watch",
+    "test": "node tests/presence-formatter.test.js",
+    "pretest:e2e": "node scripts/build.js",
     "test:e2e": "node tests/e2e.js",
     "build:host": "cd native-host && npm run build"
   },
