@@ -10,8 +10,12 @@ class StateManager {
 
     rpc.onStatus((status) => {
       this.lastError = status.error;
+      this.userId = status.userId || null;
+      this.rpcConnected = status.connected;
+      this.connecting = status.connecting || false;
       chrome.storage.local.set({
         rpcConnected: status.connected,
+        connecting: status.connecting || false,
         userId: status.userId,
         lastError: status.error,
       }, () => { chrome.runtime.lastError && console.error('storage set failed', chrome.runtime.lastError); });
@@ -100,7 +104,9 @@ class StateManager {
 
   getStatus() {
     return {
-      rpcConnected: this.rpc.port !== null,
+      rpcConnected: this.rpcConnected || false,
+      connecting: this.connecting || false,
+      userId: this.userId || null,
       currentSite: this.currentSite,
       currentActivity: this.currentActivity,
       lastError: this.lastError,

@@ -13,6 +13,13 @@ function updateUI(status) {
     text.textContent = 'Connected';
     footer.textContent = status.userId ? `User ${status.userId}` : '';
     footer.className = 'footer-info';
+  } else if (status.connecting) {
+    seal.dataset.status = 'connecting';
+    dot.className = 'seal-dot connecting';
+    text.className = 'status-text connecting';
+    text.textContent = 'Connecting…';
+    footer.className = 'footer-info';
+    footer.textContent = '';
   } else {
     seal.dataset.status = 'disconnected';
     dot.className = 'seal-dot disconnected';
@@ -39,8 +46,20 @@ function updateUI(status) {
   }
 }
 
+function fetchStatus() {
+  chrome.runtime.sendMessage({ type: 'getStatus' }, (status) => {
+    updateUI(status);
+  });
+}
+
 chrome.runtime.sendMessage({ type: 'getStatus' }, (status) => {
   updateUI(status);
+});
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== 'local') return;
+  const relevant = ['rpcConnected', 'connecting', 'userId', 'lastError', 'currentSite', 'currentActivity'];
+  if (relevant.some(k => changes[k])) fetchStatus();
 });
 
 document.getElementById('reconnectBtn').addEventListener('click', () => {

@@ -1,5 +1,6 @@
 const SITE = 'nhentai';
-let galleryCache = {};
+const GALLERY_CACHE_MAX = 50;
+const galleryCache = new Map();
 
 function getPageInfo() {
   const path = window.location.pathname;
@@ -26,9 +27,13 @@ function getPageInfo() {
           if (num) totalPages = num.textContent.trim();
         }
       });
-      galleryCache[id] = { title, totalPages };
+      galleryCache.set(id, { title, totalPages });
+      if (galleryCache.size > GALLERY_CACHE_MAX) {
+        const firstKey = galleryCache.keys().next().value;
+        galleryCache.delete(firstKey);
+      }
     } else {
-      const cached = galleryCache[id];
+      const cached = galleryCache.get(id);
       if (cached) {
         title = cached.title;
         totalPages = cached.totalPages;

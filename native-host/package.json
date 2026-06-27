@@ -2,6 +2,11 @@
   "name": "digitans-journal-native-host",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "postinstall": "node scripts/generate-setup.js",
+    "install-host": "node host.js --install",
+    "uninstall-host": "node host.js --uninstall"
+  },
   "dependencies": {
     "discord-rpc": "^4.0.1"
   }

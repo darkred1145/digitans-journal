@@ -7,20 +7,39 @@ function harvest(site, config, extractor) {
   const throttle = config.throttle ?? 2000;
   let lastSend = 0;
   let lastUrl = location.href;
+  let timeoutId = null;
+  let intervalId;
+  let dead = false;
+
+  function stop() {
+    dead = true;
+    clearInterval(intervalId);
+    if (timeoutId) clearTimeout(timeoutId);
+  }
 
   function send(data) {
-    if (!data) return;
+    if (!data || dead) return;
     data.details = truncate(data.details);
     if (data.state) data.state = truncate(data.state);
-    chrome.runtime.sendMessage({ type: 'presence', site, data });
+    try {
+      chrome.runtime.sendMessage({ type: 'presence', site, data }, () => {
+        if (chrome.runtime.lastError) dead = true;
+      });
+    } catch (e) {
+      dead = true;
+      stop();
+      console.error('[harvester] ' + site + ': extension context invalidated');
+    }
   }
 
   function tick(force) {
+    if (dead) return;
     try {
       const url = location.href;
       if (url !== lastUrl) {
         lastUrl = url;
-        setTimeout(() => tick(true), 1000);
+        if (timeoutId) clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => tick(true), 1000);
         return;
       }
 
@@ -38,5 +57,7 @@ function harvest(site, config, extractor) {
   }
 
   setTimeout(() => tick(true), 1000);
-  setInterval(tick, interval);
+  intervalId = setInterval(tick, interval);
+
+  return stop;
 }

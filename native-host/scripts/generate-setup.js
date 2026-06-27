@@ -1,0 +1,20 @@
+const fs = require('fs');
+const path = require('path');
+
+const HOST_NAME = 'com.digitansjournal.rpc';
+const hostDir = path.resolve(__dirname, '..');
+const manifestPath = path.join(hostDir, HOST_NAME + '.json');
+const batchPath = path.join(hostDir, 'host.bat');
+
+const manifest = {
+  name: HOST_NAME,
+  description: "Digitan's Journal Discord RPC bridge",
+  path: batchPath,
+  type: 'stdio',
+  allowed_origins: ['chrome-extension://REPLACE_WITH_EXTENSION_ID/'],
+};
+
+fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
+
+console.error('Setup manifest generated: ' + HOST_NAME + '.json');
+console.error('Run `node host.js --install` to auto-detect your extension ID and register the host.');

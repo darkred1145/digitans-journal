@@ -13,12 +13,13 @@ function getPageInfo() {
   };
 
   if (path === '/') {
-    return { ...base, details: 'Raccoon Open', state: 'Browsing tournaments' };
+    return { ...base, details: 'Raccoon Open', state: 'Browsing tournaments', raw: { title: 'Raccoon Open', page: null, totalPages: null } };
   }
 
   const tourneyMatch = path.match(/^\/t\/(.+)/);
   if (tourneyMatch) {
-    return { ...base, details: h1Text || 'Tournament', state: 'Viewing tournament' };
+    const title = h1Text || 'Tournament';
+    return { ...base, details: title, state: 'Viewing tournament', raw: { title, page: null, totalPages: null } };
   }
 
   const pageMap = {
@@ -30,10 +31,12 @@ function getPageInfo() {
   };
 
   if (pageMap[path]) {
-    return { ...base, details: h1Text || pageMap[path].details, state: pageMap[path].state };
+    const title = h1Text || pageMap[path].details;
+    return { ...base, details: title, state: pageMap[path].state, raw: { title, page: null, totalPages: null } };
   }
 
-  return { ...base, details: h1Text || 'Raccoon Open', state: 'Browsing Raccoon Open' };
+  const title = h1Text || 'Raccoon Open';
+  return { ...base, details: title, state: 'Browsing Raccoon Open', raw: { title, page: null, totalPages: null } };
 }
 
 harvest(SITE, {}, getPageInfo);

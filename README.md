@@ -4,47 +4,74 @@ A browser extension that shows what you're browsing as Discord Rich Presence.
 
 ## Architecture
 
-Extension (Manifest V3) → Native Messaging Host (Node.js) → Discord RPC (IPC)
+```
+Extension (Manifest V3) ↔ Native Messaging (stdin/stdout) ↔ Host Process (Node.js) ↔ Discord RPC (IPC)
+```
+
+The extension communicates with a local Node.js process via Chrome's native messaging protocol — no WebSocket server, no manual startup needed.
 
 ## Installation
 
-1. **Install Node.js dependencies**
+### 1. Install Node.js dependencies
 
-   ```bash
-   cd digitans-journal/native-host
-   npm install
-   ```
+```bash
+cd native-host
+npm install
+```
 
-2. **Load the extension in Chrome**
+### 2. Load the extension
 
-   - Go to `chrome://extensions`
-   - Enable Developer Mode
-   - Click "Load unpacked"
-   - Select the `digitans-journal` folder
-   - Copy the extension ID shown on the card
+- **Chrome / Edge / other Chromium browsers:** Go to `chrome://extensions` (or `edge://extensions`), enable Developer Mode, click "Load unpacked", select the project folder
 
-3. **Install the native host**
+> **Note:** Firefox is not supported (different native messaging implementation).
 
-   - Run `native-host/install-host.bat` as Administrator
-   - Paste the extension ID when prompted
+### 3. Register the native host (one-time)
 
-4. **Make sure Discord is running**
+```bash
+cd native-host
+node host.js --install
+```
 
-5. **Visit a supported site** — the extension will automatically show your presence
+This auto-detects your extension ID and registers the host. Your browser will now auto-start the bridge whenever the extension needs it.
+
+If auto-detection fails, pass the extension ID manually:
+
+```bash
+node host.js --install <extension-id>
+```
+
+You can find your extension ID on the extensions page (`chrome://extensions` or `edge://extensions` with Developer Mode on).
+
+### 4. Make sure Discord is running
+
+### 5. Visit a supported site
+
+The extension will automatically show your presence on Discord.
 
 ## Uninstall
 
-- Remove the extension from `chrome://extensions`
-- Delete the registry key: `HKCU\Software\Google\Chrome\NativeMessagingHosts\com.digitansjournal.rpc`
-- Delete the `digitans-journal` folder
-
-## Manual Registration
-
-If the installer fails, you can manually create a registry key:
-
-```
-HKEY_CURRENT_USER\Software\Google\Chrome\NativeMessagingHosts\com.digitansjournal.rpc
-Default value: full path to com.digitansjournal.rpc.json
+```bash
+cd native-host
+node host.js --uninstall
 ```
 
-And update `allowed_origins` in the JSON with your extension ID.
+Then remove the extension from your browser and delete the project folder.
+
+## Supported Sites
+
+- nhentai.net
+- gametora.com/umamusume
+- raggooneropen.web.app
+
+## Configuration
+
+Right-click the extension icon and select "Options" to:
+
+- Enable/disable the extension or specific sites
+- Set an idle timeout to auto-clear presence
+- Enable privacy mode
+- Customize presence text with templates
+
+## Keyboard Shortcut
+
+- `Alt+C` — Clear current activity

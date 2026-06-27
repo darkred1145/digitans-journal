@@ -13,6 +13,7 @@ function getPageInfo() {
       largeImageText: 'gametora.com/umamusume \u00b7 Digitan\'s Journal',
       smallImageKey: 'gametora_small',
       smallImageText: 'GameTora',
+      raw: { title: 'GameTora \u00b7 Uma Musume', page: null, totalPages: null },
     };
   }
 
@@ -37,6 +38,7 @@ function getPageInfo() {
       largeImageText: 'gametora.com/umamusume \u00b7 Digitan\'s Journal',
       smallImageKey: 'gametora_small',
       smallImageText: 'GameTora',
+      raw: { title: label, page: null, totalPages: null },
     };
   }
 
@@ -91,6 +93,7 @@ function getPageInfo() {
       largeImageText: 'gametora.com/umamusume \u00b7 Digitan\'s Journal',
       smallImageKey: 'gametora_small',
       smallImageText: 'GameTora',
+      raw: { title: h1Text || label, page: null, totalPages: null },
     };
   }
 
@@ -101,6 +104,7 @@ function getPageInfo() {
     largeImageText: 'gametora.com/umamusume \u00b7 Digitan\'s Journal',
     smallImageKey: 'gametora_small',
     smallImageText: 'GameTora',
+    raw: { title: h1Text || 'GameTora Uma Musume', page: null, totalPages: null },
   };
 }
 

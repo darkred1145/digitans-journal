@@ -3,5 +3,7 @@
   "description": "Digitan's Journal Discord RPC bridge",
   "path": "C:\\Users\\Admin\\Desktop\\Code Projects\\digitans-journal\\native-host\\host.bat",
   "type": "stdio",
-  "allowed_origins": ["chrome-extension://inlnadablnnmehelacfbngkdlgelnfgd/"]
+  "allowed_origins": [
+    "chrome-extension://inlnadablnnmehelacfbngkdlgelnfgd/"
+  ]
 }
