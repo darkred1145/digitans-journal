@@ -12,58 +12,56 @@ The extension communicates with a local host process via Chrome's native messagi
 
 ## Installation
 
-### Option A: Standalone binary (recommended — no Node.js needed)
+### 1. Get the host binary
 
-Download `host.exe` from [Releases](https://github.com/darkred1145/digitans-journal/releases) or build it yourself (see below).
+Download `host.exe` from [Releases](https://github.com/darkred1145/digitans-journal/releases).
 
-### Option B: Via Node.js
+To build from source instead (requires Node.js):
 
 ```bash
 cd native-host
-npm install
+npm install && npm run build
 ```
 
-### 1. Load the extension
+### 2. Load the extension
 
 - **Chrome / Edge / other Chromium browsers:** Go to `chrome://extensions` (or `edge://extensions`), enable Developer Mode, click "Load unpacked", select the project folder
 
 > **Note:** Firefox is not supported (different native messaging implementation).
 
-### 2. Register the native host (one-time)
+### 3. Register the native host (one-time)
 
-```bash
-cd native-host
-node host.js --install         # via Node.js
-# or
-native-host\host.exe --install   # via standalone binary
+```batch
+native-host\host.exe --install
 ```
 
-This auto-detects your extension ID and registers the host. Your browser will now auto-start the bridge whenever the extension needs it.
+This auto-detects your extension ID, writes the native manifest, and registers in the registry. Your browser will now auto-start the bridge whenever the extension needs it.
 
 If auto-detection fails, pass the extension ID manually:
 
-```bash
-node host.js --install <extension-id>
+```batch
+native-host\host.exe --install <extension-id>
 ```
 
 You can find your extension ID on the extensions page (`chrome://extensions` or `edge://extensions` with Developer Mode on).
 
-### 3. Make sure Discord is running
+> **Development:** If you don't have the binary, use `node host.js --install` from the `native-host` directory instead.
 
-### 4. Visit a supported site
+### 4. Make sure Discord is running
+
+### 5. Visit a supported site
 
 The extension will automatically show your presence on Discord.
 
 ## Uninstall
 
-```bash
-cd native-host
-node host.js --uninstall        # via Node.js
-# or
-native-host\host.exe --uninstall # via standalone binary
+```batch
+native-host\host.exe --uninstall
 ```
 
 Then remove the extension from your browser and delete the project folder.
+
+> **Development:** Use `node host.js --uninstall` if running without the binary.
 
 ## Supported Sites
 
