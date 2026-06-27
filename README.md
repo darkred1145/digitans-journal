@@ -125,8 +125,6 @@ npm run build
 
 ### Cross-browser compatibility
 
-All extension code uses `browser.*` APIs via [webextension-polyfill](https://github.com/mozilla/webextension-polyfill), which wraps `chrome.*` callbacks into Promises and normalizes API differences. The polyfill is automatically prepended to all bundles during build.
+[webextension-polyfill](https://github.com/mozilla/webextension-polyfill) provides `browser.*` Promise-based APIs in HTML pages (popup, options) and content scripts, loaded as a separate script entry or inlined into bundles.
 
-- Chrome bundle: polyfill inlined (service worker loads a single file)
-- Firefox bundle: polyfill listed separately in the manifest scripts array
-- HTML pages (popup, options): load polyfill as a separate `<script>` tag
+Background listeners use `chrome.runtime.onMessage` with `sendResponse` directly — Firefox's built-in `chrome.*` compatibility shim handles this, avoiding the polyfill's listener wrapping which had subtle `sendResponse` bridging issues in service worker contexts.
