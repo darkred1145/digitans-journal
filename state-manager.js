@@ -38,10 +38,6 @@ class StateManager {
     chrome.storage.sync.get(DEFAULTS, (s) => { this.settings = s; });
   }
 
-  truncate(s, n = 128) {
-    return s && s.length > n ? s.slice(0, n - 1) + '…' : s;
-  }
-
   /**
    * @param {string} site
    * @param {PresenceData} data
@@ -50,7 +46,7 @@ class StateManager {
   formatPresence(site, data) {
     if (this.settings.privacyMode) {
       return {
-        details: this.truncate('Browsing ' + site),
+        details: truncate('Browsing ' + site),
         state: undefined,
         largeImageKey: data.largeImageKey || 'digitan',
         largeImageText: data.largeImageText || '',
@@ -82,7 +78,7 @@ class StateManager {
       }
     }
 
-    return { ...data, details: this.truncate(details), state: state ? this.truncate(state) : undefined };
+    return { ...data, details: truncate(details), state: state ? truncate(state) : undefined };
   }
 
   /**

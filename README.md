@@ -29,7 +29,7 @@ npm install
 
 ```bash
 cd native-host
-node host.js --install
+node cli.js --install
 ```
 
 This auto-detects your extension ID, writes the native manifest, and registers in the registry. Your browser will now auto-start the bridge whenever the extension needs it.
@@ -37,7 +37,7 @@ This auto-detects your extension ID, writes the native manifest, and registers i
 If auto-detection fails, pass the extension ID manually:
 
 ```bash
-node host.js --install <extension-id>
+node cli.js --install <extension-id>
 ```
 
 You can find your extension ID on the extensions page (`chrome://extensions` or `edge://extensions` with Developer Mode on).
@@ -54,7 +54,7 @@ The extension will automatically show your presence on Discord.
 
 ```bash
 cd native-host
-node host.js --uninstall
+node cli.js --uninstall
 ```
 
 Then remove the extension from your browser and delete the project folder.

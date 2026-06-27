@@ -1,4 +1,4 @@
-importScripts('shared/presence-contract.js', 'shared/settings.js', 'rpc-manager.js', 'state-manager.js');
+importScripts('shared/truncate.js', 'shared/presence-contract.js', 'shared/settings.js', 'rpc-manager.js', 'state-manager.js');
 
 const CLIENT_ID = '1513880949220311181';
 

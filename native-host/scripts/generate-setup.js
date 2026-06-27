@@ -1,7 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const HOST_NAME = 'com.digitansjournal.rpc';
+const { HOST_NAME, getHostDir, getRegistryPaths } = require('../host-constants');
+
 const hostDir = path.resolve(__dirname, '..');
 const manifestPath = path.join(hostDir, HOST_NAME + '.json');
 const hostExe = path.join(hostDir, 'host.exe');
@@ -18,4 +19,4 @@ const manifest = {
 fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
 
 console.error('Setup manifest generated: ' + HOST_NAME + '.json');
-console.error('Run `node host.js --install` to auto-detect your extension ID and register the host.');
+console.error('Run `node cli.js --install` to auto-detect your extension ID and register the host.');

@@ -1,7 +1,3 @@
-function truncate(s, n = 128) {
-  return s && s.length > n ? s.slice(0, n - 1) + '\u2026' : s;
-}
-
 /**
  * @param {string} site
  * @param {HarvesterConfig} config
