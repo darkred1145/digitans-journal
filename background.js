@@ -34,8 +34,7 @@ chrome.commands.onCommand.addListener((command) => {
   if (command === 'clear-activity') state.clearActivity();
 });
 
-state.loadSettings();
-rpc.connect();
+state.loadSettings().then(() => rpc.connect());
 
 chrome.runtime.onStartup.addListener(() => {
   rpc.connect();

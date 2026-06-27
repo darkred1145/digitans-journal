@@ -35,7 +35,12 @@ class StateManager {
   }
 
   loadSettings() {
-    chrome.storage.sync.get(DEFAULTS, (s) => { this.settings = s; });
+    return new Promise((resolve) => {
+      chrome.storage.sync.get(DEFAULTS, (s) => {
+        this.settings = s;
+        resolve();
+      });
+    });
   }
 
   /**
