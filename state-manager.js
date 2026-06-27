@@ -42,6 +42,11 @@ class StateManager {
     return s && s.length > n ? s.slice(0, n - 1) + '…' : s;
   }
 
+  /**
+   * @param {string} site
+   * @param {PresenceData} data
+   * @returns {PresenceData}
+   */
   formatPresence(site, data) {
     if (this.settings.privacyMode) {
       return {
@@ -80,6 +85,10 @@ class StateManager {
     return { ...data, details: this.truncate(details), state: state ? this.truncate(state) : undefined };
   }
 
+  /**
+   * @param {string} site
+   * @param {PresenceData} data
+   */
   sendActivity(site, data) {
     if (!this.settings.enabled || this.settings.sites[site] === false) return;
     const finalData = this.formatPresence(site, data);
@@ -102,6 +111,9 @@ class StateManager {
     });
   }
 
+  /**
+   * @returns {StatusObject}
+   */
   getStatus() {
     return {
       rpcConnected: this.rpcConnected || false,

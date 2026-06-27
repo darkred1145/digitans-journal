@@ -1,3 +1,6 @@
+/**
+ * @param {StatusObject} status
+ */
 function updateUI(status) {
   const seal = document.getElementById('seal');
   const dot = document.getElementById('sealDot');

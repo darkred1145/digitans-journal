@@ -10,6 +10,9 @@ class RPCManager {
     this.listeners.push(fn);
   }
 
+  /**
+   * @param {RPCStatusEvent} status
+   */
   _emit(status) {
     this.listeners.forEach(fn => fn(status));
   }
@@ -43,6 +46,9 @@ class RPCManager {
     }
   }
 
+  /**
+   * @param {PresenceData|null} presence
+   */
   setActivity(presence) {
     if (!this.port) this.connect();
     if (this.port) {
