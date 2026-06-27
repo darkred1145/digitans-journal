@@ -20,6 +20,7 @@ const path = require('path');
 
 const OUT_DIR = path.resolve(__dirname, 'assets');
 const SRC_DIR = __dirname;
+const ROOT_DIR = path.resolve(__dirname, '..');
 
 const ASSET_SIZE = 512;
 const COVER_W = 1024;
@@ -97,6 +98,9 @@ async function main() {
     console.log('✓ umalator_small.png (512×512)');
 
     // ── Cover Image (1024×576) ──
+    const iconPng = readFileSync(path.join(ROOT_DIR, 'icons', 'icon128.png'));
+    const iconB64 = iconPng.toString('base64');
+
     const coverPage = await ctx.newPage();
     await coverPage.setViewportSize({ width: COVER_W, height: COVER_H });
     await coverPage.setContent(`
@@ -159,7 +163,7 @@ async function main() {
       </style></head>
       <body>
         <div class="accent-bar"></div>
-        <img class="icon" src="data:image/png;base64,${umaB64}" alt="Digitan's Journal">
+        <img class="icon" src="data:image/png;base64,${iconB64}" alt="Digitan's Journal">
         <h1>Digitan's Journal</h1>
         <p class="subtitle">Browsing activity as <span class="accent">Discord Rich Presence</span></p>
         <div class="pill">
