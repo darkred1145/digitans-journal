@@ -1,6 +1,11 @@
 {
   "private": true,
+  "scripts": {
+    "test:e2e": "node tests/e2e.js",
+    "build:host": "cd native-host && npm run build"
+  },
   "devDependencies": {
-    "@types/chrome": "^0.0.304"
+    "@types/chrome": "^0.0.304",
+    "playwright": "^1.52.0"
   }
 }

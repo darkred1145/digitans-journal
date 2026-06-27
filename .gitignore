@@ -1,2 +1,4 @@
 node_modules/
 native-host/com.digitansjournal.rpc.json
+native-host/host.exe
+tests/.test-profile/

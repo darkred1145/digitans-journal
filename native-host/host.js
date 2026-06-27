@@ -139,14 +139,20 @@ function detectExtensionId() {
   return null;
 }
 
+function getHostDir() {
+  return process.pkg ? path.dirname(process.execPath) : __dirname;
+}
+
 function getRegistryPaths() {
-  const hostDir = __dirname;
+  const hostDir = getHostDir();
   const manifestPath = path.join(hostDir, MANIFEST_FILE);
-  const batchPath = path.join(hostDir, 'host.bat');
+  const hostExe = path.join(hostDir, 'host.exe');
+  const isPkg = !!process.pkg;
+  const hostPath = isPkg ? hostExe : (fs.existsSync(hostExe) ? hostExe : path.join(hostDir, 'host.bat'));
   const manifest = {
     name: HOST_NAME,
     description: "Digitan's Journal Discord RPC bridge",
-    path: batchPath,
+    path: hostPath,
     type: 'stdio',
     allowed_origins: [],
   };

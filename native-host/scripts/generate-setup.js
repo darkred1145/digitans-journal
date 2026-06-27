@@ -4,12 +4,13 @@ const path = require('path');
 const HOST_NAME = 'com.digitansjournal.rpc';
 const hostDir = path.resolve(__dirname, '..');
 const manifestPath = path.join(hostDir, HOST_NAME + '.json');
-const batchPath = path.join(hostDir, 'host.bat');
+const hostExe = path.join(hostDir, 'host.exe');
+const hostPath = fs.existsSync(hostExe) ? hostExe : path.join(hostDir, 'host.bat');
 
 const manifest = {
   name: HOST_NAME,
   description: "Digitan's Journal Discord RPC bridge",
-  path: batchPath,
+  path: hostPath,
   type: 'stdio',
   allowed_origins: ['chrome-extension://REPLACE_WITH_EXTENSION_ID/'],
 };
