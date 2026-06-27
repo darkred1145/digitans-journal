@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const { HOST_NAME, getHostDir, getRegistryPaths } = require('../host-constants');
+const { HOST_NAME, getHostDir } = require('../host-constants');
 
 const hostDir = path.resolve(__dirname, '..');
 const manifestPath = path.join(hostDir, HOST_NAME + '.json');

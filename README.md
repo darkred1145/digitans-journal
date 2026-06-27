@@ -1,14 +1,25 @@
 # Digitan's Journal
 
-A browser extension that shows what you're browsing as Discord Rich Presence.
+A browser extension that shows what you're browsing as Discord Rich Presence. Supports **Chrome** (Manifest V3), **Firefox** (Manifest V2), and other Chromium-based browsers (Edge, Brave, Vivaldi).
 
 ## Architecture
 
 ```
-Extension (Manifest V3) ↔ Native Messaging (stdin/stdout) ↔ Host Process (Node.js or standalone binary) ↔ Discord RPC (IPC)
+Extension (MV3 Chrome / MV2 Firefox) ↔ Native Messaging (stdin/stdout) ↔ Host Process (Node.js or standalone binary) ↔ Discord RPC (IPC)
 ```
 
-The extension communicates with a local host process via Chrome's native messaging protocol — no WebSocket server, no manual startup needed.
+The extension communicates with a local host process via native messaging protocol — no WebSocket server, no manual startup needed.
+
+## Building
+
+The build script accepts a `--target` flag:
+
+```bash
+npm run build              # Chrome MV3 (default)
+npm run build -- --target firefox  # Firefox MV2
+```
+
+For Chrome, the polyfill is inlined into bundles. For Firefox, the manifest loads `browser-polyfill.js` as a separate script entry. Both produce output in `dist/`.
 
 ## Installation
 
@@ -21,18 +32,19 @@ npm install
 
 ### 2. Load the extension
 
-- **Chrome / Edge / other Chromium browsers:** Go to `chrome://extensions` (or `edge://extensions`), enable Developer Mode, click "Load unpacked", select the project folder
-
-> **Note:** Firefox is not supported (different native messaging implementation).
+- **Chrome / Edge / Brave / Chromium:** Go to `chrome://extensions`, enable Developer Mode, click "Load unpacked", select the project folder
+- **Firefox:** Go to `about:debugging#/runtime/this-firefox`, click "Load Temporary Add-on…", select `dist/manifest.json` (must be built with `--target firefox` first)
 
 ### 3. Register the native host (one-time)
+
+**Chrome and Chromium browsers:**
 
 ```bash
 cd native-host
 node cli.js --install
 ```
 
-This auto-detects your extension ID, writes the native manifest, and registers in the registry. Your browser will now auto-start the bridge whenever the extension needs it.
+This auto-detects your extension ID, writes the native manifest, and registers in the registry.
 
 If auto-detection fails, pass the extension ID manually:
 
@@ -40,7 +52,16 @@ If auto-detection fails, pass the extension ID manually:
 node cli.js --install <extension-id>
 ```
 
-You can find your extension ID on the extensions page (`chrome://extensions` or `edge://extensions` with Developer Mode on).
+You can find your extension ID on the extensions page (`chrome://extensions` with Developer Mode on).
+
+**Firefox:**
+
+```bash
+cd native-host
+node cli.js --install <gecko-addon-id> --browser firefox
+```
+
+The Gecko add-on ID is `digitans-journal@darkred1145` (defined in `manifest.firefox.json`).
 
 > **Standalone binary:** If you've built `host.exe` (`npm run build` in `native-host`), use `native-host\host.exe --install` instead — no Node.js needed after that.
 
@@ -83,6 +104,15 @@ Right-click the extension icon and select "Options" to:
 ## Development
 
 ```bash
+# Build for Chrome (default)
+npm run build
+
+# Build for Firefox
+npm run build -- --target firefox
+
+# Run unit tests
+npm test
+
 # Run the e2e smoke test (loads extension in headed Chromium)
 npm install
 npx playwright install chromium
@@ -92,3 +122,11 @@ npm run test:e2e
 cd native-host
 npm run build
 ```
+
+### Cross-browser compatibility
+
+All extension code uses `browser.*` APIs via [webextension-polyfill](https://github.com/mozilla/webextension-polyfill), which wraps `chrome.*` callbacks into Promises and normalizes API differences. The polyfill is automatically prepended to all bundles during build.
+
+- Chrome bundle: polyfill inlined (service worker loads a single file)
+- Firefox bundle: polyfill listed separately in the manifest scripts array
+- HTML pages (popup, options): load polyfill as a separate `<script>` tag

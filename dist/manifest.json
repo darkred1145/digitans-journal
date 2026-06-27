@@ -1,0 +1,76 @@
+{
+  "manifest_version": 2,
+  "name": "Digitan's Journal",
+  "version": "1.0.0",
+  "description": "Shows what you're browsing as Discord Rich Presence",
+  "permissions": [
+    "nativeMessaging",
+    "storage",
+    "https://nhentai.net/*",
+    "https://gametora.com/umamusume*",
+    "https://raggooneropen.web.app/*",
+    "https://uma.guide/*",
+    "https://umalator.app/*"
+  ],
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "background": {
+    "scripts": ["dist/browser-polyfill.js", "dist/background.js"],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "commands": {
+    "clear-activity": {
+      "suggested_key": { "default": "Alt+C" },
+      "description": "Clear current activity"
+    }
+  },
+  "content_security_policy": "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com",
+  "content_scripts": [
+    {
+      "matches": ["https://nhentai.net/*"],
+      "js": ["dist/browser-polyfill.js", "dist/content-nhentai.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://gametora.com/umamusume*"],
+      "js": ["dist/browser-polyfill.js", "dist/content-gametora.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://raggooneropen.web.app/*"],
+      "js": ["dist/browser-polyfill.js", "dist/content-raggooner.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://uma.guide/*"],
+      "js": ["dist/browser-polyfill.js", "dist/content-uma-guide.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://umalator.app/*"],
+      "js": ["dist/browser-polyfill.js", "dist/content-umalator.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "applications": {
+    "gecko": {
+      "id": "digitans-journal@darkred1145",
+      "strict_min_version": "91.0"
+    }
+  }
+}

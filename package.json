@@ -11,5 +11,8 @@
   "devDependencies": {
     "@types/chrome": "^0.0.304",
     "playwright": "^1.52.0"
+  },
+  "dependencies": {
+    "webextension-polyfill": "^0.12.0"
   }
 }

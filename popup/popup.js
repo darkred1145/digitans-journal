@@ -50,16 +50,16 @@ function updateUI(status) {
 }
 
 function fetchStatus() {
-  chrome.runtime.sendMessage({ type: 'getStatus' }, (status) => {
+  browser.runtime.sendMessage({ type: 'getStatus' }).then((status) => {
     updateUI(status);
   });
 }
 
-chrome.runtime.sendMessage({ type: 'getStatus' }, (status) => {
+browser.runtime.sendMessage({ type: 'getStatus' }).then((status) => {
   updateUI(status);
 });
 
-chrome.storage.onChanged.addListener((changes, area) => {
+browser.storage.onChanged.addListener((changes, area) => {
   if (area !== 'local') return;
   const relevant = ['rpcConnected', 'connecting', 'userId', 'lastError', 'currentSite', 'currentActivity'];
   if (relevant.some(k => changes[k])) fetchStatus();
@@ -69,9 +69,9 @@ document.getElementById('reconnectBtn').addEventListener('click', () => {
   const btn = document.getElementById('reconnectBtn');
   btn.textContent = 'Reconnecting…';
   btn.disabled = true;
-  chrome.runtime.sendMessage({ type: 'reconnect' }, () => {
+  browser.runtime.sendMessage({ type: 'reconnect' }).then(() => {
     setTimeout(() => {
-      chrome.runtime.sendMessage({ type: 'getStatus' }, (status) => {
+      browser.runtime.sendMessage({ type: 'getStatus' }).then((status) => {
         updateUI(status);
         btn.textContent = 'Reconnect';
         btn.disabled = false;
@@ -81,7 +81,7 @@ document.getElementById('reconnectBtn').addEventListener('click', () => {
 });
 
 document.getElementById('clearBtn').addEventListener('click', () => {
-  chrome.runtime.sendMessage({ type: 'clearActivity' }, () => {
-    chrome.runtime.sendMessage({ type: 'getStatus' }, (status) => updateUI(status));
+  browser.runtime.sendMessage({ type: 'clearActivity' }).then(() => {
+    browser.runtime.sendMessage({ type: 'getStatus' }).then((status) => updateUI(status));
   });
 });

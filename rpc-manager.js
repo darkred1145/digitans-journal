@@ -23,7 +23,7 @@ class RPCManager {
   }
 
   _doConnect() {
-    this.port = chrome.runtime.connectNative(this.hostName);
+    this.port = browser.runtime.connectNative(this.hostName);
     this._emit({ connected: false, connecting: true, userId: null, error: null });
     this.port.onMessage.addListener((msg) => {
       if (msg.type === TYPE_RPC_STATUS) {

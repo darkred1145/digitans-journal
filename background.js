@@ -5,41 +5,40 @@ const CLIENT_ID = '1513880949220311181';
 const rpc = new RPCManager('com.digitansjournal.rpc', CLIENT_ID);
 const state = new StateManager(rpc);
 
-chrome.tabs.onRemoved.addListener((tabId) => {
+browser.tabs.onRemoved.addListener((tabId) => {
   state.untrackTab(tabId);
 });
 
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+browser.runtime.onMessage.addListener((msg, sender) => {
   if (msg.type === 'presence') {
     if (sender.tab && sender.tab.id) state.trackTab(sender.tab.id);
     state.sendActivity(msg.site, msg.data);
-    sendResponse({ ok: true });
+    return { ok: true };
   }
   if (msg.type === 'getStatus') {
-    sendResponse(state.getStatus());
+    return state.getStatus();
   }
   if (msg.type === 'reconnect') {
     rpc.disconnect();
     rpc.connect();
-    sendResponse({ ok: true });
+    return { ok: true };
   }
   if (msg.type === 'clearActivity') {
     state.clearActivity();
-    sendResponse({ ok: true });
+    return { ok: true };
   }
-  return true;
 });
 
-chrome.commands.onCommand.addListener((command) => {
+browser.commands.onCommand.addListener((command) => {
   if (command === 'clear-activity') state.clearActivity();
 });
 
 state.loadSettings().then(() => rpc.connect());
 
-chrome.runtime.onStartup.addListener(() => {
+browser.runtime.onStartup.addListener(() => {
   rpc.connect();
 });
 
-chrome.runtime.onInstalled.addListener(() => {
+browser.runtime.onInstalled.addListener(() => {
   rpc.connect();
 });

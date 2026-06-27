@@ -1,13 +1,9 @@
 async function loadSettings() {
-  return new Promise((resolve) => {
-    chrome.storage.sync.get(DEFAULTS, resolve);
-  });
+  return browser.storage.sync.get(DEFAULTS);
 }
 
 async function saveSettings(settings) {
-  return new Promise((resolve) => {
-    chrome.storage.sync.set(settings, resolve);
-  });
+  return browser.storage.sync.set(settings);
 }
 
 function showSaved() {
@@ -28,7 +24,7 @@ async function queuedSave(updater) {
 }
 
 async function init() {
-  document.getElementById('extId').textContent = chrome.runtime.id;
+  document.getElementById('extId').textContent = browser.runtime.id;
 
   const settings = await loadSettings();
   document.getElementById('masterToggle').checked = settings.enabled;

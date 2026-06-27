@@ -27,8 +27,8 @@ function harvest(site, config, extractor) {
     data.details = truncate(data.details);
     if (data.state) data.state = truncate(data.state);
     try {
-      chrome.runtime.sendMessage({ type: 'presence', site, data }, () => {
-        if (chrome.runtime.lastError) dead = true;
+      browser.runtime.sendMessage({ type: 'presence', site, data }).catch(() => {
+        dead = true;
       });
     } catch (e) {
       dead = true;

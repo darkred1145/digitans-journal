@@ -13,15 +13,15 @@ class StateManager {
       this.userId = status.userId || null;
       this.rpcConnected = status.connected;
       this.connecting = status.connecting || false;
-      chrome.storage.local.set({
+      browser.storage.local.set({
         rpcConnected: status.connected,
         connecting: status.connecting || false,
         userId: status.userId,
         lastError: status.error,
-      }, () => { chrome.runtime.lastError && console.error('storage set failed', chrome.runtime.lastError); });
+      }).catch((err) => console.error('storage set failed', err));
     });
 
-    chrome.storage.onChanged.addListener((changes, area) => {
+    browser.storage.onChanged.addListener((changes, area) => {
       if (area !== 'sync') return;
       if (changes.enabled) this.settings.enabled = changes.enabled.newValue;
       if (changes.sites) this.settings.sites = changes.sites.newValue || {};
@@ -34,13 +34,8 @@ class StateManager {
     });
   }
 
-  loadSettings() {
-    return new Promise((resolve) => {
-      chrome.storage.sync.get(DEFAULTS, (s) => {
-        this.settings = s;
-        resolve();
-      });
-    });
+  async loadSettings() {
+    this.settings = await browser.storage.sync.get(DEFAULTS);
   }
 
   /**
@@ -63,9 +58,8 @@ class StateManager {
     this.currentActivity = finalData;
     this.rpc.setActivity(finalData);
     this.lastError = null;
-    chrome.storage.local.set({ currentSite: site, currentActivity: finalData, lastError: null }, () => {
-      if (chrome.runtime.lastError) console.error('storage set failed', chrome.runtime.lastError);
-    });
+    browser.storage.local.set({ currentSite: site, currentActivity: finalData, lastError: null })
+      .catch((err) => console.error('storage set failed', err));
     this.resetIdleTimer();
   }
 
@@ -73,9 +67,8 @@ class StateManager {
     this.currentSite = null;
     this.currentActivity = null;
     this.rpc.clearActivity();
-    chrome.storage.local.set({ currentSite: null, currentActivity: null }, () => {
-      if (chrome.runtime.lastError) console.error('storage set failed', chrome.runtime.lastError);
-    });
+    browser.storage.local.set({ currentSite: null, currentActivity: null })
+      .catch((err) => console.error('storage set failed', err));
   }
 
   /**
