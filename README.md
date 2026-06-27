@@ -12,15 +12,11 @@ The extension communicates with a local host process via Chrome's native messagi
 
 ## Installation
 
-### 1. Get the host binary
-
-Download `host.exe` from [Releases](https://github.com/darkred1145/digitans-journal/releases).
-
-To build from source instead (requires Node.js):
+### 1. Install dependencies
 
 ```bash
 cd native-host
-npm install && npm run build
+npm install
 ```
 
 ### 2. Load the extension
@@ -31,21 +27,22 @@ npm install && npm run build
 
 ### 3. Register the native host (one-time)
 
-```batch
-native-host\host.exe --install
+```bash
+cd native-host
+node host.js --install
 ```
 
 This auto-detects your extension ID, writes the native manifest, and registers in the registry. Your browser will now auto-start the bridge whenever the extension needs it.
 
 If auto-detection fails, pass the extension ID manually:
 
-```batch
-native-host\host.exe --install <extension-id>
+```bash
+node host.js --install <extension-id>
 ```
 
 You can find your extension ID on the extensions page (`chrome://extensions` or `edge://extensions` with Developer Mode on).
 
-> **Development:** If you don't have the binary, use `node host.js --install` from the `native-host` directory instead.
+> **Standalone binary:** If you've built `host.exe` (`npm run build` in `native-host`), use `native-host\host.exe --install` instead — no Node.js needed after that.
 
 ### 4. Make sure Discord is running
 
@@ -55,13 +52,12 @@ The extension will automatically show your presence on Discord.
 
 ## Uninstall
 
-```batch
-native-host\host.exe --uninstall
+```bash
+cd native-host
+node host.js --uninstall
 ```
 
 Then remove the extension from your browser and delete the project folder.
-
-> **Development:** Use `node host.js --uninstall` if running without the binary.
 
 ## Supported Sites
 
@@ -92,8 +88,7 @@ npm install
 npx playwright install chromium
 npm run test:e2e
 
-# Build standalone host binary
+# Build standalone host.exe (no Node.js needed after this)
 cd native-host
-npm install
 npm run build
 ```
