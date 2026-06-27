@@ -10,7 +10,9 @@
   "host_permissions": [
     "https://nhentai.net/*",
     "https://gametora.com/umamusume*",
-    "https://raggooneropen.web.app/*"
+    "https://raggooneropen.web.app/*",
+    "https://uma.guide/*",
+    "https://umalator.app/*"
   ],
   "options_ui": {
     "page": "options/options.html",
@@ -55,6 +57,16 @@
     {
       "matches": ["https://raggooneropen.web.app/*"],
       "js": ["shared/presence-contract.js", "content-scripts/harvester.js", "content-scripts/raggooner.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://uma.guide/*"],
+      "js": ["shared/presence-contract.js", "content-scripts/harvester.js", "content-scripts/uma-guide.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://umalator.app/*"],
+      "js": ["shared/presence-contract.js", "content-scripts/harvester.js", "content-scripts/umalator.js"],
       "run_at": "document_idle"
     }
   ]
