@@ -92,9 +92,10 @@ if (doPackage) {
 
   for (const entry of entries) {
     const full = path.join(ROOT, entry);
-    if (fs.existsSync(full)) {
-      zip.addLocalFile(full, path.dirname(entry));
-    }
+    if (!fs.existsSync(full)) continue;
+    // manifest.json must be at the zip root; everything else maintains its relative path
+    const zipDir = entry === 'dist/manifest.json' ? '' : path.dirname(entry);
+    zip.addLocalFile(full, zipDir);
   }
   zip.writeZip(path.join(ROOT, pkgName));
   console.log(`-> ${pkgName} (${entries.length} files)`);
