@@ -9,6 +9,7 @@ const TARGET = process.argv.includes('--target')
   : 'chrome';
 
 const isFirefox = TARGET === 'firefox';
+const doPackage = isFirefox || process.argv.includes('--package');
 
 if (!fs.existsSync(DIST)) {
   fs.mkdirSync(DIST, { recursive: true });
@@ -66,5 +67,37 @@ const bgRaw = read('background.js');
 backgroundCode += bgRaw.replace(/^importScripts\(.*?\);\n?/m, '');
 fs.writeFileSync(path.join(DIST, 'background.js'), backgroundCode);
 console.log('-> dist/background.js');
+
+if (doPackage) {
+  const AdmZip = require('adm-zip');
+  const zip = new AdmZip();
+  const pkgName = `digitans-journal-${TARGET}-v${require(path.join(ROOT, MANIFEST_SRC)).version}.xpi`;
+
+  const entries = [
+    'dist/manifest.json',
+    'dist/browser-polyfill.js',
+    'dist/background.js',
+    'dist/content-shared.js',
+    ...['nhentai', 'gametora', 'raggooner', 'uma-guide', 'umalator'].map(s => `dist/content-${s}.js`),
+    'popup/popup.html',
+    'popup/popup.js',
+    'options/options.html',
+    'options/options.js',
+    'shared/settings.js',
+    'shared/presence-contract.js',
+    'icons/icon16.png',
+    'icons/icon48.png',
+    'icons/icon128.png',
+  ];
+
+  for (const entry of entries) {
+    const full = path.join(ROOT, entry);
+    if (fs.existsSync(full)) {
+      zip.addLocalFile(full);
+    }
+  }
+  zip.writeZip(path.join(ROOT, pkgName));
+  console.log(`-> ${pkgName} (${entries.length} files)`);
+}
 
 console.log(`\nBuild complete (target: ${TARGET}).`);
