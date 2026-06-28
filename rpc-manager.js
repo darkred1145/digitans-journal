@@ -34,6 +34,7 @@ class RPCManager {
     this.port.onDisconnect.addListener(() => {
       this.port = null;
       this._emit({ connected: false, connecting: false, userId: null, error: 'Native host disconnected' });
+      this._scheduleReconnect();
     });
     this.port.postMessage(connectMsg(this.clientId));
   }
