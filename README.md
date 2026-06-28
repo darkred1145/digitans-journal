@@ -32,9 +32,9 @@ npm install
 
 ### 2. Load the extension
 
-- **Chrome / Edge / Brave / Chromium:** Go to `chrome://extensions`, enable Developer Mode, click "Load unpacked", select the project folder
+- **Chrome / Edge / Brave / Chromium:** Go to `chrome://extensions`, enable Developer Mode, click "Load unpacked", select the `dist/` folder after building
 - **Firefox / Zen / Gecko** (temporary): Build with `--target firefox`, then go to `about:debugging#/runtime/this-firefox`, click "Load Temporary Add-on…", select `dist/manifest.json`
-- **Firefox** (permanent / signed): Build with `--target firefox`, then upload the generated `digitans-journal-firefox-v*.xpi` to [addons.mozilla.org](https://addons.mozilla.org) for signing. The XPI can also be dropped onto `about:debugging` for testing.
+- **Firefox / Zen / Gecko** (permanent signed add-on): Build with `--target firefox`, then upload the generated `digitans-journal-firefox-v*.xpi` to [addons.mozilla.org](https://addons.mozilla.org) for signing.
 
 ### 3. Register the native host (one-time)
 
@@ -64,7 +64,7 @@ node cli.js --install <gecko-addon-id> --browser firefox
 
 The Gecko add-on ID is `digitans-journal@darkred1145` (defined in `manifest.firefox.json`).
 
-> **Standalone binary:** If you've built `host.exe` (`npm run build` in `native-host`), use `native-host\host.exe --install` instead — no Node.js needed after that.
+> **Standalone binary:** If you've built `host.exe` (`npm run build` in `native-host`), run `node cli.js --install` from the `native-host` folder using the bundled Node.js runtime — no separate Node.js install needed.
 
 ### 4. Make sure Discord is running
 

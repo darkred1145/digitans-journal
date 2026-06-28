@@ -1,0 +1,9 @@
+{
+  "name": "com.digitansjournal.rpc",
+  "description": "Digitan's Journal Discord RPC bridge",
+  "path": "C:\\Users\\Admin\\Desktop\\Code Projects\\digitans-journal\\native-host\\host.exe",
+  "type": "stdio",
+  "allowed_extensions": [
+    "digitans-journal@darkred1145"
+  ]
+}
