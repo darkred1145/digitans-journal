@@ -32,7 +32,7 @@ npm install
 
 ### 2. Load the extension
 
-- **Chrome / Edge / Brave / Chromium:** Go to `chrome://extensions`, enable Developer Mode, click "Load unpacked", select the `dist/` folder after building
+- **Chrome / Edge / Brave / Chromium:** Go to `chrome://extensions`, enable Developer Mode, click "Load unpacked", select the project root (or `dist/` after building)
 - **Firefox / Zen / Gecko** (temporary): Build with `--target firefox`, then go to `about:debugging#/runtime/this-firefox`, click "Load Temporary Add-on…", select `dist/manifest.json`
 - **Firefox / Zen / Gecko** (permanent signed add-on): Build with `--target firefox`, then upload the generated `digitans-journal-firefox-v*.xpi` to [addons.mozilla.org](https://addons.mozilla.org) for signing.
 
