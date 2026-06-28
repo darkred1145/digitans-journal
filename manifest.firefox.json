@@ -17,7 +17,7 @@
     "open_in_tab": true
   },
   "background": {
-    "scripts": ["dist/browser-polyfill.js", "dist/background.js"],
+    "scripts": ["browser-polyfill.js", "background.js"],
     "persistent": false
   },
   "browser_action": {
@@ -43,27 +43,27 @@
   "content_scripts": [
     {
       "matches": ["https://nhentai.net/*"],
-      "js": ["dist/browser-polyfill.js", "dist/content-nhentai.js"],
+      "js": ["browser-polyfill.js", "content-nhentai.js"],
       "run_at": "document_idle"
     },
     {
       "matches": ["https://gametora.com/umamusume*"],
-      "js": ["dist/browser-polyfill.js", "dist/content-gametora.js"],
+      "js": ["browser-polyfill.js", "content-gametora.js"],
       "run_at": "document_idle"
     },
     {
       "matches": ["https://raggooneropen.web.app/*"],
-      "js": ["dist/browser-polyfill.js", "dist/content-raggooner.js"],
+      "js": ["browser-polyfill.js", "content-raggooner.js"],
       "run_at": "document_idle"
     },
     {
       "matches": ["https://uma.guide/*"],
-      "js": ["dist/browser-polyfill.js", "dist/content-uma-guide.js"],
+      "js": ["browser-polyfill.js", "content-uma-guide.js"],
       "run_at": "document_idle"
     },
     {
       "matches": ["https://umalator.app/*"],
-      "js": ["dist/browser-polyfill.js", "dist/content-umalator.js"],
+      "js": ["browser-polyfill.js", "content-umalator.js"],
       "run_at": "document_idle"
     }
   ],

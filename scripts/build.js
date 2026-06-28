@@ -25,6 +25,29 @@ const polyfill = fs.readFileSync(polyfillSrc, 'utf-8');
 fs.writeFileSync(path.join(DIST, 'browser-polyfill.js'), polyfill);
 console.log('-> dist/browser-polyfill.js');
 
+// For Firefox builds, copy HTML pages, shared files, and icons into dist/
+// so the manifest (at dist/) resolves all paths correctly.
+if (isFirefox) {
+  copyDir('popup', 'popup');
+  copyDir('options', 'options');
+  copyDir('shared', 'shared');
+  copyDir('icons', 'icons');
+}
+
+function copyDir(src, dest) {
+  const srcDir = path.join(ROOT, src);
+  if (!fs.existsSync(srcDir)) return;
+  const entries = fs.readdirSync(srcDir, { withFileTypes: true });
+  for (const e of entries) {
+    if (e.isDirectory()) copyDir(path.join(src, e.name), path.join(dest, e.name));
+    else {
+      const out = path.join(DIST, dest, e.name);
+      fs.mkdirSync(path.dirname(out), { recursive: true });
+      fs.copyFileSync(path.join(srcDir, e.name), out);
+    }
+  }
+}
+
 function read(name) {
   return fs.readFileSync(path.join(ROOT, name), 'utf-8') + '\n';
 }
@@ -71,34 +94,32 @@ console.log('-> dist/background.js');
 if (doPackage) {
   const AdmZip = require('adm-zip');
   const zip = new AdmZip();
-  const pkgName = `digitans-journal-${TARGET}-v${require(path.join(ROOT, MANIFEST_SRC)).version}.xpi`;
+  const version = require(path.join(ROOT, MANIFEST_SRC)).version;
+  const pkgName = `digitans-journal-${TARGET}-v${version}.xpi`;
 
-  const entries = [
-    'dist/manifest.json',
-    'dist/browser-polyfill.js',
-    'dist/background.js',
-    'dist/content-shared.js',
-    ...['nhentai', 'gametora', 'raggooner', 'uma-guide', 'umalator'].map(s => `dist/content-${s}.js`),
-    'popup/popup.html',
-    'popup/popup.js',
-    'options/options.html',
-    'options/options.js',
-    'shared/settings.js',
-    'shared/presence-contract.js',
-    'icons/icon16.png',
-    'icons/icon48.png',
-    'icons/icon128.png',
-  ];
-
-  for (const entry of entries) {
-    const full = path.join(ROOT, entry);
-    if (!fs.existsSync(full)) continue;
-    // manifest.json must be at the zip root; everything else maintains its relative path
-    const zipDir = entry === 'dist/manifest.json' ? '' : path.dirname(entry);
-    zip.addLocalFile(full, zipDir);
+  function addAll(dir, zipDir) {
+    const abs = path.join(DIST, dir);
+    if (!fs.existsSync(abs)) return;
+    for (const e of fs.readdirSync(abs, { withFileTypes: true })) {
+      const rel = path.join(dir, e.name);
+      if (e.isDirectory()) addAll(rel, zipDir);
+      else zip.addLocalFile(path.join(DIST, rel), zipDir || '');
+    }
   }
+
+  // Add manifest at root
+  zip.addLocalFile(path.join(DIST, 'manifest.json'), '');
+
+  // Add everything else from dist/ maintaining relative paths
+  for (const dir of ['browser-polyfill.js', 'background.js', 'content-shared.js', ...sites.map(s => `content-${s}.js`)]) {
+    if (fs.existsSync(path.join(DIST, dir))) zip.addLocalFile(path.join(DIST, dir), '');
+  }
+  for (const dir of ['popup', 'options', 'shared', 'icons']) {
+    addAll(dir, dir);
+  }
+
   zip.writeZip(path.join(ROOT, pkgName));
-  console.log(`-> ${pkgName} (${entries.length} files)`);
+  console.log(`-> ${pkgName}`);
 }
 
 console.log(`\nBuild complete (target: ${TARGET}).`);
