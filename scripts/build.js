@@ -93,7 +93,7 @@ if (doPackage) {
   for (const entry of entries) {
     const full = path.join(ROOT, entry);
     if (fs.existsSync(full)) {
-      zip.addLocalFile(full);
+      zip.addLocalFile(full, path.dirname(entry));
     }
   }
   zip.writeZip(path.join(ROOT, pkgName));
