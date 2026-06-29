@@ -213,6 +213,8 @@ if (typeof module !== 'undefined' && module.exports) {
 const BASE_BACKOFF = 1000;
 const MAX_BACKOFF = 60000;
 
+const STABLE_CONNECTION_MS = 10000;
+
 class RPCManager {
   constructor(hostName, clientId) {
     this.hostName = hostName;
@@ -221,6 +223,8 @@ class RPCManager {
     this.listeners = [];
     this._backoff = 0;
     this._backoffTimerId = null;
+    this._connectTime = 0;
+    this._stabilityTimerId = null;
   }
 
   onStatus(fn) {
@@ -239,12 +243,23 @@ class RPCManager {
     this._emit({ connected: false, connecting: true, userId: null, error: null });
     this.port.onMessage.addListener((msg) => {
       if (msg.type === TYPE_RPC_STATUS) {
-        if (msg.connected) this._backoff = 0;
+        if (msg.connected) {
+          this._connectTime = Date.now();
+          if (this._stabilityTimerId) clearTimeout(this._stabilityTimerId);
+          this._stabilityTimerId = setTimeout(() => {
+            this._stabilityTimerId = null;
+            this._backoff = 0;
+          }, STABLE_CONNECTION_MS);
+        }
         this._emit({ connected: msg.connected, connecting: false, userId: msg.userId || null, error: msg.error || null });
       }
     });
     this.port.onDisconnect.addListener(() => {
       this.port = null;
+      if (this._stabilityTimerId) {
+        clearTimeout(this._stabilityTimerId);
+        this._stabilityTimerId = null;
+      }
       this._emit({ connected: false, connecting: false, userId: null, error: 'Native host disconnected' });
       this._scheduleReconnect();
     });
@@ -277,6 +292,10 @@ class RPCManager {
       clearTimeout(this._backoffTimerId);
       this._backoffTimerId = null;
     }
+    if (this._stabilityTimerId) {
+      clearTimeout(this._stabilityTimerId);
+      this._stabilityTimerId = null;
+    }
     this._backoff = 0;
     if (this.port) {
       try { this.port.postMessage(disconnectMsg()); } catch (_) {}
@@ -294,6 +313,10 @@ class RPCManager {
       this.port.postMessage(setActivityMsg(presence));
     } catch (e) {
       this.port = null;
+      if (this._stabilityTimerId) {
+        clearTimeout(this._stabilityTimerId);
+        this._stabilityTimerId = null;
+      }
       this._scheduleReconnect();
     }
   }
