@@ -465,6 +465,29 @@ const CLIENT_ID = '1513880949220311181';
 const rpc = new RPCManager('com.digitansjournal.rpc', CLIENT_ID);
 const state = new StateManager(rpc);
 
+let siteMatches = [];
+
+async function loadSiteMatches() {
+  try {
+    const resp = await fetch(chrome.runtime.getURL('sites.json'));
+    siteMatches = (await resp.json()).map(s => s.match);
+  } catch {}
+}
+
+function isSupportedUrl(url) {
+  if (!url) return false;
+  return siteMatches.some(m => {
+    const pattern = m.replace(/\*/g, '');
+    return url.startsWith(pattern);
+  });
+}
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (changeInfo.url && !isSupportedUrl(changeInfo.url)) {
+    state.untrackTab(tabId);
+  }
+});
+
 chrome.tabs.onRemoved.addListener((tabId) => {
   state.untrackTab(tabId);
 });
@@ -496,7 +519,7 @@ chrome.commands.onCommand.addListener((command) => {
   if (command === 'clear-activity') state.clearActivity();
 });
 
-state.loadSettings().then(() => rpc.connect());
+Promise.all([state.loadSettings(), loadSiteMatches()]).then(() => rpc.connect());
 
 chrome.runtime.onStartup.addListener(() => {
   rpc.connect();
