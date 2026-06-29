@@ -47,7 +47,6 @@ async function connectRPC(id) {
   }
 }
 
-const { truncate } = require('../shared/truncate');
 const {
   ACTION_CONNECT, ACTION_SET_ACTIVITY, ACTION_DISCONNECT,
   TYPE_RPC_STATUS, TYPE_ERROR,
@@ -67,17 +66,7 @@ function clearPresence() {
 function setActivity(presence) {
   if (!presence) { clearPresence(); return; }
   if (!rpc || !rpcConnected) { pendingActivity = presence; return; }
-  const payload = {
-    details: truncate(presence.details) || 'Digitan\'s Journal',
-    startTimestamp: presence.startTimestamp || Date.now(),
-    largeImageKey: presence.largeImageKey || 'digitan',
-    largeImageText: presence.largeImageText || 'Digitan\'s Journal',
-  };
-  if (presence.state) payload.state = truncate(presence.state);
-  if (presence.smallImageKey) payload.smallImageKey = presence.smallImageKey;
-  if (presence.smallImageText) payload.smallImageText = presence.smallImageText;
-  if (presence.buttons) payload.buttons = presence.buttons;
-  rpc.setActivity(payload).catch((err) => {
+  rpc.setActivity(presence).catch((err) => {
     sendMessage(rpcStatus(true, { error: err.message }));
   });
 }

@@ -1,5 +1,6 @@
 node_modules/
 native-host/com.digitansjournal.rpc.json
 native-host/host.exe
+native-host/host.old.exe
 native-host/dj-cli.exe
 tests/.test-profile/

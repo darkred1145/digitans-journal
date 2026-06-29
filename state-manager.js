@@ -58,6 +58,9 @@ class StateManager {
   sendActivity(site, data) {
     if (!this.settings.enabled || this.settings.sites[site] === false) return;
     const finalData = this.formatPresence(site, data);
+    finalData.details = finalData.details || 'Digitan\'s Journal';
+    finalData.largeImageKey = finalData.largeImageKey || 'digitan';
+    finalData.largeImageText = finalData.largeImageText || 'Digitan\'s Journal';
     if (
       !this.currentActivity ||
       this.currentSite !== site ||
