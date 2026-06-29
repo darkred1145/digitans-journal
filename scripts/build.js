@@ -11,13 +11,30 @@ const TARGET = process.argv.includes('--target')
 const isFirefox = TARGET === 'firefox';
 const doPackage = isFirefox || process.argv.includes('--package');
 
+const SITES = JSON.parse(fs.readFileSync(path.join(ROOT, 'sites.json'), 'utf-8'));
+
 if (!fs.existsSync(DIST)) {
   fs.mkdirSync(DIST, { recursive: true });
 }
 
+// Build manifest with content_scripts generated from sites.json
 const MANIFEST_SRC = isFirefox ? 'manifest.firefox.json' : 'manifest.json';
-fs.copyFileSync(path.join(ROOT, MANIFEST_SRC), path.join(DIST, 'manifest.json'));
-console.log(`-> dist/manifest.json (from ${MANIFEST_SRC})`);
+const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, MANIFEST_SRC), 'utf-8'));
+const jsFile = (id) => isFirefox ? ['browser-polyfill.js', `content-${id}.js`] : [`content-${id}.js`];
+const matches = SITES.map(s => s.match);
+manifest.content_scripts = SITES.map(s => ({
+  matches: [s.match],
+  js: jsFile(s.id),
+  run_at: 'document_idle',
+}));
+if (isFirefox) {
+  const existing = manifest.permissions.filter(p => !p.startsWith('https://'));
+  manifest.permissions = [...existing, ...matches];
+} else {
+  manifest.host_permissions = matches;
+}
+fs.writeFileSync(path.join(DIST, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
+console.log(`-> dist/manifest.json (from ${MANIFEST_SRC} + sites.json)`);
 
 // Copy the polyfill
 const polyfillSrc = path.join(ROOT, 'node_modules/webextension-polyfill/dist/browser-polyfill.min.js');
@@ -32,6 +49,7 @@ if (isFirefox) {
   copyDir('options', 'options');
   copyDir('shared', 'shared');
   copyDir('icons', 'icons');
+  fs.copyFileSync(path.join(ROOT, 'sites.json'), path.join(DIST, 'sites.json'));
 }
 
 function copyDir(src, dest) {
@@ -68,11 +86,10 @@ fs.writeFileSync(path.join(DIST, 'content-shared.js'), contentSharedBundled);
 console.log('-> dist/content-shared.js');
 
 // Per-site content bundles: polyfill + shared + site-specific extractor
-const sites = ['nhentai', 'gametora', 'raggooner', 'uma-guide', 'umalator'];
-for (const site of sites) {
-  const code = readPolyfill() + contentSharedCode + read(`content-scripts/${site}.js`);
-  fs.writeFileSync(path.join(DIST, `content-${site}.js`), code);
-  console.log(`-> dist/content-${site}.js`);
+for (const site of SITES) {
+  const code = readPolyfill() + contentSharedCode + read(`content-scripts/${site.id}.js`);
+  fs.writeFileSync(path.join(DIST, `content-${site.id}.js`), code);
+  console.log(`-> dist/content-${site.id}.js`);
 }
 
 // Background bundle: polyfill + dependencies
@@ -90,6 +107,13 @@ const bgRaw = read('background.js');
 backgroundCode += bgRaw.replace(/^importScripts\(.*?\);\n?/m, '');
 fs.writeFileSync(path.join(DIST, 'background.js'), backgroundCode);
 console.log('-> dist/background.js');
+
+// Generate settings.js with DEFAULTS.sites derived from sites.json
+const sitesDefaults = Object.fromEntries(SITES.map(s => [s.id, s.defaultEnabled]));
+const generatedSettings = `const DEFAULTS = {\n  enabled: true,\n  sites: ${JSON.stringify(sitesDefaults, null, 2).replace(/\n/g, '\n  ')},\n  idleTimeout: 0,\n  privacyMode: false,\n  templates: {},\n};\n`;
+const settingsOut = isFirefox ? path.join(DIST, 'shared', 'settings.js') : path.join(DIST, 'settings.js');
+fs.writeFileSync(settingsOut, generatedSettings);
+console.log(`-> ${path.relative(ROOT, settingsOut)} (generated from sites.json)`);
 
 if (doPackage) {
   const AdmZip = require('adm-zip');
@@ -111,7 +135,7 @@ if (doPackage) {
   zip.addLocalFile(path.join(DIST, 'manifest.json'), '');
 
   // Add everything else from dist/ maintaining relative paths
-  for (const dir of ['browser-polyfill.js', 'background.js', 'content-shared.js', ...sites.map(s => `content-${s}.js`)]) {
+  for (const dir of ['browser-polyfill.js', 'background.js', 'content-shared.js', ...SITES.map(s => `content-${s.id}.js`)]) {
     if (fs.existsSync(path.join(DIST, dir))) zip.addLocalFile(path.join(DIST, dir), '');
   }
   for (const dir of ['popup', 'options', 'shared', 'icons']) {

@@ -17,7 +17,10 @@
     "open_in_tab": true
   },
   "background": {
-    "scripts": ["browser-polyfill.js", "background.js"],
+    "scripts": [
+      "browser-polyfill.js",
+      "background.js"
+    ],
     "persistent": false
   },
   "browser_action": {
@@ -35,35 +38,62 @@
   },
   "commands": {
     "clear-activity": {
-      "suggested_key": { "default": "Alt+C" },
+      "suggested_key": {
+        "default": "Alt+C"
+      },
       "description": "Clear current activity"
     }
   },
   "content_security_policy": "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com",
   "content_scripts": [
     {
-      "matches": ["https://nhentai.net/*"],
-      "js": ["browser-polyfill.js", "content-nhentai.js"],
+      "matches": [
+        "https://nhentai.net/*"
+      ],
+      "js": [
+        "browser-polyfill.js",
+        "content-nhentai.js"
+      ],
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://gametora.com/umamusume*"],
-      "js": ["browser-polyfill.js", "content-gametora.js"],
+      "matches": [
+        "https://gametora.com/umamusume*"
+      ],
+      "js": [
+        "browser-polyfill.js",
+        "content-gametora.js"
+      ],
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://raggooneropen.web.app/*"],
-      "js": ["browser-polyfill.js", "content-raggooner.js"],
+      "matches": [
+        "https://raggooneropen.web.app/*"
+      ],
+      "js": [
+        "browser-polyfill.js",
+        "content-raggooner.js"
+      ],
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://uma.guide/*"],
-      "js": ["browser-polyfill.js", "content-uma-guide.js"],
+      "matches": [
+        "https://uma.guide/*"
+      ],
+      "js": [
+        "browser-polyfill.js",
+        "content-uma-guide.js"
+      ],
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://umalator.app/*"],
-      "js": ["browser-polyfill.js", "content-umalator.js"],
+      "matches": [
+        "https://umalator.app/*"
+      ],
+      "js": [
+        "browser-polyfill.js",
+        "content-umalator.js"
+      ],
       "run_at": "document_idle"
     }
   ],

@@ -6,3 +6,7 @@ const DEFAULTS = {
   privacyMode: false,
   templates: {},
 };
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { DEFAULTS };
+}

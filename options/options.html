@@ -320,41 +320,7 @@
 
   <div class="section">
     <h2 class="section-header">Tracked Sites</h2>
-    <div class="row">
-      <label class="row-label" for="site-nhentai">nhentai.net</label>
-      <label class="toggle">
-        <input type="checkbox" class="site-toggle" id="site-nhentai" data-site="nhentai" checked>
-        <span class="slider"></span>
-      </label>
-    </div>
-    <div class="row">
-      <label class="row-label" for="site-gametora">gametora.com/umamusume</label>
-      <label class="toggle">
-        <input type="checkbox" class="site-toggle" id="site-gametora" data-site="gametora" checked>
-        <span class="slider"></span>
-      </label>
-    </div>
-    <div class="row">
-      <label class="row-label" for="site-raggooner">raggooneropen.web.app</label>
-      <label class="toggle">
-        <input type="checkbox" class="site-toggle" id="site-raggooner" data-site="raggooner" checked>
-        <span class="slider"></span>
-      </label>
-    </div>
-    <div class="row">
-      <label class="row-label" for="site-uma-guide">uma.guide</label>
-      <label class="toggle">
-        <input type="checkbox" class="site-toggle" id="site-uma-guide" data-site="uma-guide" checked>
-        <span class="slider"></span>
-      </label>
-    </div>
-    <div class="row">
-      <label class="row-label" for="site-umalator">umalator.app</label>
-      <label class="toggle">
-        <input type="checkbox" class="site-toggle" id="site-umalator" data-site="umalator" checked>
-        <span class="slider"></span>
-      </label>
-    </div>
+    <div id="sitesList"></div>
   </div>
 
   <div class="section">
@@ -391,67 +357,7 @@
       Customize how activity text reads on <span translate="no">Discord</span>. Leave blank to use defaults.
     </p>
 
-    <div class="template-groups-grid">
-    <div class="template-group" data-site="nhentai">
-      <div class="template-label">nhentai.net</div>
-      <div class="template-row">
-        <span class="template-prefix">details</span>
-        <input type="text" class="input-text template-details" autocomplete="off" spellcheck="false" placeholder='e.g. {title}…' aria-label="Details template">
-      </div>
-      <div class="template-row">
-        <span class="template-prefix">state</span>
-        <input type="text" class="input-text template-state" autocomplete="off" spellcheck="false" placeholder='e.g. Page {page} / {total}…' aria-label="State template">
-      </div>
-    </div>
-
-    <div class="template-group" data-site="gametora">
-      <div class="template-label">gametora.com/umamusume</div>
-      <div class="template-row">
-        <span class="template-prefix">details</span>
-        <input type="text" class="input-text template-details" autocomplete="off" spellcheck="false" placeholder='e.g. {title}…' aria-label="Details template">
-      </div>
-      <div class="template-row">
-        <span class="template-prefix">state</span>
-        <input type="text" class="input-text template-state" autocomplete="off" spellcheck="false" placeholder='e.g. Viewing {title}…' aria-label="State template">
-      </div>
-    </div>
-
-    <div class="template-group" data-site="raggooner">
-      <div class="template-label">raggooneropen.web.app</div>
-      <div class="template-row">
-        <span class="template-prefix">details</span>
-        <input type="text" class="input-text template-details" autocomplete="off" spellcheck="false" placeholder='e.g. {title}…' aria-label="Details template">
-      </div>
-      <div class="template-row">
-        <span class="template-prefix">state</span>
-        <input type="text" class="input-text template-state" autocomplete="off" spellcheck="false" placeholder='e.g. Browsing {title}…' aria-label="State template">
-      </div>
-    </div>
-
-    <div class="template-group" data-site="uma-guide">
-      <div class="template-label">uma.guide</div>
-      <div class="template-row">
-        <span class="template-prefix">details</span>
-        <input type="text" class="input-text template-details" autocomplete="off" spellcheck="false" placeholder='e.g. {title}…' aria-label="Details template">
-      </div>
-      <div class="template-row">
-        <span class="template-prefix">state</span>
-        <input type="text" class="input-text template-state" autocomplete="off" spellcheck="false" placeholder='e.g. Browsing {title}…' aria-label="State template">
-      </div>
-    </div>
-
-    <div class="template-group" data-site="umalator">
-      <div class="template-label">umalator.app</div>
-      <div class="template-row">
-        <span class="template-prefix">details</span>
-        <input type="text" class="input-text template-details" autocomplete="off" spellcheck="false" placeholder='e.g. {title}…' aria-label="Details template">
-      </div>
-      <div class="template-row">
-        <span class="template-prefix">state</span>
-        <input type="text" class="input-text template-state" autocomplete="off" spellcheck="false" placeholder='e.g. Browsing {title}…' aria-label="State template">
-      </div>
-    </div>
-    </div>
+    <div class="template-groups-grid" id="templateGroups"></div>
 
     <div class="placeholders">
       <code>{title}</code> <code>{page}</code> <code>{total}</code> <code>{site}</code>

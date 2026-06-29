@@ -159,6 +159,10 @@ const DEFAULTS = {
   templates: {},
 };
 
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { DEFAULTS };
+}
+
 
 const ACTION_CONNECT = 'connect';
 const ACTION_SET_ACTIVITY = 'setActivity';
