@@ -58,7 +58,7 @@ const {
 function clearPresence() {
   pendingActivity = null;
   if (rpc && rpcConnected) {
-    rpc.setActivity(null).catch((err) => {
+    rpc.clearActivity().catch((err) => {
       sendMessage(rpcStatus(true, { error: err.message }));
     });
   }
