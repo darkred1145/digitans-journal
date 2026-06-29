@@ -342,6 +342,7 @@ class StateManager {
     this.lastError = null;
     this.trackedTabs = new Set();
     this.idleTimer = null;
+    this._closedTabId = null;
     this.settings = { ...DEFAULTS };
 
     rpc.onStatus((status) => {
@@ -435,12 +436,16 @@ class StateManager {
   }
 
   trackTab(tabId) {
+    if (this._closedTabId === tabId) return false;
     this.trackedTabs.add(tabId);
+    return true;
   }
 
   untrackTab(tabId) {
     if (this.trackedTabs.delete(tabId) && this.trackedTabs.size === 0) {
       this.clearActivity();
+      this._closedTabId = tabId;
+      setTimeout(() => { this._closedTabId = null; }, 1000);
     }
   }
 
@@ -466,7 +471,9 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === 'presence') {
-    if (sender.tab && sender.tab.id) state.trackTab(sender.tab.id);
+    if (sender.tab && sender.tab.id) {
+      if (!state.trackTab(sender.tab.id)) { sendResponse({ ok: false }); return; }
+    }
     state.sendActivity(msg.site, msg.data);
     sendResponse({ ok: true });
   }
