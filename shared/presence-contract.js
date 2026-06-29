@@ -7,6 +7,7 @@
  * @property {string} [smallImageKey]
  * @property {string} [smallImageText]
  * @property {Array<{label:string, url:string}>} [buttons]
+ * @property {number} [startTimestamp]
  * @property {Object} [raw]
  * @property {string} [raw.title]
  * @property {string|null} [raw.page]

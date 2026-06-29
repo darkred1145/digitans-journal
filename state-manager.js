@@ -13,6 +13,9 @@ class StateManager {
       this.userId = status.userId || null;
       this.rpcConnected = status.connected;
       this.connecting = status.connecting || false;
+      if (status.connected && this.currentActivity) {
+        this.rpc.setActivity(this.currentActivity);
+      }
       browser.storage.local.set({
         rpcConnected: status.connected,
         connecting: status.connecting || false,
@@ -54,6 +57,16 @@ class StateManager {
   sendActivity(site, data) {
     if (!this.settings.enabled || this.settings.sites[site] === false) return;
     const finalData = this.formatPresence(site, data);
+    if (
+      !this.currentActivity ||
+      this.currentSite !== site ||
+      this.currentActivity.details !== finalData.details ||
+      this.currentActivity.state !== finalData.state
+    ) {
+      finalData.startTimestamp = Date.now();
+    } else {
+      finalData.startTimestamp = this.currentActivity.startTimestamp;
+    }
     this.currentSite = site;
     this.currentActivity = finalData;
     this.rpc.setActivity(finalData);
