@@ -6,7 +6,7 @@
  *   npx playwright install chromium
  *
  * Usage:
- *   node store-assets/generate-screenshots.js [path-to-extension-dir]
+ *   node scripts/store-assets/generate-screenshots.js [path-to-extension-dir]
  *
  * Produces PNG files in store-assets/screenshots/:
  *   - screenshot-01-popup.png       (1280×800) — popup showing connected state
@@ -23,8 +23,9 @@ const { chromium } = require('playwright');
 const { existsSync, mkdirSync } = require('fs');
 const path = require('path');
 
-const EXT_PATH = process.argv[2] || path.resolve(__dirname, '..');
-const OUT_DIR = path.resolve(__dirname, 'screenshots');
+const ROOT_DIR = path.resolve(__dirname, '..', '..');
+const EXT_PATH = process.argv[2] || ROOT_DIR;
+const OUT_DIR = path.join(ROOT_DIR, 'store-assets', 'screenshots');
 
 const SCREENSHOT_W = 1280;
 const SCREENSHOT_H = 800;
@@ -155,10 +156,10 @@ async function getExtensionId(browser) {
 }
 
 async function renderPromoPage(page, extId, size) {
-  const bg = '#0E0C17';
-  const accent = '#E35D6B';
-  const text = '#E8E0D0';
-  const muted = '#63597A';
+  const bg = '#1A1423';
+  const pink = '#F37F96';
+  const text = '#F0E8D8';
+  const muted = '#9585A5';
   const titleSize = size === 'small' ? '28px' : '48px';
   const subtitleSize = size === 'small' ? '12px' : '18px';
 
@@ -168,6 +169,8 @@ async function renderPromoPage(page, extId, size) {
     <!DOCTYPE html>
     <html style="color-scheme:dark">
     <head><meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body {
@@ -175,18 +178,19 @@ async function renderPromoPage(page, extId, size) {
         background: ${bg};
         display: flex; flex-direction: column;
         align-items: center; justify-content: center;
-        font-family: 'Georgia', serif;
+        font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         color: ${text};
         overflow: hidden;
       }
       .icon { width: ${size === 'small' ? '64px' : '96px'}; height: auto; margin-bottom: ${size === 'small' ? '12px' : '20px'}; }
+      .icon { border-radius: ${size === 'small' ? '6px' : '10px'}; }
       h1 {
-        font-family: 'Georgia', serif;
-        font-style: italic;
+        font-family: 'Fredoka', 'Nunito', sans-serif;
         font-size: ${titleSize};
-        font-weight: 700;
-        letter-spacing: -0.5px;
+        font-weight: 600;
+        letter-spacing: -0.3px;
       }
+      .h1-pink { color: ${pink}; }
       p {
         font-size: ${subtitleSize};
         color: ${muted};
@@ -194,14 +198,14 @@ async function renderPromoPage(page, extId, size) {
         max-width: 80%;
         text-align: center;
       }
-      .accent { color: ${accent}; }
+      .sub-accent { color: ${pink}; font-weight: 700; }
     </style>
     </head>
     <body>
       <img class="icon" src="${iconUrl}" alt="Digitan's Journal icon" onerror="this.style.display='none'">
-      <h1>Digitan's Journal</h1>
-      <p>Browsing activity as <span class="accent">Discord Rich Presence</span></p>
-      <p style="margin-top:${size === 'small' ? '2px' : '4px'};font-size:${size === 'small' ? '10px' : '14px'};color:#3D3855">No data leaves your machine</p>
+      <h1><span class="h1-pink">Digitan's</span> Journal</h1>
+      <p>Browsing activity as <span class="sub-accent">Discord Rich Presence</span></p>
+      <p style="margin-top:${size === 'small' ? '2px' : '4px'};font-size:${size === 'small' ? '10px' : '14px'};color:rgba(149,133,165,0.4)">No data leaves your machine</p>
     </body>
     </html>
   `, { waitUntil: 'networkidle' });

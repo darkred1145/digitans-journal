@@ -6,7 +6,7 @@
  *   npx playwright install chromium
  *
  * Usage:
- *   node store-assets/generate-assets.js
+ *   node scripts/store-assets/generate-assets.js
  *
  * Produces:
  *   store-assets/assets/umaguide_small.png   (512×512)
@@ -18,21 +18,25 @@ const { chromium } = require('playwright');
 const { existsSync, mkdirSync, readFileSync } = require('fs');
 const path = require('path');
 
-const OUT_DIR = path.resolve(__dirname, 'assets');
-const SRC_DIR = __dirname;
-const ROOT_DIR = path.resolve(__dirname, '..');
+const STORE_DIR = path.resolve(__dirname, '..', '..', 'store-assets');
+const OUT_DIR = path.join(STORE_DIR, 'assets');
+const SRC_DIR = STORE_DIR;
+const ROOT_DIR = path.resolve(STORE_DIR, '..');
 
 const ASSET_SIZE = 512;
 const COVER_W = 1024;
 const COVER_H = 576;
 
 // Extension brand colors (from popup/options CSS)
-const BG = '#0E0C17';
-const SURFACE = '#1B1728';
-const BORDER = '#2C2740';
-const TEXT = '#E8E0D0';
-const MUTED = '#63597A';
-const ACCENT = '#E35D6B';
+const BG = '#1A1423';
+const SURFACE = '#271E33';
+const BORDER = '#3D2E4A';
+const TEXT = '#F0E8D8';
+const TEXT_SECONDARY = '#C4B5CB';
+const MUTED = '#9585A5';
+const PINK = '#F37F96';
+const PINK_GLOW = 'rgba(243,127,150,0.2)';
+const YELLOW = '#F9F189';
 
 async function main() {
   if (!existsSync(OUT_DIR)) mkdirSync(OUT_DIR, { recursive: true });
@@ -106,66 +110,85 @@ async function main() {
     await coverPage.setContent(`
       <!DOCTYPE html>
       <html style="color-scheme:dark"><head><meta charset="UTF-8">
+      <link rel="preconnect" href="https://fonts.gstatic.com">
+      <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
       <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
           width: ${COVER_W}px; height: ${COVER_H}px;
-          background: linear-gradient(135deg, ${BG} 0%, ${SURFACE} 60%, ${BG} 100%);
+          background:
+            radial-gradient(ellipse 120% 50% at 50% -10%, ${PINK_GLOW} 0%, transparent 65%),
+            radial-gradient(ellipse 80% 40% at 20% 105%, rgba(249,241,137,0.04) 0%, transparent 50%),
+            linear-gradient(135deg, ${BG} 0%, ${SURFACE} 60%, ${BG} 100%);
           display: flex; flex-direction: column;
           align-items: center; justify-content: center;
-          font-family: 'Georgia', serif;
+          font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
           color: ${TEXT};
           overflow: hidden;
           position: relative;
         }
-        .accent-bar {
+        .pink-bar {
           position: absolute; top: 0; left: 0; right: 0;
           height: 4px;
-          background: linear-gradient(90deg, transparent, ${ACCENT}33, ${ACCENT}, ${ACCENT}33, transparent);
+          background: linear-gradient(90deg, transparent, ${PINK}44, ${PINK}, ${PINK}44, transparent);
         }
-        .icon { width: 96px; height: 96px; border-radius: 50%; margin-bottom: 16px; }
+        .icon-wrap {
+          width: 96px; height: 96px;
+          border-radius: 20px;
+          background: linear-gradient(135deg, ${PINK}, #D46078);
+          display: flex; align-items: center; justify-content: center;
+          box-shadow: 0 4px 20px ${PINK_GLOW};
+          margin-bottom: 18px;
+        }
+        .icon-wrap img { width: 68px; height: 68px; border-radius: 4px; }
         h1 {
-          font-family: 'Georgia', serif;
-          font-style: italic;
+          font-family: 'Fredoka', 'Nunito', sans-serif;
           font-size: 52px;
-          font-weight: 700;
+          font-weight: 600;
           letter-spacing: -0.5px;
           color: ${TEXT};
         }
+        .h1-pink { color: ${PINK}; }
         .subtitle {
           font-size: 20px;
-          color: ${MUTED};
-          margin-top: 8px;
-          letter-spacing: 1px;
+          color: ${TEXT_SECONDARY};
+          margin-top: 6px;
+          font-weight: 400;
         }
-        .accent { color: ${ACCENT}; font-weight: 700; }
+        .sub-accent { color: ${PINK}; font-weight: 700; }
         .pill {
-          margin-top: 24px;
+          margin-top: 26px;
           display: inline-flex; align-items: center; gap: 8px;
-          padding: 8px 20px;
-          border: 1px solid ${BORDER};
+          padding: 10px 22px;
+          border: 2px solid ${BORDER};
           border-radius: 999px;
           font-size: 14px;
+          font-weight: 500;
           color: ${MUTED};
+          background: rgba(39,30,51,0.6);
         }
         .pill-dot {
           width: 8px; height: 8px;
           border-radius: 50%;
-          background: #4CC48A;
+          background: #6CD4A0;
+          box-shadow: 0 0 6px rgba(108,212,160,0.4);
         }
         .footer {
           position: absolute; bottom: 24px;
           font-size: 12px;
-          color: #3D3855;
+          color: rgba(149,133,165,0.35);
           letter-spacing: 2px;
           text-transform: uppercase;
+          font-weight: 500;
         }
       </style></head>
       <body>
-        <div class="accent-bar"></div>
-        <img class="icon" src="data:image/png;base64,${iconB64}" alt="Digitan's Journal">
-        <h1>Digitan's Journal</h1>
-        <p class="subtitle">Browsing activity as <span class="accent">Discord Rich Presence</span></p>
+        <div class="pink-bar"></div>
+        <div class="icon-wrap">
+          <img src="data:image/png;base64,${iconB64}" alt="Digitan's Journal">
+        </div>
+        <h1><span class="h1-pink">Digitan's</span> Journal</h1>
+        <p class="subtitle">Browsing activity as <span class="sub-accent">Discord Rich Presence</span></p>
         <div class="pill">
           <span class="pill-dot"></span>
           No data leaves your machine
