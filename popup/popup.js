@@ -42,8 +42,14 @@ function updateUI(status) {
   } else {
     empty.style.display = 'block';
     active.style.display = 'none';
+    const messages = [
+      'Hewwo! Your journal is ready~♪',
+      'I\'m so glad I was born an otaku~♪',
+      'Sparkling content is being logged!',
+      'Ready to support your adventures~!',
+    ];
     document.getElementById('emptyMessage').textContent =
-      status.rpcConnected ? 'Hewwo! Your journal is ready~♪' : 'No connection.';
+      status.rpcConnected ? messages[Math.floor(Math.random() * messages.length)] : 'No connection.';
     document.getElementById('emptyHint').textContent =
       status.rpcConnected ? 'Open a tracked site to start logging sparkling content!' : 'Click Reconnect to try again.';
   }
