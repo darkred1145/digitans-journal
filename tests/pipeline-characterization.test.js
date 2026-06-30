@@ -49,9 +49,10 @@ function extBuildPayload(site, data, settings) {
   return fmt;
 }
 
-// Normal presence
+// Normal presence (use fixed timestamp to avoid Date.now() race)
 {
-  const input = { details: 'Viewing Tokai Teio', state: 'Character detail' };
+  const ts = 1712345678000;
+  const input = { details: 'Viewing Tokai Teio', state: 'Character detail', startTimestamp: ts };
   const host = hostBuildPayload(input);
   const ext = extBuildPayload('uma-guide', input, defaults);
   assert(deepEqual(host, ext), 'normal presence');
@@ -60,7 +61,8 @@ function extBuildPayload(site, data, settings) {
 
 // Missing details
 {
-  const input = {};
+  const ts = 1712345678000;
+  const input = { startTimestamp: ts };
   const host = hostBuildPayload(input);
   const ext = extBuildPayload('uma-guide', input, defaults);
   assert(deepEqual(host, ext), 'missing details falls back');
@@ -69,7 +71,8 @@ function extBuildPayload(site, data, settings) {
 
 // Missing largeImageKey
 {
-  const input = { details: 'Test' };
+  const ts = 1712345678000;
+  const input = { details: 'Test', startTimestamp: ts };
   const host = hostBuildPayload(input);
   const ext = extBuildPayload('uma-guide', input, defaults);
   assert(deepEqual(host, ext), 'missing largeImageKey falls back');
@@ -78,9 +81,11 @@ function extBuildPayload(site, data, settings) {
 
 // All optional fields
 {
+  const ts = 1712345678000;
   const input = {
     details: 'Title',
     state: 'Chapter 5',
+    startTimestamp: ts,
     smallImageKey: 'small-key',
     smallImageText: 'Small text',
     buttons: [{ label: 'View', url: 'https://example.com' }],
@@ -93,7 +98,8 @@ function extBuildPayload(site, data, settings) {
 
 // Null state
 {
-  const input = { details: 'Test' };
+  const ts = 1712345678000;
+  const input = { details: 'Test', startTimestamp: ts };
   const host = hostBuildPayload(input);
   const ext = extBuildPayload('uma-guide', input, defaults);
   assert(deepEqual(host, ext), 'null state omitted');
@@ -102,7 +108,8 @@ function extBuildPayload(site, data, settings) {
 
 // Empty string state (should be omitted, matching host)
 {
-  const input = { details: 'Test', state: '' };
+  const ts = 1712345678000;
+  const input = { details: 'Test', state: '', startTimestamp: ts };
   const host = hostBuildPayload(input);
   const ext = extBuildPayload('uma-guide', input, defaults);
   assert(deepEqual(host, ext), 'empty state omitted');
@@ -110,7 +117,8 @@ function extBuildPayload(site, data, settings) {
 
 // Truncated details
 {
-  const input = { details: 'A'.repeat(200) };
+  const ts = 1712345678000;
+  const input = { details: 'A'.repeat(200), startTimestamp: ts };
   const host = hostBuildPayload(input);
   const ext = extBuildPayload('uma-guide', input, defaults);
   assert(deepEqual(host, ext), 'truncated details');
@@ -120,7 +128,8 @@ function extBuildPayload(site, data, settings) {
 
 // Truncated state
 {
-  const input = { details: 'Test', state: 'B'.repeat(200) };
+  const ts = 1712345678000;
+  const input = { details: 'Test', state: 'B'.repeat(200), startTimestamp: ts };
   const host = hostBuildPayload(input);
   const ext = extBuildPayload('uma-guide', input, defaults);
   assert(deepEqual(host, ext), 'truncated state');

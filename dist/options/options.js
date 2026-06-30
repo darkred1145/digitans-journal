@@ -20,7 +20,7 @@ async function queuedSave(updater) {
     updater(s);
     await saveSettings(s);
     showSaved();
-  }));
+  }).catch(() => {}));
 }
 
 async function loadSites() {

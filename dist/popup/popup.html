@@ -5,22 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Digitan's Journal</title>
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0C0A14;
-      --surface: #181424;
-      --border: #2A223A;
-      --border-light: #3A3050;
-      --text: #EDE0D0;
-      --text-secondary: #9B8FA8;
-      --text-muted: #63597A;
-      --accent: #F37F96;
-      --accent-sub: #F9F189;
-      --accent-green: #6CD4A0;
-      --accent-amber: #F0A345;
-      --font-display: 'Playfair Display', Georgia, serif;
-      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --pink: #F37F96;
+      --pink-dark: #D46078;
+      --yellow: #F9F189;
+      --yellow-dim: rgba(249,241,137,0.25);
+      --bg: #1A1423;
+      --surface: #271E33;
+      --surface-hover: #32263F;
+      --text: #F0E8D8;
+      --text-secondary: #C4B5CB;
+      --text-muted: #9585A5;
+      --border: #3D2E4A;
+      --green: #6CD4A0;
+      --green-glow: rgba(108,212,160,0.25);
+      --amber: #F0A345;
+      --amber-glow: rgba(240,163,69,0.25);
+      --red: #E8536D;
+      --font-display: 'Fredoka', 'Nunito', sans-serif;
+      --font-body: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace;
     }
 
@@ -31,54 +36,63 @@
       font-family: var(--font-body);
       font-size: 13px;
       background:
-        radial-gradient(ellipse 140% 80% at 50% -20%, rgba(243,127,150,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse 150% 70% at 50% -15%, rgba(243,127,150,0.07) 0%, transparent 65%),
+        radial-gradient(ellipse 100% 60% at 80% 105%, rgba(249,241,137,0.04) 0%, transparent 50%),
         var(--bg);
       color: var(--text);
-      padding: 16px 16px 12px;
+      padding: 16px 14px 10px;
       line-height: 1.5;
     }
 
-    /* ── Header ── */
     .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
+    }
+
+    .title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .journal-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, var(--pink), var(--pink-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      box-shadow: 0 2px 6px rgba(243,127,150,0.3);
+      flex-shrink: 0;
     }
 
     .title {
       font-family: var(--font-display);
-      font-size: 18px;
-      font-weight: 700;
-      font-style: italic;
+      font-size: 17px;
+      font-weight: 600;
       color: var(--text);
-      letter-spacing: -0.4px;
-      line-height: 1.3;
+      letter-spacing: -0.3px;
     }
 
-    .status-line {
+    .title-accent {
+      color: var(--pink);
+    }
+
+    .seal-wrap {
+      position: relative;
       display: flex;
-      justify-content: flex-end;
       align-items: center;
-      gap: 6px;
-      margin-bottom: 14px;
-      min-height: 18px;
+      justify-content: center;
     }
 
-    .status-text {
-      font-size: 11px;
-      color: var(--text-muted);
-      transition: color 0.3s;
-    }
-    .status-text.connected { color: var(--accent-green); }
-    .status-text.disconnected { color: var(--text-muted); }
-    .status-text.connecting { color: var(--accent-amber); }
-
-    /* ── Wax Seal ── */
     .seal {
       position: relative;
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -86,127 +100,181 @@
 
     .seal-ring {
       position: absolute;
-      inset: 0;
+      inset: -2px;
       border-radius: 50%;
-      border: 1.5px solid var(--border);
+      border: 2px solid var(--border);
       background:
-        radial-gradient(circle at 40% 35%, rgba(255,255,255,0.06) 0%, transparent 50%),
-        radial-gradient(circle at 60% 70%, rgba(0,0,0,0.15) 0%, transparent 50%);
+        radial-gradient(circle at 38% 32%, rgba(255,255,255,0.08) 0%, transparent 55%),
+        radial-gradient(circle at 62% 68%, rgba(0,0,0,0.2) 0%, transparent 50%);
       box-shadow:
         inset 0 1px 3px rgba(0,0,0,0.5),
-        0 1px 2px rgba(0,0,0,0.3);
+        0 2px 4px rgba(0,0,0,0.25);
       transition: border-color 0.4s, box-shadow 0.4s;
     }
 
+    .seal[data-status="connected"] .seal-ring {
+      border-color: var(--green-glow);
+      box-shadow:
+        inset 0 0 10px var(--green-glow),
+        0 0 8px rgba(108,212,160,0.15);
+    }
+
+    .seal[data-status="connecting"] .seal-ring {
+      border-color: var(--amber-glow);
+      box-shadow:
+        inset 0 0 10px var(--amber-glow),
+        0 0 8px rgba(240,163,69,0.15);
+    }
+
     .seal-dot {
-      width: 10px;
-      height: 10px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
       position: relative;
       z-index: 1;
-      transition: background 0.4s, box-shadow 0.4s;
+      background: var(--text-muted);
+      transition: background 0.4s, box-shadow 0.4s, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .seal-dot.connected {
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green-glow);
+    }
+
+    .seal-dot.connecting {
+      background: var(--amber);
+      box-shadow: 0 0 10px var(--amber-glow);
+      animation: pulse-connecting 1.4s ease-in-out infinite;
+    }
+
+    .seal-dot.disconnected {
       background: var(--text-muted);
     }
-    .seal-dot.connecting { background: var(--accent-amber); animation: pulse-amber 1.5s ease-in-out infinite; }
-    .seal-dot.connected { background: var(--accent-green); animation: pulse-green 2s ease-in-out infinite; }
-    .seal[data-status="connected"] .seal-ring { border-color: rgba(108,212,160,0.3); box-shadow: inset 0 0 8px rgba(108,212,160,0.15), 0 0 4px rgba(108,212,160,0.1); }
-    .seal[data-status="connecting"] .seal-ring { border-color: rgba(240,163,69,0.3); box-shadow: inset 0 0 8px rgba(240,163,69,0.15), 0 0 4px rgba(240,163,69,0.1); }
 
-    @media (prefers-reduced-motion: reduce) {
-      .seal-dot.connecting, .seal-dot.connected { animation: none; }
+    @keyframes pulse-connecting {
+      0%, 100% { box-shadow: 0 0 4px var(--amber-glow); transform: scale(1); }
+      50% { box-shadow: 0 0 14px var(--amber-glow); transform: scale(1.15); }
     }
 
-    @keyframes pulse-green {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(108,212,160,0.35); }
-      50% { box-shadow: 0 0 0 6px rgba(108,212,160,0); }
-    }
-    @keyframes pulse-amber {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(240,163,69,0.35); }
-      50% { box-shadow: 0 0 0 6px rgba(240,163,69,0); }
+    .status-line {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      margin-bottom: 10px;
+      min-height: 18px;
     }
 
-    /* ── Washi Tape (journal divider) ── */
-    .ruled {
+    .status-text {
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-display);
+      color: var(--text-muted);
+      transition: color 0.3s;
+    }
+    .status-text.connected { color: var(--green); }
+    .status-text.connecting { color: var(--amber); }
+    .status-text.disconnected { color: var(--text-muted); }
+
+    .divider {
       position: relative;
       margin-bottom: 12px;
-      padding-top: 12px;
-    }
-    .ruled::before {
-      content: '';
-      display: block;
-      height: 1px;
-      background: var(--accent-sub);
-      opacity: 0.5;
-    }
-    .ruled::after {
-      content: '';
-      position: absolute;
-      top: 5px;
-      left: 50%;
-      width: 3px;
-      height: 3px;
-      margin-left: -1.5px;
-      border-radius: 50%;
-      background: var(--accent-sub);
-      opacity: 0.3;
+      padding-top: 10px;
     }
 
-    /* ── Entry ── */
+    .divider::before {
+      content: '';
+      display: block;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, var(--yellow-dim) 20%, var(--yellow-dim) 80%, transparent 100%);
+      border-radius: 1px;
+    }
+
+    .divider::after {
+      content: '✦';
+      position: absolute;
+      top: 3px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 9px;
+      color: var(--yellow);
+      opacity: 0.5;
+    }
+
     .entry {
       background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 2px solid var(--accent);
-      border-radius: 0 8px 8px 0;
-      padding: 12px;
+      border: 2px solid var(--border);
+      border-left: 3px solid var(--pink);
+      border-radius: 12px;
+      padding: 14px 14px 12px;
+      box-shadow:
+        0 4px 12px rgba(0,0,0,0.2),
+        inset 0 1px 0 rgba(255,255,255,0.03);
+      min-height: 76px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .entry-message {
-      font-size: 13px;
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 500;
       color: var(--text-secondary);
+      line-height: 1.4;
     }
 
     .entry-hint {
       font-size: 11px;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 2px;
+      font-weight: 400;
     }
 
     .entry-site {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--accent);
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      font-family: var(--font-display);
+      color: var(--pink);
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.6px;
+      background: rgba(243,127,150,0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
       margin-bottom: 6px;
+      align-self: flex-start;
     }
 
     .entry-details {
-      font-size: 13px;
+      font-family: var(--font-display);
+      font-size: 14px;
       font-weight: 500;
       color: var(--text);
-      margin-bottom: 3px;
+      margin-bottom: 2px;
       word-wrap: break-word;
+      line-height: 1.4;
     }
 
     .entry-state {
       font-size: 12px;
       color: var(--text-secondary);
+      font-weight: 400;
     }
 
-    /* ── Footer info ── */
     .footer-info {
       font-size: 10px;
       color: var(--text-muted);
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       font-family: var(--font-mono);
       word-break: break-all;
+      min-height: 14px;
     }
     .footer-info.error {
-      color: var(--accent);
+      color: var(--red);
     }
 
-    /* ── Actions ── */
     .actions {
       display: flex;
       gap: 8px;
@@ -215,39 +283,101 @@
 
     .btn {
       flex: 1;
-      padding: 7px 0;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-family: var(--font-body);
+      padding: 8px 0;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-family: var(--font-display);
       font-size: 12px;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
-      background: transparent;
+      background: var(--surface);
       color: var(--text-secondary);
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow:
+        0 2px 4px rgba(0,0,0,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.04);
     }
-    .btn:hover { background: var(--surface); color: var(--text); border-color: var(--border-light); }
-    .btn:active { background: var(--border); }
-    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-    .btn:disabled { opacity: 0.4; cursor: default; }
-    .btn-primary { color: var(--accent); border-color: rgba(243,127,150,0.3); }
-    .btn-primary:hover { background: rgba(243,127,150,0.1); border-color: var(--accent); }
 
-    /* ── Shortcut hint ── */
+    .btn:hover {
+      background: var(--surface-hover);
+      color: var(--text);
+      border-color: var(--text-muted);
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--pink);
+      outline-offset: 2px;
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-primary {
+      color: var(--pink);
+      border-color: rgba(243,127,150,0.25);
+      background: rgba(243,127,150,0.06);
+    }
+
+    .btn-primary:hover {
+      background: rgba(243,127,150,0.14);
+      border-color: var(--pink);
+    }
+
     .hint {
       font-size: 10px;
       color: var(--text-muted);
       text-align: center;
       margin-top: 6px;
+      font-weight: 400;
+    }
+
+    .hint kbd {
+      display: inline-block;
+      padding: 1px 6px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-muted);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.05s !important;
+      }
+      .seal-dot.connecting { animation: none; background: var(--amber); }
+    }
+
+    .fade-in {
+      animation: fade-in 0.3s ease-out;
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
   <header class="header">
-    <h1 class="title">Digitan's Journal</h1>
-    <div class="seal" id="seal" data-status="disconnected">
-      <div class="seal-dot disconnected" id="sealDot"></div>
-      <div class="seal-ring"></div>
+    <div class="title-group">
+      <img class="journal-icon" src="../icons/icon48.png" alt="" aria-hidden="true" width="22" height="22">
+      <h1 class="title">Digitan's <span class="title-accent">Journal</span></h1>
+    </div>
+    <div class="seal-wrap">
+      <div class="seal" id="seal" data-status="disconnected">
+        <div class="seal-dot disconnected" id="sealDot"></div>
+        <div class="seal-ring"></div>
+      </div>
     </div>
   </header>
 
@@ -255,28 +385,28 @@
     <span class="status-text disconnected" id="statusText">Disconnected</span>
   </div>
 
-  <div class="ruled">
-    <div class="entry" id="activityContainer">
-      <div id="emptyState">
-        <p class="entry-message" id="emptyMessage">Your journal is ready.</p>
-        <p class="entry-hint" id="emptyHint">Open a tracked site to begin logging.</p>
-      </div>
-      <div id="activeEntry" style="display:none">
-        <p class="entry-site" id="entrySite"></p>
-        <p class="entry-details" id="entryDetails"></p>
-        <p class="entry-state" id="entryState"></p>
-      </div>
+  <div class="divider"></div>
+
+  <div class="entry" id="activityContainer">
+    <div id="emptyState">
+      <p class="entry-message" id="emptyMessage">Your journal is ready~♪</p>
+      <p class="entry-hint" id="emptyHint">Open a tracked site to begin logging!</p>
+    </div>
+    <div id="activeEntry" style="display:none">
+      <span class="entry-site" id="entrySite"></span>
+      <p class="entry-details" id="entryDetails"></p>
+      <p class="entry-state" id="entryState"></p>
     </div>
   </div>
 
-  <div class="footer-info" id="footerInfo"></div>
+  <p class="footer-info" id="footerInfo"></p>
 
   <div class="actions">
     <button class="btn btn-primary" id="reconnectBtn">Reconnect</button>
     <button class="btn" id="clearBtn">Clear</button>
   </div>
 
-  <div class="hint">Alt + C to clear</div>
+  <p class="hint"><kbd>Alt + C</kbd> to clear</p>
 
   <script src="../dist/browser-polyfill.js"></script>
   <script src="popup.js"></script>

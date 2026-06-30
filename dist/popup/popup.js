@@ -1,6 +1,3 @@
-/**
- * @param {StatusObject} status
- */
 function updateUI(status) {
   const seal = document.getElementById('seal');
   const dot = document.getElementById('sealDot');
@@ -8,6 +5,7 @@ function updateUI(status) {
   const footer = document.getElementById('footerInfo');
   const empty = document.getElementById('emptyState');
   const active = document.getElementById('activeEntry');
+  const container = document.getElementById('activityContainer');
 
   if (status.rpcConnected) {
     seal.dataset.status = 'connected';
@@ -42,11 +40,23 @@ function updateUI(status) {
   } else {
     empty.style.display = 'block';
     active.style.display = 'none';
+    const messages = [
+      'Hewwo! Your journal is ready~♪',
+      'I\'m so glad I was born an otaku~♪',
+      'Sparkling content is being logged!',
+      'Ready to support your adventures~!',
+      'Every page is a new sparkle~☆',
+      'Hewwo! Waiting for something shiny~!',
+    ];
     document.getElementById('emptyMessage').textContent =
-      status.rpcConnected ? 'Hewwo! Your journal is ready~♪' : 'No connection.';
+      status.rpcConnected ? messages[Math.floor(Math.random() * messages.length)] : 'No connection.';
     document.getElementById('emptyHint').textContent =
       status.rpcConnected ? 'Open a tracked site to start logging sparkling content!' : 'Click Reconnect to try again.';
   }
+
+  container.classList.remove('fade-in');
+  void container.offsetWidth;
+  container.classList.add('fade-in');
 }
 
 function fetchStatus() {
@@ -81,6 +91,9 @@ document.getElementById('reconnectBtn').addEventListener('click', () => {
 });
 
 document.getElementById('clearBtn').addEventListener('click', () => {
+  const btn = document.getElementById('clearBtn');
+  btn.style.transform = 'scale(0.9)';
+  setTimeout(() => { btn.style.transform = ''; }, 150);
   browser.runtime.sendMessage({ type: 'clearActivity' }).then(() => {
     browser.runtime.sendMessage({ type: 'getStatus' }).then((status) => updateUI(status));
   });

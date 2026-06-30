@@ -7,6 +7,7 @@ class StateManager {
     this.trackedTabs = new Set();
     this.idleTimer = null;
     this._closedTabId = null;
+    this._lastStableKey = null;
     this.settings = { ...DEFAULTS };
 
     rpc.onStatus((status) => {
@@ -61,12 +62,12 @@ class StateManager {
     finalData.details = finalData.details || 'Digitan\'s Journal';
     finalData.largeImageKey = finalData.largeImageKey || 'digitan';
     finalData.largeImageText = finalData.largeImageText || 'Digitan\'s Journal';
+    const stableKey = [site, finalData.details, data.raw?.phase || ''].join('::');
     if (
       !this.currentActivity ||
-      this.currentSite !== site ||
-      this.currentActivity.details !== finalData.details ||
-      this.currentActivity.state !== finalData.state
+      stableKey !== this._lastStableKey
     ) {
+      this._lastStableKey = stableKey;
       finalData.startTimestamp = Date.now();
     } else {
       finalData.startTimestamp = this.currentActivity.startTimestamp;
@@ -83,6 +84,7 @@ class StateManager {
   clearActivity() {
     this.currentSite = null;
     this.currentActivity = null;
+    this._lastStableKey = null;
     this.rpc.clearActivity();
     browser.storage.local.set({ currentSite: null, currentActivity: null })
       .catch((err) => console.error('storage set failed', err));
