@@ -4,4 +4,5 @@ native-host/host*.exe
 native-host/host.old
 native-host/dj-cli.exe
 tests/.test-profile/
-store-assets/assets/
+store-assets/assets/*
+!store-assets/assets/cover-image.png

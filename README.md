@@ -1,5 +1,7 @@
 # Digitan's Journal
 
+![Digitan's Journal](store-assets/assets/cover-image.png)
+
 A browser extension that shows what you're browsing as Discord Rich Presence. Supports **Chrome** (Manifest V3), **Firefox** (Manifest V2), and other Chromium-based browsers (Edge, Brave, Vivaldi).
 
 ## Architecture
