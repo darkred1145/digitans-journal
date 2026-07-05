@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build.js",
+    "dev": "node scripts/build.js --watch",
+    "test": "node tests/presence-formatter.test.js",
+    "pretest:e2e": "node scripts/build.js",
+    "test:e2e": "node tests/e2e.js",
+    "build:host": "cd native-host && npm run build"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.304",
+    "playwright": "^1.52.0"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.17",
+    "webextension-polyfill": "^0.12.0"
+  }
+}

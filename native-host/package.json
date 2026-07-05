@@ -1,0 +1,18 @@
+{
+  "name": "digitans-journal-native-host",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "postinstall": "node scripts/generate-setup.js",
+    "install-host": "node cli.js --install",
+    "uninstall-host": "node cli.js --uninstall",
+    "build": "npx pkg host.js --targets node18-win-x64 --output host.exe --public",
+    "build:cli": "npx pkg cli.js --targets node18-win-x64 --output dj-cli.exe --public"
+  },
+  "dependencies": {
+    "discord-rpc": "^4.0.1"
+  },
+  "devDependencies": {
+    "pkg": "^5.8.1"
+  }
+}

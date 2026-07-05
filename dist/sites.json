@@ -1,0 +1,26 @@
+[
+{
+    "id": "gametora",
+    "label": "gametora.com/umamusume",
+    "match": "https://gametora.com/umamusume*",
+    "defaultEnabled": true
+  },
+  {
+    "id": "raggooner",
+    "label": "raggooneropen.web.app",
+    "match": "https://raggooneropen.web.app/*",
+    "defaultEnabled": true
+  },
+  {
+    "id": "uma-guide",
+    "label": "uma.guide",
+    "match": "https://uma.guide/*",
+    "defaultEnabled": true
+  },
+  {
+    "id": "umalator",
+    "label": "umalator.app",
+    "match": "https://umalator.app/*",
+    "defaultEnabled": true
+  }
+]
