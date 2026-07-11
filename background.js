@@ -39,7 +39,11 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === 'presence') {
     if (sender.tab && sender.tab.id) {
-      if (!state.trackTab(sender.tab.id)) { sendResponse({ ok: false }); return; }
+      if (sender.url && (sender.url.startsWith('chrome-extension://') || sender.url.startsWith('moz-extension://'))) {
+        // Extension page (popup/options), not a content script — don't track
+      } else if (!state.trackTab(sender.tab.id)) {
+        sendResponse({ ok: false }); return;
+      }
     }
     state.sendActivity(msg.site, msg.data);
     sendResponse({ ok: true });

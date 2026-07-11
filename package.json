@@ -4,8 +4,10 @@
     "build": "node scripts/build.js",
     "dev": "node scripts/build.js --watch",
     "test": "node tests/presence-formatter.test.js",
+    "test:protocol": "node tests/rpc-protocol.test.js",
     "pretest:e2e": "node scripts/build.js",
     "test:e2e": "node tests/e2e.js",
+    "test:e2e:firefox": "node tests/e2e.js --browser firefox",
     "build:host": "cd native-host && npm run build"
   },
   "devDependencies": {

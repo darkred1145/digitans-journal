@@ -1,0 +1,237 @@
+{
+  "background.js": {
+    "mtime": 1783068193.326326,
+    "ast_hash": "d7bfb93051f04f70296de9247cfdaf72",
+    "semantic_hash": "d7bfb93051f04f70296de9247cfdaf72"
+  },
+  "content-scripts/gametora.js": {
+    "mtime": 1782574630.4101586,
+    "ast_hash": "60082106e094794159bdeeff8ac3427c",
+    "semantic_hash": "60082106e094794159bdeeff8ac3427c"
+  },
+  "content-scripts/harvester.js": {
+    "mtime": 1782602671.3780277,
+    "ast_hash": "693a5bfdcbc247511dc543cc9b4d6556",
+    "semantic_hash": "693a5bfdcbc247511dc543cc9b4d6556"
+  },
+  "content-scripts/raggooner.js": {
+    "mtime": 1782857286.1774285,
+    "ast_hash": "460cb17d7ca3c15ab952f01b7ff4c1f2",
+    "semantic_hash": "460cb17d7ca3c15ab952f01b7ff4c1f2"
+  },
+  "content-scripts/uma-guide.js": {
+    "mtime": 1782601010.7166748,
+    "ast_hash": "1be12860e7535ccd1b27ca8bfdc043e4",
+    "semantic_hash": "1be12860e7535ccd1b27ca8bfdc043e4"
+  },
+  "content-scripts/umalator.js": {
+    "mtime": 1782580065.0839577,
+    "ast_hash": "e8f011d1ba9282cac27da04a0b6d1cf0",
+    "semantic_hash": "e8f011d1ba9282cac27da04a0b6d1cf0"
+  },
+  "manifest.firefox.json": {
+    "mtime": 1783220489.8947828,
+    "ast_hash": "9288f31e8dc37863bbf6040585b76e09",
+    "semantic_hash": "9288f31e8dc37863bbf6040585b76e09"
+  },
+  "manifest.json": {
+    "mtime": 1783220469.0494864,
+    "ast_hash": "49ec98b52ec709298573b9f44d776505",
+    "semantic_hash": "49ec98b52ec709298573b9f44d776505"
+  },
+  "native-host/cli.js": {
+    "mtime": 1782602733.0920877,
+    "ast_hash": "f34f66875a9e02b127239f1a69e2bf85",
+    "semantic_hash": "f34f66875a9e02b127239f1a69e2bf85"
+  },
+  "native-host/com.digitansjournal.rpc-firefox.json": {
+    "mtime": 1782638868.0774417,
+    "ast_hash": "90362e78c43a1c1d5a8a248eb962eb9b",
+    "semantic_hash": "90362e78c43a1c1d5a8a248eb962eb9b"
+  },
+  "native-host/host-constants.js": {
+    "mtime": 1782602719.0106382,
+    "ast_hash": "5a99215686b31c97059103c7bff08198",
+    "semantic_hash": "5a99215686b31c97059103c7bff08198"
+  },
+  "native-host/host.js": {
+    "mtime": 1782723961.48342,
+    "ast_hash": "3e48dd4c6cf6372237693a2e4f5102bd",
+    "semantic_hash": "3e48dd4c6cf6372237693a2e4f5102bd"
+  },
+  "native-host/package.json": {
+    "mtime": 1782582312.4484162,
+    "ast_hash": "63fb7a5d6e65b32978357f04b7ecd062",
+    "semantic_hash": "63fb7a5d6e65b32978357f04b7ecd062"
+  },
+  "native-host/scripts/generate-setup.js": {
+    "mtime": 1782602748.4553618,
+    "ast_hash": "ba24288141591412fe5ec09420992aa1",
+    "semantic_hash": "ba24288141591412fe5ec09420992aa1"
+  },
+  "options/options.js": {
+    "mtime": 1783673442.4449005,
+    "ast_hash": "06921a82e33e1d26824a8ade744bc2d6",
+    "semantic_hash": "06921a82e33e1d26824a8ade744bc2d6"
+  },
+  "package.json": {
+    "mtime": 1782637555.2242198,
+    "ast_hash": "407a7bdd4213238e3edf4b4466549217",
+    "semantic_hash": "407a7bdd4213238e3edf4b4466549217"
+  },
+  "popup/popup.js": {
+    "mtime": 1782791899.950221,
+    "ast_hash": "b017883a72967166ea8ecd56b790163f",
+    "semantic_hash": "b017883a72967166ea8ecd56b790163f"
+  },
+  "rpc-manager.js": {
+    "mtime": 1782703297.053955,
+    "ast_hash": "e5e5347739c8e7c7cd6084b98d43740c",
+    "semantic_hash": "e5e5347739c8e7c7cd6084b98d43740c"
+  },
+  "scripts/build.js": {
+    "mtime": 1782704079.229186,
+    "ast_hash": "a2a9e61be3c7dbf254bf6ed9cd1cc32e",
+    "semantic_hash": "a2a9e61be3c7dbf254bf6ed9cd1cc32e"
+  },
+  "scripts/generate-icons.ps1": {
+    "mtime": 1782791989.765051,
+    "ast_hash": "6663bcc5ace355976a1c3ff3b9102514",
+    "semantic_hash": "6663bcc5ace355976a1c3ff3b9102514"
+  },
+  "scripts/store-assets/generate-assets.js": {
+    "mtime": 1783220526.3058114,
+    "ast_hash": "ee4eac5ef1fb8ef9eaed50a794ee4b71",
+    "semantic_hash": "ee4eac5ef1fb8ef9eaed50a794ee4b71"
+  },
+  "scripts/store-assets/generate-screenshots.js": {
+    "mtime": 1782829457.0745163,
+    "ast_hash": "afd39b7e3007c79bf413c192fe6ab50f",
+    "semantic_hash": "afd39b7e3007c79bf413c192fe6ab50f"
+  },
+  "shared/presence-contract.js": {
+    "mtime": 1782703487.2633464,
+    "ast_hash": "47d2bbf63f8d8fae14b2f7f05bda83ae",
+    "semantic_hash": "47d2bbf63f8d8fae14b2f7f05bda83ae"
+  },
+  "shared/presence-formatter.js": {
+    "mtime": 1782600511.0258439,
+    "ast_hash": "f18db57f2f0c134afc8d9caf5318fd4c",
+    "semantic_hash": "f18db57f2f0c134afc8d9caf5318fd4c"
+  },
+  "shared/rpc-protocol.js": {
+    "mtime": 1782598611.1820872,
+    "ast_hash": "e5574ae4ee9bbc0f8202257a62b9ceb8",
+    "semantic_hash": "e5574ae4ee9bbc0f8202257a62b9ceb8"
+  },
+  "shared/settings.js": {
+    "mtime": 1783220450.1803622,
+    "ast_hash": "32550974fb51309a1e68d0133379eb2e",
+    "semantic_hash": "32550974fb51309a1e68d0133379eb2e"
+  },
+  "shared/truncate.js": {
+    "mtime": 1782582198.5626547,
+    "ast_hash": "bad50d85556af7421a8538a37b020326",
+    "semantic_hash": "bad50d85556af7421a8538a37b020326"
+  },
+  "sites.json": {
+    "mtime": 1783220437.9827642,
+    "ast_hash": "b3375e9cd90c75aab5a9726e52e16d0b",
+    "semantic_hash": "b3375e9cd90c75aab5a9726e52e16d0b"
+  },
+  "state-manager.js": {
+    "mtime": 1783068199.7556112,
+    "ast_hash": "04f2c8aaebed6469d56627b111e7d61e",
+    "semantic_hash": "04f2c8aaebed6469d56627b111e7d61e"
+  },
+  "tests/e2e.js": {
+    "mtime": 1782580446.3736396,
+    "ast_hash": "439e7a2aa6259943f855bef48f9eff04",
+    "semantic_hash": "439e7a2aa6259943f855bef48f9eff04"
+  },
+  "tests/pipeline-characterization.test.js": {
+    "mtime": 1782856912.7913027,
+    "ast_hash": "c4bf5fb878c6bff9a73486257a322218",
+    "semantic_hash": "c4bf5fb878c6bff9a73486257a322218"
+  },
+  "tests/presence-formatter.test.js": {
+    "mtime": 1782600519.8978076,
+    "ast_hash": "c82b3e77f259c6d63268359c50b786dd",
+    "semantic_hash": "c82b3e77f259c6d63268359c50b786dd"
+  },
+  "AGENTS.md": {
+    "mtime": 1782584411.0795386,
+    "ast_hash": "cbee57d70efa10a09f438d6d49f23176",
+    "semantic_hash": "cbee57d70efa10a09f438d6d49f23176"
+  },
+  "README.md": {
+    "mtime": 1783220887.8665633,
+    "ast_hash": "ab88973ec9828d2d1a844a533e13bad3",
+    "semantic_hash": "ab88973ec9828d2d1a844a533e13bad3"
+  },
+  "SECURITY.md": {
+    "mtime": 1782581633.999727,
+    "ast_hash": "86a9fd353fb6c850a02cb21475cb25f0",
+    "semantic_hash": "86a9fd353fb6c850a02cb21475cb25f0"
+  },
+  "design-system/MASTER.md": {
+    "mtime": 1782792028.75851,
+    "ast_hash": "bee16e4bc22e54a1b3d0c91ee7acad92",
+    "semantic_hash": "bee16e4bc22e54a1b3d0c91ee7acad92"
+  },
+  "options/options.html": {
+    "mtime": 1783673442.443162,
+    "ast_hash": "01024524f2bc600dd4c4e6498e7cc57d",
+    "semantic_hash": "01024524f2bc600dd4c4e6498e7cc57d"
+  },
+  "popup/popup.html": {
+    "mtime": 1782792309.3388188,
+    "ast_hash": "20798d099018f60b600b4d0b80a37793",
+    "semantic_hash": "20798d099018f60b600b4d0b80a37793"
+  },
+  "store-assets/description.md": {
+    "mtime": 1783220518.494421,
+    "ast_hash": "e3fc46e86dbcc59d64d9b5d90db955b1",
+    "semantic_hash": "e3fc46e86dbcc59d64d9b5d90db955b1"
+  },
+  "store-assets/privacy-policy.md": {
+    "mtime": 1782582978.4369252,
+    "ast_hash": "8b75d1363bed0b946b0a860155c86b98",
+    "semantic_hash": "8b75d1363bed0b946b0a860155c86b98"
+  },
+  "icons/icon128.png": {
+    "mtime": 1782792143.1940696,
+    "ast_hash": "cb0a88a9b6666236f73a15e83c6de268",
+    "semantic_hash": "cb0a88a9b6666236f73a15e83c6de268"
+  },
+  "icons/icon16.png": {
+    "mtime": 1782792143.1940696,
+    "ast_hash": "43eb4abb3b6ef64bcc430d33fef6387b",
+    "semantic_hash": "43eb4abb3b6ef64bcc430d33fef6387b"
+  },
+  "icons/icon48.png": {
+    "mtime": 1782792143.1940696,
+    "ast_hash": "91e90d6f8d5f756df794a1f331d49c68",
+    "semantic_hash": "91e90d6f8d5f756df794a1f331d49c68"
+  },
+  "store-assets/assets/cover-image.png": {
+    "mtime": 1783220877.38333,
+    "ast_hash": "6d3d6c89918d934d0c534717d67b5630",
+    "semantic_hash": "6d3d6c89918d934d0c534717d67b5630"
+  },
+  "store-assets/src-umaguide-favicon.png": {
+    "mtime": 1782583352.8113835,
+    "ast_hash": "145da5a000aa64906a114d787a950339",
+    "semantic_hash": "145da5a000aa64906a114d787a950339"
+  },
+  "store-assets/src-umalator-favicon.svg": {
+    "mtime": 1782583355.346496,
+    "ast_hash": "5431690330972a04dd36d0a49a994908",
+    "semantic_hash": "5431690330972a04dd36d0a49a994908"
+  },
+  "store-assets/src-umalator-og.png": {
+    "mtime": 1782583357.145586,
+    "ast_hash": "15bdc7848ef946275f7fdf65ac75b235",
+    "semantic_hash": "15bdc7848ef946275f7fdf65ac75b235"
+  }
+}

@@ -12,3 +12,8 @@ Character data (color palette, profile, imagery) sourced from https://umapyoi.ne
 - **Color sub**: #F9F189 (light yellow)
 - **Height**: 143cm
 - **Profile**: "Hewwo! I'm Digi-tan! I'm a massive fan of all of the sparkling Umamusume! I'm so happy every day! I'm so glad I was born an otaku!~♪"
+
+## Graphify
+
+Knowledge graph at `graphify-out/` (HTML viz at `graph.html`, audit at `GRAPH_REPORT.md`).
+Rebuild: run `/graphify` from project root — detects changed files automatically.
