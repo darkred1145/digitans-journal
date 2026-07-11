@@ -20,8 +20,9 @@
  */
 
 const { chromium } = require('playwright');
-const { existsSync, mkdirSync } = require('fs');
+const { existsSync, mkdirSync, rmSync, mkdtempSync } = require('fs');
 const path = require('path');
+const os = require('os');
 
 const ROOT_DIR = path.resolve(__dirname, '..', '..');
 const EXT_PATH = process.argv[2] || ROOT_DIR;
@@ -33,32 +34,33 @@ const SCREENSHOT_H = 800;
 async function main() {
   if (!existsSync(OUT_DIR)) mkdirSync(OUT_DIR, { recursive: true });
 
-  const browser = await chromium.launch({
-    headless: true,
+  const tempDir = mkdtempSync(path.join(os.tmpdir(), 'dj-ss-'));
+  const context = await chromium.launchPersistentContext(tempDir, {
+    headless: false,
     args: [
       `--disable-extensions-except=${EXT_PATH}`,
       `--load-extension=${EXT_PATH}`,
-      '--no-sandbox',
+      '--window-position=-10000,-10000',
+      '--no-first-run',
+      '--no-default-browser-check',
     ],
   });
 
-  const ctx = await browser.newContext({
-    viewport: { width: SCREENSHOT_W, height: SCREENSHOT_H },
-  });
+  await new Promise(r => setTimeout(r, 5000));
+  const extId = await getExtensionId(context);
+  console.log('Extension ID:', extId);
 
   try {
     // ── Screenshot 1: Extension popup ──
     // Navigate to a supported site first so the extension has activity
-    const page = await ctx.newPage();
+    const page = await context.newPage();
     await page.goto('https://uma.guide/', { waitUntil: 'domcontentloaded', timeout: 15000 });
-    // Wait for content script to fire
     await page.waitForTimeout(3000);
 
-    // Open the popup via the action URL
-    const popupPage = await ctx.newPage();
-    const extId = await getExtensionId(browser);
+    const popupPage = await context.newPage();
     await popupPage.goto(`chrome-extension://${extId}/popup/popup.html`, { waitUntil: 'networkidle' });
     await popupPage.waitForTimeout(500);
+    await popupPage.setViewportSize({ width: SCREENSHOT_W, height: SCREENSHOT_H });
     await popupPage.screenshot({ path: path.join(OUT_DIR, 'screenshot-01-popup.png') });
     await popupPage.close();
     console.log('✓ screenshot-01-popup.png');
@@ -70,7 +72,7 @@ async function main() {
     console.log('✓ screenshot-02-uma-guide.png');
 
     // ── Screenshot 3: Options / Settings page ──
-    const optionsPage = await ctx.newPage();
+    const optionsPage = await context.newPage();
     await optionsPage.goto(`chrome-extension://${extId}/options/options.html`, { waitUntil: 'networkidle' });
     await optionsPage.waitForTimeout(500);
     await optionsPage.screenshot({ path: path.join(OUT_DIR, 'screenshot-03-options.png') });
@@ -78,23 +80,29 @@ async function main() {
     console.log('✓ screenshot-03-options.png');
 
     // ── Screenshot 4: Privacy mode ──
-    // Enable privacy mode in storage, then open popup
-    await page.evaluate(() => {
-      chrome.storage.sync.set({ privacyMode: true });
-    });
-    await page.waitForTimeout(500);
-    const popupPrivacy = await ctx.newPage();
+    // Set privacy mode via an extension page (chrome.storage only accessible in extension context)
+    const setPrivacy = async (enabled) => {
+      const p = await context.newPage();
+      await p.goto(`chrome-extension://${extId}/popup/popup.html`, { waitUntil: 'networkidle' });
+      await p.evaluate((val) => {
+        chrome.storage.sync.set({ privacyMode: val });
+      }, enabled);
+      await p.close();
+    };
+    await setPrivacy(true);
+    const popupPrivacy = await context.newPage();
     await popupPrivacy.goto(`chrome-extension://${extId}/popup/popup.html`, { waitUntil: 'networkidle' });
     await popupPrivacy.waitForTimeout(500);
     await popupPrivacy.screenshot({ path: path.join(OUT_DIR, 'screenshot-04-privacy.png') });
     await popupPrivacy.close();
     console.log('✓ screenshot-04-privacy.png');
 
+    await setPrivacy(false);
+
     // ── Screenshot 5: Template customization ──
-    const optionsTemplates = await ctx.newPage();
+    const optionsTemplates = await context.newPage();
     await optionsTemplates.goto(`chrome-extension://${extId}/options/options.html`, { waitUntil: 'networkidle' });
     await optionsTemplates.waitForTimeout(500);
-    // Fill in a template example
     await optionsTemplates.evaluate(() => {
       const details = document.querySelector('[data-site="gametora"] .template-details');
       const state = document.querySelector('[data-site="gametora"] .template-state');
@@ -106,24 +114,21 @@ async function main() {
     console.log('✓ screenshot-05-templates.png');
 
     // ── Promo tile: Small (440×280) ──
-    const smallPage = await ctx.newPage();
-    await smallPage.setViewportSize({ width: 440, height: 280 });
+    const smallPage = await context.newPage();
     await renderPromoPage(smallPage, extId, 'small');
     await smallPage.screenshot({ path: path.join(OUT_DIR, 'promo-tile-small.png') });
     await smallPage.close();
     console.log('✓ promo-tile-small.png');
 
     // ── Promo tile: Large (920×680) ──
-    const largePage = await ctx.newPage();
-    await largePage.setViewportSize({ width: 920, height: 680 });
+    const largePage = await context.newPage();
     await renderPromoPage(largePage, extId, 'large');
     await largePage.screenshot({ path: path.join(OUT_DIR, 'promo-tile-large.png') });
     await largePage.close();
     console.log('✓ promo-tile-large.png');
 
     // ── Promo tile: Marquee (1400×560) ──
-    const marqueePage = await ctx.newPage();
-    await marqueePage.setViewportSize({ width: 1400, height: 560 });
+    const marqueePage = await context.newPage();
     await renderPromoPage(marqueePage, extId, 'marquee');
     await marqueePage.screenshot({ path: path.join(OUT_DIR, 'promo-tile-marquee.png') });
     await marqueePage.close();
@@ -131,26 +136,23 @@ async function main() {
 
     await page.close();
   } finally {
-    await browser.close();
+    await context.close();
+    try { rmSync(tempDir, { recursive: true, force: true }); } catch (_) {}
   }
 
   console.log('\nAll assets generated in:', OUT_DIR);
 }
 
-async function getExtensionId(browser) {
-  // Read the extension ID from the background page URL
-  const targets = browser.contexts()[0].pages();
-  for (const t of targets) {
-    const url = t.url();
+async function getExtensionId(context) {
+  for (const sw of context.serviceWorkers()) {
+    const m = sw.url().match(/^chrome-extension:\/\/([^/]+)\//);
+    if (m) return m[1];
+  }
+  for (const p of context.pages()) {
+    const url = p.url();
     if (url.startsWith('chrome-extension://')) {
       return url.split('/')[2];
     }
-  }
-  // Fallback: read from the service worker target
-  const swTarget = browser.serviceWorkers();
-  if (swTarget.length > 0) {
-    const url = swTarget[0].url();
-    return url.split('/')[2];
   }
   throw new Error('Could not detect extension ID');
 }
@@ -162,6 +164,10 @@ async function renderPromoPage(page, extId, size) {
   const muted = '#9585A5';
   const titleSize = size === 'small' ? '28px' : '48px';
   const subtitleSize = size === 'small' ? '12px' : '18px';
+
+  const dims = { small: '440x280', large: '920x680', marquee: '1400x560' };
+  const [w, h] = dims[size].split('x').map(Number);
+  await page.setViewportSize({ width: w, height: h });
 
   const iconUrl = `chrome-extension://${extId}/icons/icon128.png`;
 

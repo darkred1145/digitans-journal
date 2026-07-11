@@ -1,13 +1,11 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "Digitan's Journal",
   "version": "1.0.0",
   "description": "Shows what you're browsing as Discord Rich Presence",
   "permissions": [
     "nativeMessaging",
-    "storage"
-  ],
-  "host_permissions": [
+    "storage",
     "https://gametora.com/umamusume*",
     "https://raggooneropen.web.app/*",
     "https://uma.guide/*",
@@ -18,9 +16,13 @@
     "open_in_tab": true
   },
   "background": {
-    "service_worker": "dist/background.js"
+    "scripts": [
+      "browser-polyfill.js",
+      "background.js"
+    ],
+    "persistent": false
   },
-  "action": {
+  "browser_action": {
     "default_popup": "popup/popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
@@ -41,15 +43,14 @@
       "description": "Clear current activity"
     }
   },
-  "content_security_policy": {
-    "extension_pages": "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com"
-  },
+  "content_security_policy": "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com",
   "content_scripts": [
     {
       "matches": [
         "https://gametora.com/umamusume*"
       ],
       "js": [
+        "browser-polyfill.js",
         "content-gametora.js"
       ],
       "run_at": "document_idle"
@@ -59,6 +60,7 @@
         "https://raggooneropen.web.app/*"
       ],
       "js": [
+        "browser-polyfill.js",
         "content-raggooner.js"
       ],
       "run_at": "document_idle"
@@ -68,6 +70,7 @@
         "https://uma.guide/*"
       ],
       "js": [
+        "browser-polyfill.js",
         "content-uma-guide.js"
       ],
       "run_at": "document_idle"
@@ -77,9 +80,16 @@
         "https://umalator.app/*"
       ],
       "js": [
+        "browser-polyfill.js",
         "content-umalator.js"
       ],
       "run_at": "document_idle"
     }
-  ]
+  ],
+  "applications": {
+    "gecko": {
+      "id": "digitans-journal@darkred1145",
+      "strict_min_version": "91.0"
+    }
+  }
 }
