@@ -8,3 +8,8 @@ store-assets/assets/*
 !store-assets/assets/cover-image.png
 store-assets/screenshots/
 *.xpi
+test-artifacts/
+test-results/
+playwright-report/
+playwright-results.xml
+tests/e2e/ext-state/
