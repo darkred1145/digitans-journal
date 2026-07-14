@@ -8,4 +8,3 @@ store-assets/assets/*
 !store-assets/assets/cover-image.png
 store-assets/screenshots/
 *.xpi
-dist/
