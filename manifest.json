@@ -3,6 +3,7 @@
   "name": "Digitan's Journal",
   "version": "1.0.0",
   "description": "Shows what you're browsing as Discord Rich Presence",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0LBV20NK1/5ZC0r5sGRnOqypHh/eWf98Q5/wHpyBvpye88ygY/OL6dje41DjQgfb3XAHRr5EH3CEtCQkqJUgMYOTwfO+4N/XZdHMeyh5VZ7YUxpJ/z/FeSDIRrXQuBu6kjehz0zSIKeWF5QqFzN467laCpS1h+9Or0EohWLpOdb/WaoNQvCaDd8ODARrVvATb3FYk5REs81KsrNNfydmHrvQl1A5Usli/0a38Z28rYmWuiT7D7bRkKorZ3WiArhvWNeB7pP4vxIcSExTWwkBw4fiphKmnrEc206ExPcHs0NIA9NKUtpZM2gKSMDXa4mKVwbsbV1N8ThYvyQ1dkkaTQIDAQAB",
   "permissions": [
     "nativeMessaging",
     "storage"

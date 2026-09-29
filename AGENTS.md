@@ -13,6 +13,18 @@ Character data (color palette, profile, imagery) sourced from https://umapyoi.ne
 - **Height**: 143cm
 - **Profile**: "Hewwo! I'm Digi-tan! I'm a massive fan of all of the sparkling Umamusume! I'm so happy every day! I'm so glad I was born an otaku!~♪"
 
+## Extension ID
+
+`manifest.json` pins a `key` (a public key, safe to commit), so the extension ID
+is fixed at `bjlefkbhpldffadmpbnhdefgfneanhcn` regardless of install path or
+machine. `native-host/host-constants.js` derives that ID from the key with the
+same SHA-256-to-a-p mapping Chrome uses.
+
+Never hardcode that ID anywhere. Read `CHROME_EXTENSION_ID` from
+host-constants, or read the `key` from the manifest. Changing the `key` changes
+the ID and invalidates every registered native host manifest, so it needs a
+`node cli.js --install` afterward.
+
 ## Build Output
 
 `dist/` is the extension and is **not committed**. Run `npm run build` before

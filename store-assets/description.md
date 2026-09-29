@@ -39,6 +39,8 @@ When you visit a supported site, the extension reads lightweight metadata (page 
 5. Make sure Discord is running
 6. Visit a supported site, and your presence appears
 
+To update later, pull, run `npm run build` again, and hit reload on the extension card. The native host stays registered, since the extension ID is pinned rather than derived from the install path.
+
 A standalone binary (`host.exe`) is also available. Build it with `npm run build` in `native-host/`, and no Node.js installation is needed afterward.
 
 ### What Data Is Collected

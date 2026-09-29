@@ -1,130 +1,78 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-const { HOST_NAME, MANIFEST_FILE, MANIFEST_FILE_FIREFOX, getHostDir, getChromeManifest, getFirefoxManifest } = require('./host-constants');
-
-const KNOWN_COMMANDS = ['clear-activity'];
+const {
+  HOST_NAME, MANIFEST_FILE, MANIFEST_FILE_FIREFOX,
+  CHROME_EXTENSION_ID, GECKO_EXTENSION_ID,
+  getHostDir, getChromeManifest, getFirefoxManifest,
+} = require('./host-constants');
 
 const BROWSERS = [
-  { name: 'Chrome', key: 'Google/Chrome', prefs: ['Google/Chrome/User Data/Default/Preferences'] },
-  { name: 'Edge', key: 'Microsoft/Edge', prefs: ['Microsoft/Edge/User Data/Default/Preferences'] },
-  { name: 'Brave', key: 'BraveSoftware/Brave', prefs: ['BraveSoftware/Brave/User Data/Default/Preferences'] },
-  { name: 'Chromium', key: 'Chromium', prefs: [
-    'Chromium/User Data/Default/Preferences',
-    'imput/Helium/User Data/Default/Preferences',
-  ]},
+  { name: 'Chrome', key: 'Google/Chrome' },
+  { name: 'Edge', key: 'Microsoft/Edge' },
+  { name: 'Brave', key: 'BraveSoftware/Brave' },
+  { name: 'Chromium', key: 'Chromium' },
 ];
 
-function detectExtensionId() {
-  for (const b of BROWSERS) {
-    for (const rel of b.prefs) {
-      try {
-        const prefs = JSON.parse(fs.readFileSync(path.join(process.env.LOCALAPPDATA, rel), 'utf-8'));
-        const ext = prefs.extensions;
-        if (!ext) continue;
-
-        const settings = ext.settings;
-        if (settings) {
-          const projectDir = path.basename(path.resolve(getHostDir(), '..'));
-          for (const [id, data] of Object.entries(settings)) {
-            if (data.path && data.path.includes(projectDir)) {
-              console.error(`Detected extension ID ${id} from ${b.name} (settings)`);
-              return { id, browserName: b.name, browserKey: b.key };
-            }
-          }
-        }
-
-        const commands = ext.commands;
-        if (commands) {
-          for (const val of Object.values(commands)) {
-            if (KNOWN_COMMANDS.includes(val.command_name)) {
-              console.error(`Detected extension ID ${val.extension} from ${b.name} (commands)`);
-              return { id: val.extension, browserName: b.name, browserKey: b.key };
-            }
-          }
-        }
-      } catch {}
-    }
+function reg(args) {
+  try {
+    execSync(`reg ${args}`, { stdio: 'pipe' });
+    return true;
+  } catch {
+    return false;
   }
-  return null;
 }
 
 function installHost() {
-  const detected = detectExtensionId();
-  const cliExtId = process.argv[process.argv.indexOf('--install') + 1];
-  const extId = detected ? detected.id : (cliExtId && !cliExtId.startsWith('--') ? cliExtId : null);
-  const wantFirefox = process.argv.includes('--browser') && (process.argv[process.argv.indexOf('--browser') + 1] === 'firefox');
   const hostDir = getHostDir();
+  const wantFirefox = process.argv[process.argv.indexOf('--browser') + 1] === 'firefox';
 
-  if (!extId) {
-    console.error('Extension ID not found. Load the extension first, then run:');
-    console.error(`  node ${path.basename(process.argv[1])} --install <extension-id>`);
-    console.error(`  node ${path.basename(process.argv[1])} --install <gecko-id> --browser firefox`);
-    process.exit(1);
-  }
-
-  if (wantFirefox || !detected) {
-    // Write Firefox manifest
+  if (wantFirefox) {
     const manifestPath = path.join(hostDir, MANIFEST_FILE_FIREFOX);
-    const manifest = getFirefoxManifest(extId);
-    fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
-    console.error(`Firefox manifest written to ${manifestPath}`);
-    try {
-      execSync(`reg add "HKCU\\Software\\Mozilla\\NativeMessagingHosts\\${HOST_NAME}" /ve /t REG_SZ /d "${manifestPath}" /f`, { stdio: 'pipe' });
-      console.error('Registered for Firefox');
-    } catch (e) {
-      console.error('Failed to register for Firefox:', e.message);
-    }
+    fs.writeFileSync(manifestPath, JSON.stringify(getFirefoxManifest(), null, 2) + '\n');
+    const ok = reg(`add "HKCU\\Software\\Mozilla\\NativeMessagingHosts\\${HOST_NAME}" /ve /t REG_SZ /d "${manifestPath}" /f`);
+    console.error(ok
+      ? `Registered for Firefox (${GECKO_EXTENSION_ID})`
+      : 'Failed to write the Firefox registry key');
+    return;
   }
 
-  if (!wantFirefox) {
-    // Write Chrome manifest
-    const manifestPath = path.join(hostDir, MANIFEST_FILE);
-    const manifest = getChromeManifest(extId);
-    fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
-    console.error(`Chrome manifest written to ${manifestPath}`);
+  const manifestPath = path.join(hostDir, MANIFEST_FILE);
+  fs.writeFileSync(manifestPath, JSON.stringify(getChromeManifest(), null, 2) + '\n');
 
-    if (detected && detected.browserKey) {
-      execSync(`reg add "HKCU\\Software\\${detected.browserKey}\\NativeMessagingHosts\\${HOST_NAME}" /ve /t REG_SZ /d "${manifestPath}" /f`, { stdio: 'pipe' });
-      console.error(`Registered for ${detected.browserName}`);
-    } else {
-      for (const b of BROWSERS) {
-        try {
-          execSync(`reg add "HKCU\\Software\\${b.key}\\NativeMessagingHosts\\${HOST_NAME}" /ve /t REG_SZ /d "${manifestPath}" /f`, { stdio: 'pipe' });
-          console.error(`Registered for ${b.name}`);
-        } catch {}
-      }
+  let registered = 0;
+  for (const b of BROWSERS) {
+    if (reg(`add "HKCU\\Software\\${b.key}\\NativeMessagingHosts\\${HOST_NAME}" /ve /t REG_SZ /d "${manifestPath}" /f`)) {
+      console.error(`Registered for ${b.name}`);
+      registered++;
     }
   }
-
-  console.error('Install complete. Reload the extension in your browser.');
+  if (!registered) console.error('No Chromium registry keys were written');
+  console.error(`Extension ID: ${CHROME_EXTENSION_ID} (pinned by manifest.json)`);
 }
 
 function uninstallHost() {
   for (const b of BROWSERS) {
-    try {
-      execSync(`reg delete "HKCU\\Software\\${b.key}\\NativeMessagingHosts\\${HOST_NAME}" /f`, { stdio: 'pipe' });
-      console.error(`Unregistered for ${b.name}`);
-    } catch {}
+    reg(`delete "HKCU\\Software\\${b.key}\\NativeMessagingHosts\\${HOST_NAME}" /f`);
   }
-  try {
-    execSync(`reg delete "HKCU\\Software\\Mozilla\\NativeMessagingHosts\\${HOST_NAME}" /f`, { stdio: 'pipe' });
-    console.error('Unregistered for Firefox');
-  } catch {}
+  reg(`delete "HKCU\\Software\\Mozilla\\NativeMessagingHosts\\${HOST_NAME}" /f`);
 
   const hostDir = getHostDir();
-  try { fs.unlinkSync(path.join(hostDir, MANIFEST_FILE)); } catch {}
-  try { fs.unlinkSync(path.join(hostDir, MANIFEST_FILE_FIREFOX)); } catch {}
+  for (const f of [MANIFEST_FILE, MANIFEST_FILE_FIREFOX]) {
+    try { fs.unlinkSync(path.join(hostDir, f)); } catch {}
+  }
 
-  console.error('Uninstall complete.');
+  console.error('Unregistered and removed the host manifests.');
 }
 
-if (process.argv.includes('--install')) installHost();
-else if (process.argv.includes('--uninstall')) uninstallHost();
+const argv = process.argv.slice(2);
+
+if (argv.includes('--install')) installHost();
+else if (argv.includes('--uninstall')) uninstallHost();
 else {
   console.error('Usage:');
-  console.error(`  node ${path.basename(process.argv[1])} --install [extension-id]`);
-  console.error(`  node ${path.basename(process.argv[1])} --install <gecko-id> --browser firefox`);
+  console.error(`  node ${path.basename(process.argv[1])} --install`);
+  console.error(`  node ${path.basename(process.argv[1])} --install --browser firefox`);
   console.error(`  node ${path.basename(process.argv[1])} --uninstall`);
   process.exit(1);
 }

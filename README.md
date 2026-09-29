@@ -50,31 +50,26 @@ This populates `dist/`, which is what you load in the next step.
 
 ### 4. Register the native host (one-time)
 
-**Chrome and Chromium browsers:**
-
 ```bash
 cd native-host
 node cli.js --install
 ```
 
-This auto-detects your extension ID, writes the native manifest, and registers in the registry.
-
-If auto-detection fails, pass the extension ID manually:
-
-```bash
-node cli.js --install <extension-id>
-```
-
-You can find your extension ID on the extensions page (`chrome://extensions` with Developer Mode on).
+This writes the native manifest and registers it for Chrome, Edge, Brave, and Chromium. It prints the extension ID it used, which comes from the `key` field in `manifest.json`. Because that key is pinned, the ID is the same on every machine and no matter which folder you loaded the extension from, so there is nothing to detect and nothing to pass in.
 
 **Firefox:**
 
 ```bash
-cd native-host
-node cli.js --install <gecko-addon-id> --browser firefox
+node cli.js --install --browser firefox
 ```
 
-The Gecko add-on ID is `digitans-journal@darkred1145` (defined in `manifest.firefox.json`).
+The Gecko add-on ID is `digitans-journal@darkred1145`, read from `manifest.firefox.json`.
+
+To remove the registration and the generated manifests:
+
+```bash
+node cli.js --uninstall
+```
 
 > **Standalone binary:** If you've built `host.exe` (`npm run build` in `native-host`), run `node cli.js --install` from the `native-host` folder using the bundled Node.js runtime. No separate Node.js install needed.
 
@@ -92,6 +87,18 @@ node cli.js --uninstall
 ```
 
 Then remove the extension from your browser and delete the project folder.
+
+## Updating
+
+Pull, rebuild, and reload:
+
+```bash
+git pull
+npm install
+npm run build
+```
+
+Then click the reload arrow on the extension card in `chrome://extensions`. The native host needs no re-registration: the extension ID is pinned in `manifest.json`, so the registration written the first time keeps matching. If you ever change that `key`, run `node cli.js --install` again from `native-host/`.
 
 ## Supported Sites
 
