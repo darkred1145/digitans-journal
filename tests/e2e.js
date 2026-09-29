@@ -5,6 +5,8 @@ const { chromium } = require('playwright');
 const { retry } = require('./helpers/retry');
 
 const ROOT = path.resolve(__dirname, '..');
+// dist/ is the loadable extension. `npm run pretest:e2e` builds it first.
+const EXT = path.join(ROOT, 'dist');
 const SCREENSHOTS = path.join(ROOT, 'test-results');
 
 const SCHEME = 'chrome-extension';
@@ -89,8 +91,8 @@ async function setupChromium(tempDirs) {
   const context = await chromium.launchPersistentContext(tempDir, {
     headless: false,
     args: [
-      `--disable-extensions-except=${ROOT}`,
-      `--load-extension=${ROOT}`,
+      `--disable-extensions-except=${EXT}`,
+      `--load-extension=${EXT}`,
       '--no-first-run',
       '--no-default-browser-check',
     ],

@@ -7,18 +7,12 @@
     "nativeMessaging",
     "storage"
   ],
-  "host_permissions": [
-    "https://gametora.com/umamusume*",
-    "https://raggooneropen.web.app/*",
-    "https://uma.guide/*",
-    "https://umalator.app/*"
-  ],
   "options_ui": {
     "page": "options/options.html",
     "open_in_tab": true
   },
   "background": {
-    "service_worker": "dist/background.js"
+    "service_worker": "background.js"
   },
   "action": {
     "default_popup": "popup/popup.html",
@@ -41,27 +35,5 @@
   },
   "content_security_policy": {
     "extension_pages": "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com"
-  },
-  "content_scripts": [
-    {
-      "matches": ["https://gametora.com/umamusume*"],
-      "js": ["dist/content-gametora.js"],
-      "run_at": "document_idle"
-    },
-    {
-      "matches": ["https://raggooneropen.web.app/*"],
-      "js": ["dist/content-raggooner.js"],
-      "run_at": "document_idle"
-    },
-    {
-      "matches": ["https://uma.guide/*"],
-      "js": ["dist/content-uma-guide.js"],
-      "run_at": "document_idle"
-    },
-    {
-      "matches": ["https://umalator.app/*"],
-      "js": ["dist/content-umalator.js"],
-      "run_at": "document_idle"
-    }
-  ]
+  }
 }

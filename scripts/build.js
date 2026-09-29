@@ -32,6 +32,9 @@ if (isFirefox) {
   manifest.permissions = [...existing, ...matches];
 } else {
   manifest.host_permissions = matches;
+  // The manifest is written to dist/, so the service worker path must be
+  // relative to dist/ — not to the repo root it was authored in.
+  manifest.background.service_worker = 'background.js';
 }
 fs.writeFileSync(path.join(DIST, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
 console.log(`-> dist/manifest.json (from ${MANIFEST_SRC} + sites.json)`);

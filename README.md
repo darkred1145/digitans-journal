@@ -18,27 +18,37 @@ The build script accepts a `--target` flag:
 
 ```bash
 npm run build              # Chrome MV3 (default)
-npm run build -- --target firefox  # Firefox MV2
+npm run build -- --target firefox  # Firefox MV2 (also emits digitans-journal-firefox-v*.xpi)
 ```
 
-For Chrome, the polyfill is inlined into bundles. For Firefox, the manifest loads `browser-polyfill.js` as a separate script entry. Both produce output in `dist/`.
+For Chrome, the polyfill is inlined into bundles. For Firefox, the manifest loads `browser-polyfill.js` as a separate script entry.
+
+**`dist/` is the extension.** It is generated output, is not committed, and is wiped and rebuilt on every run — always run the build before loading it. The manifest at the repo root is a source template only: `content_scripts` and `host_permissions` are generated from `sites.json`, and its paths are relative to `dist/`, so the root is not loadable on its own.
 
 ## Installation
 
 ### 1. Install dependencies
 
 ```bash
-cd native-host
 npm install
+cd native-host && npm install
 ```
 
-### 2. Load the extension
+### 2. Build
 
-- **Chrome / Edge / Brave / Chromium:** Go to `chrome://extensions`, enable Developer Mode, click "Load unpacked", select the project root (or `dist/` after building)
+```bash
+npm run build
+```
+
+This populates `dist/`, which is what you load in the next step.
+
+### 3. Load the extension
+
+- **Chrome / Edge / Brave / Chromium:** Go to `chrome://extensions`, enable Developer Mode, click "Load unpacked", select the **`dist/`** folder
 - **Firefox / Zen / Gecko** (temporary): Build with `--target firefox`, then go to `about:debugging#/runtime/this-firefox`, click "Load Temporary Add-on…", select `dist/manifest.json`
 - **Firefox / Zen / Gecko** (permanent signed add-on): Build with `--target firefox`, then upload the generated `digitans-journal-firefox-v*.xpi` to [addons.mozilla.org](https://addons.mozilla.org) for signing.
 
-### 3. Register the native host (one-time)
+### 4. Register the native host (one-time)
 
 **Chrome and Chromium browsers:**
 
@@ -68,9 +78,9 @@ The Gecko add-on ID is `digitans-journal@darkred1145` (defined in `manifest.fire
 
 > **Standalone binary:** If you've built `host.exe` (`npm run build` in `native-host`), run `node cli.js --install` from the `native-host` folder using the bundled Node.js runtime — no separate Node.js install needed.
 
-### 4. Make sure Discord is running
+### 5. Make sure Discord is running
 
-### 5. Visit a supported site
+### 6. Visit a supported site
 
 The extension will automatically show your presence on Discord.
 
@@ -106,17 +116,17 @@ Right-click the extension icon and select "Options" to:
 ## Development
 
 ```bash
-# Build for Chrome (default)
+# Build for Chrome (default) — output lands in dist/
 npm run build
 
 # Build for Firefox
 npm run build -- --target firefox
 
-# Run unit tests
+# Unit tests
 npm test
+npm run test:protocol
 
-# Run the e2e smoke test (loads extension in headed Chromium)
-npm install
+# E2E test — builds dist/ first, then loads it in headed Chromium
 npx playwright install chromium
 npm run test:e2e
 

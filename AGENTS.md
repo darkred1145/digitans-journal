@@ -13,7 +13,21 @@ Character data (color palette, profile, imagery) sourced from https://umapyoi.ne
 - **Height**: 143cm
 - **Profile**: "Hewwo! I'm Digi-tan! I'm a massive fan of all of the sparkling Umamusume! I'm so happy every day! I'm so glad I was born an otaku!~♪"
 
+## Build Output
+
+`dist/` is the extension and is **not committed**. Always `npm run build` before
+loading it, and load the `dist/` folder (not the repo root — the root manifest is
+a source template whose paths are `dist/`-relative). `scripts/build.js` wipes and
+regenerates `dist/` on every run, so stale files from the other target cannot
+survive a build.
+
 ## Graphify
 
-Knowledge graph at `graphify-out/` (HTML viz at `graph.html`, audit at `GRAPH_REPORT.md`).
-Rebuild: run `/graphify` from project root — detects changed files automatically.
+Knowledge graph lives in `graphify-out/` (HTML viz at `graph.html`, audit at
+`GRAPH_REPORT.md`). It is generated output and is **not committed** — the
+directory will be absent on a fresh clone.
+
+Rebuild: run `/graphify` from project root, then read `graphify-out/GRAPH_REPORT.md`.
+Only trust query results that name real functions; a graph built purely from JS
+AST extraction has no semantic layer, so `graphify query` matches identifiers and
+can return noise like `main()`. For questions about behavior, read the source.
