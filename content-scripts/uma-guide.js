@@ -1,5 +1,11 @@
 const SITE = 'uma-guide';
 
+const BASE = {
+  largeImageKey: 'digitan',
+  smallImageKey: 'umaguide_small',
+  smallImageText: 'uma.guide',
+};
+
 const DETAIL_NAME_SELECTORS = [
   '.char-card-identity h2',
   '.char-card-identity h3',
@@ -52,21 +58,30 @@ function getCardMeta() {
   return {};
 }
 
+function presence(details, state, meta = {}) {
+  return {
+    ...BASE,
+    details,
+    state,
+    largeImageText: meta.subtitle || 'uma.guide · Digitan\'s Journal',
+    raw: {
+      title: details,
+      page: null,
+      totalPages: null,
+      type: meta.type || null,
+      rarity: meta.rarity || null,
+      subtitle: meta.subtitle || null,
+    },
+  };
+}
+
 function getPageInfo() {
   const path = window.location.pathname;
   const title = document.title.replace(/\s*\|\s*uma\.guide.*$/, '').trim();
   const isDetailPage = /^\/(characters|support-cards)\/(detail|\d+)/.test(path);
 
   if (path === '/' || path === '') {
-    return {
-      details: 'uma.guide',
-      state: 'Browsing homepage',
-      largeImageKey: 'digitan',
-      largeImageText: 'uma.guide \u00b7 Digitan\'s Journal',
-      smallImageKey: 'umaguide_small',
-      smallImageText: 'uma.guide',
-      raw: { title: 'uma.guide', page: null, totalPages: null, type: null, rarity: null, subtitle: null },
-    };
+    return presence('uma.guide', 'Browsing homepage');
   }
 
   const section = path.split('/').filter(Boolean)[0];
@@ -85,31 +100,13 @@ function getPageInfo() {
   };
 
   const label = sectionLabels[section] || 'uma.guide';
-
-  let displayName = title || label;
   const meta = getCardMeta();
+  const displayName = isDetailPage ? (getNameFromDOM() || title || label) : (title || label);
 
-  if (isDetailPage) {
-    const domName = getNameFromDOM();
-    if (domName) displayName = domName;
-  }
+  if (!isDetailPage) return presence(displayName, `Browsing ${label}`, meta);
 
-  const stateParts = [];
-  if (isDetailPage) {
-    if (meta.rarity) stateParts.push(meta.rarity);
-    if (meta.type) stateParts.push(meta.type);
-  }
-  const state = stateParts.length > 0 ? stateParts.join(' \u00b7 ') : `Browsing ${label}`;
-
-  return {
-    details: displayName,
-    state,
-    largeImageKey: 'digitan',
-    largeImageText: meta.subtitle || 'uma.guide \u00b7 Digitan\'s Journal',
-    smallImageKey: 'umaguide_small',
-    smallImageText: 'uma.guide',
-    raw: { title: displayName, page: null, totalPages: null, type: meta.type || null, rarity: meta.rarity || null, subtitle: meta.subtitle || null },
-  };
+  const stateParts = [meta.rarity, meta.type].filter(Boolean);
+  return presence(displayName, stateParts.length ? stateParts.join(' · ') : `Browsing ${label}`, meta);
 }
 
 harvest(SITE, { interval: 4000 }, getPageInfo);

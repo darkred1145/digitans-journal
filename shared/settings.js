@@ -1,7 +1,9 @@
 /** @type {SettingsObject} */
 const DEFAULTS = {
   enabled: true,
-  sites: { gametora: true, raggooner: true, 'uma-guide': true, umalator: true },
+  // Per-site opt-out only. A site absent from this map is enabled; the UI and
+  // state-manager both test `!== false`, so sites.json never needs seeding here.
+  sites: {},
   idleTimeout: 0,
   privacyMode: false,
   templates: {},

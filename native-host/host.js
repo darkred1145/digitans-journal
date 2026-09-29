@@ -49,9 +49,9 @@ async function connectRPC(id) {
 
 const {
   ACTION_CONNECT, ACTION_SET_ACTIVITY, ACTION_DISCONNECT,
-  TYPE_RPC_STATUS, TYPE_ERROR,
+  TYPE_ERROR,
   validateNativeMessage, validateHostMessage,
-  rpcStatus, connectMsg, setActivityMsg, disconnectMsg,
+  rpcStatus,
 } = require('../shared/rpc-protocol');
 
 function clearPresence() {

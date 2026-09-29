@@ -9,13 +9,13 @@ const TARGET = process.argv.includes('--target')
   : 'chrome';
 
 const isFirefox = TARGET === 'firefox';
-const doPackage = isFirefox || process.argv.includes('--package');
 
 const SITES = JSON.parse(fs.readFileSync(path.join(ROOT, 'sites.json'), 'utf-8'));
 
-if (!fs.existsSync(DIST)) {
-  fs.mkdirSync(DIST, { recursive: true });
-}
+// Wipe dist/ first: a Chrome build leaves no options/ or shared/ dir, so without
+// this a previous Firefox build's files linger and get loaded by this one.
+fs.rmSync(DIST, { recursive: true, force: true });
+fs.mkdirSync(DIST, { recursive: true });
 
 // Build manifest with content_scripts generated from sites.json
 const MANIFEST_SRC = isFirefox ? 'manifest.firefox.json' : 'manifest.json';
@@ -42,15 +42,14 @@ const polyfill = fs.readFileSync(polyfillSrc, 'utf-8');
 fs.writeFileSync(path.join(DIST, 'browser-polyfill.js'), polyfill);
 console.log('-> dist/browser-polyfill.js');
 
-// For Firefox builds, copy HTML pages, shared files, and icons into dist/
-// so the manifest (at dist/) resolves all paths correctly.
-if (isFirefox) {
-  copyDir('popup', 'popup');
-  copyDir('options', 'options');
-  copyDir('shared', 'shared');
-  copyDir('icons', 'icons');
-  fs.copyFileSync(path.join(ROOT, 'sites.json'), path.join(DIST, 'sites.json'));
-}
+// The manifest lives at dist/, so every path it references must exist under dist/.
+// Both targets need this — Chrome resolves options_ui/action/icons relative to the
+// manifest too, it just doesn't require an explicit copy step in a bundler.
+copyDir('popup', 'popup');
+copyDir('options', 'options');
+copyDir('shared', 'shared');
+copyDir('icons', 'icons');
+fs.copyFileSync(path.join(ROOT, 'sites.json'), path.join(DIST, 'sites.json'));
 
 function copyDir(src, dest) {
   const srcDir = path.join(ROOT, src);
@@ -74,16 +73,13 @@ function readPolyfill() {
   return polyfill + '\n';
 }
 
-// Content script shared bundle
+// Shared content-script code, inlined into each per-site bundle below.
 const contentShared = [
   'shared/truncate.js',
   'shared/presence-contract.js',
   'content-scripts/harvester.js',
 ];
 const contentSharedCode = contentShared.map(read).join('\n');
-const contentSharedBundled = readPolyfill() + contentSharedCode;
-fs.writeFileSync(path.join(DIST, 'content-shared.js'), contentSharedBundled);
-console.log('-> dist/content-shared.js');
 
 // Per-site content bundles: polyfill + shared + site-specific extractor
 for (const site of SITES) {
@@ -95,7 +91,6 @@ for (const site of SITES) {
 // Background bundle: polyfill + dependencies
 const backgroundDeps = [
   'shared/truncate.js',
-  'shared/presence-contract.js',
   'shared/presence-formatter.js',
   'shared/settings.js',
   'shared/rpc-protocol.js',
@@ -108,14 +103,11 @@ backgroundCode += bgRaw.replace(/^importScripts\(.*?\);\n?/m, '');
 fs.writeFileSync(path.join(DIST, 'background.js'), backgroundCode);
 console.log('-> dist/background.js');
 
-// Generate settings.js with DEFAULTS.sites derived from sites.json
-const sitesDefaults = Object.fromEntries(SITES.map(s => [s.id, s.defaultEnabled]));
-const generatedSettings = `const DEFAULTS = {\n  enabled: true,\n  sites: ${JSON.stringify(sitesDefaults, null, 2).replace(/\n/g, '\n  ')},\n  idleTimeout: 0,\n  privacyMode: false,\n  templates: {},\n};\n`;
-const settingsOut = isFirefox ? path.join(DIST, 'shared', 'settings.js') : path.join(DIST, 'settings.js');
-fs.writeFileSync(settingsOut, generatedSettings);
-console.log(`-> ${path.relative(ROOT, settingsOut)} (generated from sites.json)`);
+// settings.js is a static source file (copied with shared/ above) and is inlined
+// into the background bundle via backgroundDeps. Nothing is generated here, so
+// the two copies cannot drift.
 
-if (doPackage) {
+if (isFirefox) {
   const AdmZip = require('adm-zip');
   const zip = new AdmZip();
   const version = require(path.join(ROOT, MANIFEST_SRC)).version;
@@ -135,7 +127,7 @@ if (doPackage) {
   zip.addLocalFile(path.join(DIST, 'manifest.json'), '');
 
   // Add everything else from dist/ maintaining relative paths
-  for (const dir of ['browser-polyfill.js', 'background.js', 'content-shared.js', ...SITES.map(s => `content-${s.id}.js`)]) {
+  for (const dir of ['browser-polyfill.js', 'background.js', ...SITES.map(s => `content-${s.id}.js`)]) {
     if (fs.existsSync(path.join(DIST, dir))) zip.addLocalFile(path.join(DIST, dir), '');
   }
   for (const dir of ['popup', 'options', 'shared', 'icons']) {

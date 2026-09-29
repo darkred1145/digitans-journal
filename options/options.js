@@ -1,11 +1,3 @@
-async function loadSettings() {
-  return browser.storage.sync.get(DEFAULTS);
-}
-
-async function saveSettings(settings) {
-  return browser.storage.sync.set(settings);
-}
-
 function showSaved() {
   const el = document.getElementById('saveStatus');
   el.textContent = 'Saved';
@@ -16,9 +8,9 @@ let saveQueue = Promise.resolve();
 
 async function queuedSave(updater) {
   await (saveQueue = saveQueue.then(async () => {
-    const s = await loadSettings();
+    const s = await browser.storage.sync.get(DEFAULTS);
     updater(s);
-    await saveSettings(s);
+    await browser.storage.sync.set(s);
     showSaved();
   }).catch(() => {}));
 }
@@ -75,7 +67,7 @@ function createTemplateGroup(site, tmpl) {
 async function init() {
   document.getElementById('extId').textContent = browser.runtime.id;
 
-  const [sites, settings] = await Promise.all([loadSites(), loadSettings()]);
+  const [sites, settings] = await Promise.all([loadSites(), browser.storage.sync.get(DEFAULTS)]);
   document.getElementById('masterToggle').checked = settings.enabled;
 
   const sitesList = document.getElementById('sitesList');

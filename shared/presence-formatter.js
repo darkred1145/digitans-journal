@@ -22,27 +22,13 @@ function formatPresence(site, data, settings) {
   let state = data.state;
 
   if (tmpl) {
-    const r = (s) => (raw[s] !== undefined && raw[s] !== null ? String(raw[s]) : '');
-    if (tmpl.details) {
-      details = tmpl.details
-        .replace(/\{title\}/g, r('title'))
-        .replace(/\{page\}/g, r('page'))
-        .replace(/\{total\}/g, r('totalPages'))
-        .replace(/\{type\}/g, r('type'))
-        .replace(/\{rarity\}/g, r('rarity'))
-        .replace(/\{subtitle\}/g, r('subtitle'))
-        .replace(/\{site\}/g, site);
-    }
-    if (tmpl.state) {
-      state = tmpl.state
-        .replace(/\{title\}/g, r('title'))
-        .replace(/\{page\}/g, r('page'))
-        .replace(/\{total\}/g, r('totalPages'))
-        .replace(/\{type\}/g, r('type'))
-        .replace(/\{rarity\}/g, r('rarity'))
-        .replace(/\{subtitle\}/g, r('subtitle'))
-        .replace(/\{site\}/g, site);
-    }
+    // {total} is the documented alias for raw.totalPages — preserved because saved
+    // user templates depend on it.
+    const vars = { ...raw, total: raw.totalPages, site };
+    const render = (s) => s.replace(/\{(\w+)\}/g, (_, k) =>
+      vars[k] !== undefined && vars[k] !== null ? String(vars[k]) : '');
+    if (tmpl.details) details = render(tmpl.details);
+    if (tmpl.state) state = render(tmpl.state);
   }
 
   return { ...data, details: truncate(details), state: state ? truncate(state) : undefined };

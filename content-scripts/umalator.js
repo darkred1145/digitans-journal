@@ -1,16 +1,20 @@
 const SITE = 'umalator';
 
+const BASE = {
+  largeImageKey: 'digitan',
+  largeImageText: 'umalator.app · Digitan\'s Journal',
+  smallImageKey: 'umalator_small',
+  smallImageText: 'Moomoolator',
+};
+
 function getPageInfo() {
-  const title = document.title.replace(/\s*-\s*Moomoolator.*$/, '').trim();
+  const title = document.title.replace(/\s*-\s*Moomoolator.*$/, '').trim() || 'Moomoolator';
 
   return {
-    details: title || 'Moomoolator',
+    ...BASE,
+    details: title,
     state: 'Using race simulator',
-    largeImageKey: 'digitan',
-    largeImageText: 'umalator.app \u00b7 Digitan\'s Journal',
-    smallImageKey: 'umalator_small',
-    smallImageText: 'Moomoolator',
-    raw: { title: title || 'Moomoolator', page: null, totalPages: null },
+    raw: { title, page: null, totalPages: null },
   };
 }
 

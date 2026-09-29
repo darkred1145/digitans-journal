@@ -1,18 +1,5 @@
 const SITE = 'raggooner';
 
-function getText() {
-  return document.body.innerText;
-}
-
-function extractBetween(text, before, after) {
-  const start = text.indexOf(before);
-  if (start === -1) return null;
-  const from = start + before.length;
-  const end = after ? text.indexOf(after, from) : text.length;
-  if (after && end === -1) return null;
-  return text.slice(from, end).trim();
-}
-
 function getTitleFromLines(lines) {
   const skip = new Set(['RACCOON OPEN', 'Viewer', 'PARTY', 'Queued Player', 'HOW IT WORKS', 'Source', 'API']);
   for (const l of lines) {
@@ -32,15 +19,13 @@ function parseQueueInfo(text, lines) {
     title,
     format,
     queued: countMatch ? `${countMatch[1]}/${countMatch[2]}` : null,
-    queuedCount: countMatch ? parseInt(countMatch[1], 10) : null,
-    queuedTotal: countMatch ? parseInt(countMatch[2], 10) : null,
     queueTimer: timerMatch ? timerMatch[1] : null,
   };
 }
 
 function getPageInfo() {
   const path = window.location.pathname.replace(/\/$/, '') || '/';
-  const text = getText();
+  const text = document.body.innerText;
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
 
   const base = {

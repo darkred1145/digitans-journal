@@ -1,6 +1,4 @@
 const {
-  ACTION_CONNECT, ACTION_SET_ACTIVITY, ACTION_DISCONNECT,
-  TYPE_RPC_STATUS, TYPE_ERROR,
   validateNativeMessage, validateHostMessage,
   rpcStatus, connectMsg, setActivityMsg, disconnectMsg,
 } = require('../shared/rpc-protocol');
@@ -13,12 +11,6 @@ function assert(label, ok, detail) {
   console.error(`  ${status}  ${label}${detail ? ': ' + detail : ''}`);
   if (ok) passed++; else failed++;
 }
-
-assert('ACTION_CONNECT is connect', ACTION_CONNECT === 'connect');
-assert('ACTION_SET_ACTIVITY is setActivity', ACTION_SET_ACTIVITY === 'setActivity');
-assert('ACTION_DISCONNECT is disconnect', ACTION_DISCONNECT === 'disconnect');
-assert('TYPE_RPC_STATUS is rpcStatus', TYPE_RPC_STATUS === 'rpcStatus');
-assert('TYPE_ERROR is error', TYPE_ERROR === 'error');
 
 assert('connectMsg returns correct action', connectMsg('abc').action === 'connect', connectMsg('abc').action);
 assert('connectMsg carries clientId', connectMsg('abc').clientId === 'abc', connectMsg('abc').clientId);

@@ -5,20 +5,21 @@ const { HOST_NAME, MANIFEST_FILE, MANIFEST_FILE_FIREFOX, getHostDir, getChromeMa
 
 const KNOWN_COMMANDS = ['clear-activity'];
 
+const BROWSERS = [
+  { name: 'Chrome', key: 'Google/Chrome', prefs: ['Google/Chrome/User Data/Default/Preferences'] },
+  { name: 'Edge', key: 'Microsoft/Edge', prefs: ['Microsoft/Edge/User Data/Default/Preferences'] },
+  { name: 'Brave', key: 'BraveSoftware/Brave', prefs: ['BraveSoftware/Brave/User Data/Default/Preferences'] },
+  { name: 'Chromium', key: 'Chromium', prefs: [
+    'Chromium/User Data/Default/Preferences',
+    'imput/Helium/User Data/Default/Preferences',
+  ]},
+];
+
 function detectExtensionId() {
-  const browsers = [
-    { name: 'Chrome', key: 'Google/Chrome', prefs: [path.join(process.env.LOCALAPPDATA, 'Google/Chrome/User Data/Default/Preferences')] },
-    { name: 'Edge', key: 'Microsoft/Edge', prefs: [path.join(process.env.LOCALAPPDATA, 'Microsoft/Edge/User Data/Default/Preferences')] },
-    { name: 'Brave', key: 'BraveSoftware/Brave', prefs: [path.join(process.env.LOCALAPPDATA, 'BraveSoftware/Brave/User Data/Default/Preferences')] },
-    { name: 'Chromium', key: 'Chromium', prefs: [
-      path.join(process.env.LOCALAPPDATA, 'Chromium/User Data/Default/Preferences'),
-      path.join(process.env.LOCALAPPDATA, 'imput/Helium/User Data/Default/Preferences'),
-    ]},
-  ];
-  for (const b of browsers) {
-    for (const prefsPath of b.prefs) {
+  for (const b of BROWSERS) {
+    for (const rel of b.prefs) {
       try {
-        const prefs = JSON.parse(fs.readFileSync(prefsPath, 'utf-8'));
+        const prefs = JSON.parse(fs.readFileSync(path.join(process.env.LOCALAPPDATA, rel), 'utf-8'));
         const ext = prefs.extensions;
         if (!ext) continue;
 
@@ -35,7 +36,7 @@ function detectExtensionId() {
 
         const commands = ext.commands;
         if (commands) {
-          for (const [key, val] of Object.entries(commands)) {
+          for (const val of Object.values(commands)) {
             if (KNOWN_COMMANDS.includes(val.command_name)) {
               console.error(`Detected extension ID ${val.extension} from ${b.name} (commands)`);
               return { id: val.extension, browserName: b.name, browserKey: b.key };
@@ -46,15 +47,6 @@ function detectExtensionId() {
     }
   }
   return null;
-}
-
-function getChromeBrowsers() {
-  return [
-    { name: 'Chrome', key: 'Google/Chrome' },
-    { name: 'Edge', key: 'Microsoft/Edge' },
-    { name: 'Brave', key: 'BraveSoftware/Brave' },
-    { name: 'Chromium', key: 'Chromium' },
-  ];
 }
 
 function installHost() {
@@ -96,7 +88,7 @@ function installHost() {
       execSync(`reg add "HKCU\\Software\\${detected.browserKey}\\NativeMessagingHosts\\${HOST_NAME}" /ve /t REG_SZ /d "${manifestPath}" /f`, { stdio: 'pipe' });
       console.error(`Registered for ${detected.browserName}`);
     } else {
-      for (const b of getChromeBrowsers()) {
+      for (const b of BROWSERS) {
         try {
           execSync(`reg add "HKCU\\Software\\${b.key}\\NativeMessagingHosts\\${HOST_NAME}" /ve /t REG_SZ /d "${manifestPath}" /f`, { stdio: 'pipe' });
           console.error(`Registered for ${b.name}`);
@@ -109,7 +101,7 @@ function installHost() {
 }
 
 function uninstallHost() {
-  for (const b of getChromeBrowsers()) {
+  for (const b of BROWSERS) {
     try {
       execSync(`reg delete "HKCU\\Software\\${b.key}\\NativeMessagingHosts\\${HOST_NAME}" /f`, { stdio: 'pipe' });
       console.error(`Unregistered for ${b.name}`);

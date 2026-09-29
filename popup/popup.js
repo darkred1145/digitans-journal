@@ -65,9 +65,7 @@ function fetchStatus() {
   });
 }
 
-browser.runtime.sendMessage({ type: 'getStatus' }).then((status) => {
-  updateUI(status);
-});
+fetchStatus();
 
 browser.storage.onChanged.addListener((changes, area) => {
   if (area !== 'local') return;

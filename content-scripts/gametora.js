@@ -1,20 +1,29 @@
 const SITE = 'gametora';
 
+const BASE = {
+  largeImageKey: 'digitan',
+  largeImageText: 'gametora.com/umamusume · Digitan\'s Journal',
+  smallImageKey: 'gametora_small',
+  smallImageText: 'GameTora',
+};
+
+const CATEGORY_STATES = {
+  supports: 'Viewing support card',
+  events: 'Viewing event',
+  guides: 'Reading guide',
+};
+
+function presence(details, state) {
+  return { ...BASE, details, state, raw: { title: details, page: null, totalPages: null } };
+}
+
 function getPageInfo() {
   const path = window.location.pathname;
   const h1 = document.querySelector('h1');
   const h1Text = h1 ? h1.textContent.trim() : '';
 
   if (path === '/umamusume' || path === '/umamusume/') {
-    return {
-      details: 'GameTora \u00b7 Uma Musume',
-      state: 'Browsing GameTora',
-      largeImageKey: 'digitan',
-      largeImageText: 'gametora.com/umamusume \u00b7 Digitan\'s Journal',
-      smallImageKey: 'gametora_small',
-      smallImageText: 'GameTora',
-      raw: { title: 'GameTora \u00b7 Uma Musume', page: null, totalPages: null },
-    };
+    return presence('GameTora · Uma Musume', 'Browsing GameTora');
   }
 
   const remaining = path.replace(/^\/umamusume\/?/, '');
@@ -23,23 +32,10 @@ function getPageInfo() {
   if (segments.length >= 2) {
     const category = segments[0];
     const item = segments.slice(1).join('/');
-    const label = h1Text || item;
-
-    let state = `Viewing ${category}`;
-    if (category === 'characters' && item !== 'profiles') state = 'Viewing character';
-    else if (category === 'supports') state = 'Viewing support card';
-    else if (category === 'events') state = 'Viewing event';
-    else if (category === 'guides') state = 'Reading guide';
-
-    return {
-      details: label,
-      state,
-      largeImageKey: 'digitan',
-      largeImageText: 'gametora.com/umamusume \u00b7 Digitan\'s Journal',
-      smallImageKey: 'gametora_small',
-      smallImageText: 'GameTora',
-      raw: { title: label, page: null, totalPages: null },
-    };
+    const state = category === 'characters' && item !== 'profiles'
+      ? 'Viewing character'
+      : CATEGORY_STATES[category] || `Viewing ${category}`;
+    return presence(h1Text || item, state);
   }
 
   const page = segments[0] || '';
@@ -84,28 +80,7 @@ function getPageInfo() {
     'ura-finals': 'URA Finale Scenario',
   };
 
-  const label = pageLabels[page];
-  if (label) {
-    return {
-      details: h1Text || label,
-      state: 'Browsing GameTora',
-      largeImageKey: 'digitan',
-      largeImageText: 'gametora.com/umamusume \u00b7 Digitan\'s Journal',
-      smallImageKey: 'gametora_small',
-      smallImageText: 'GameTora',
-      raw: { title: h1Text || label, page: null, totalPages: null },
-    };
-  }
-
-  return {
-    details: h1Text || 'GameTora Uma Musume',
-    state: 'Browsing GameTora',
-    largeImageKey: 'digitan',
-    largeImageText: 'gametora.com/umamusume \u00b7 Digitan\'s Journal',
-    smallImageKey: 'gametora_small',
-    smallImageText: 'GameTora',
-    raw: { title: h1Text || 'GameTora Uma Musume', page: null, totalPages: null },
-  };
+  return presence(h1Text || pageLabels[page] || 'GameTora Uma Musume', 'Browsing GameTora');
 }
 
 harvest(SITE, {}, getPageInfo);

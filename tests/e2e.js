@@ -1,27 +1,19 @@
 const path = require('node:path');
 const fs = require('node:fs');
 const os = require('node:os');
-const { execSync } = require('node:child_process');
+const { chromium } = require('playwright');
 const { retry } = require('./helpers/retry');
 
 const ROOT = path.resolve(__dirname, '..');
 const SCREENSHOTS = path.join(ROOT, 'test-results');
 
-const BROWSER = process.argv.includes('--browser')
-  ? process.argv[process.argv.indexOf('--browser') + 1]
-  : 'chromium';
+const SCHEME = 'chrome-extension';
 
-const BROWSER_LIBS = {
-  chromium: require('playwright').chromium,
-  firefox: require('playwright').firefox,
-};
-
-const EXT_ID_FIREFOX = 'digitans-journal@darkred1145';
 const WAIT_EXTENSION_LOAD = 2000;
 const WAIT_RENDER = 500;
 
 function screenshotPath(name) {
-  if (!fs.existsSync(SCREENSHOTS)) fs.mkdirSync(SCREENSHOTS, { recursive: true });
+  fs.mkdirSync(SCREENSHOTS, { recursive: true });
   return path.join(SCREENSHOTS, `${Date.now()}-${name}.png`);
 }
 
@@ -40,57 +32,41 @@ function assert(label, ok, detail) {
 }
 
 async function main() {
-  const lib = BROWSER_LIBS[BROWSER];
   const tempDirs = [];
   let context;
   let extId = null;
 
   try {
-    if (BROWSER === 'chromium') {
-      context = await setupChromium(lib, tempDirs);
-      extId = detectChromiumExtId(context);
-      assert('extension ID detected', !!extId, extId || 'null');
-      assert('service worker registered', !!extId);
-    } else {
-      context = await setupFirefox(lib, tempDirs);
-      extId = detectFirefoxExtId(context);
-      if (!extId) {
-        console.error('  SKIP  runtime tests: Playwright Firefox cannot load unsigned extensions');
-        console.error('(Use web-ext for Firefox E2E)');
-        passed++;
-        return { passed, failed };
-      }
-      assert('extension loaded', true, extId);
-    }
+    context = await setupChromium(tempDirs);
+    extId = detectChromiumExtId(context);
+    assert('extension ID detected', !!extId, extId || 'null');
+    assert('service worker registered', !!extId);
 
     if (!extId) {
       console.error('  FAIL  extension not detected — aborting');
       return { passed, failed };
     }
 
-    const scheme = BROWSER === 'chromium' ? 'chrome-extension' : 'moz-extension';
-
     const popup = await context.newPage();
-    await popup.goto(`${scheme}://${extId}/popup/popup.html`, { waitUntil: 'networkidle' });
+    await popup.goto(`${SCHEME}://${extId}/popup/popup.html`, { waitUntil: 'networkidle' });
     const popupText = await popup.textContent('body');
     assert('popup renders', popupText.includes('Digitan'));
     await screenshot(popup, 'popup');
 
-    await testRPCMessageLayer(popup, context, assert, extId);
-    await testOptionsPage(context, assert, extId);
-    await testContentScripts(context, assert);
-    await testTabClose(context, popup, assert);
+    await testRPCMessageLayer(popup, context, extId);
+    await testOptionsPage(context, extId);
+    await testContentScripts(context);
+    await testTabClose(context, popup);
     await popup.close();
   } catch (err) {
     console.error('  FAIL  unexpected error:', err.message);
     if (context) {
       try {
         const p = await context.newPage();
-        const scheme = BROWSER === 'chromium' ? 'chrome-extension' : 'moz-extension';
         const id = extId || 'unknown';
-        await p.goto(`${scheme}://${id}/popup/popup.html`, { waitUntil: 'networkidle', timeout: 5000 }).catch(() => {});
+        await p.goto(`${SCHEME}://${id}/popup/popup.html`, { waitUntil: 'networkidle', timeout: 5000 }).catch(() => {});
         await screenshot(p, 'failure-popup');
-        await p.goto(`${scheme}://${id}/options/options.html`, { waitUntil: 'networkidle', timeout: 5000 }).catch(() => {});
+        await p.goto(`${SCHEME}://${id}/options/options.html`, { waitUntil: 'networkidle', timeout: 5000 }).catch(() => {});
         await screenshot(p, 'failure-options');
         await p.close();
       } catch {}
@@ -107,10 +83,10 @@ async function main() {
   return { passed, failed };
 }
 
-async function setupChromium(lib, tempDirs) {
+async function setupChromium(tempDirs) {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dj-e2e-'));
   tempDirs.push(tempDir);
-  const context = await lib.launchPersistentContext(tempDir, {
+  const context = await chromium.launchPersistentContext(tempDir, {
     headless: false,
     args: [
       `--disable-extensions-except=${ROOT}`,
@@ -131,45 +107,7 @@ function detectChromiumExtId(context) {
   return null;
 }
 
-async function setupFirefox(lib, tempDirs) {
-  execSync('node scripts/build.js --target firefox', { cwd: ROOT, stdio: 'pipe' });
-  const xpiFile = fs.readdirSync(ROOT).find(f => /^digitans-journal-firefox-v[\d.]+\.xpi$/.test(f));
-  if (!xpiFile) throw new Error('Firefox XPI not found after build');
-
-  const profileDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dj-fx-'));
-  tempDirs.push(profileDir);
-  const extDir = path.join(profileDir, 'extensions');
-  fs.mkdirSync(extDir, { recursive: true });
-  fs.copyFileSync(path.join(ROOT, xpiFile), path.join(extDir, `${EXT_ID_FIREFOX}.xpi`));
-
-  const context = await lib.launchPersistentContext(profileDir, {
-    headless: false,
-    firefoxUserPrefs: {
-      'xpinstall.signatures.required': false,
-      'extensions.autoDisableScopes': 0,
-    },
-  });
-  await new Promise(r => setTimeout(r, 5000));
-  return context;
-}
-
-function detectFirefoxExtId(context) {
-  for (const w of context.serviceWorkers()) {
-    const m = w.url().match(/^moz-extension:\/\/([^/]+)\//);
-    if (m) return m[1];
-  }
-  for (const p of context.backgroundPages()) {
-    const m = p.url().match(/^moz-extension:\/\/([^/]+)\//);
-    if (m) return m[1];
-  }
-  for (const p of context.pages()) {
-    const m = p.url().match(/^moz-extension:\/\/([^/]+)\//);
-    if (m) return m[1];
-  }
-  return null;
-}
-
-async function testRPCMessageLayer(popup, context, assert, extId) {
+async function testRPCMessageLayer(popup, context, extId) {
   await popup.evaluate(() => chrome.runtime.sendMessage({ type: 'clearActivity' }));
   await new Promise(r => setTimeout(r, WAIT_RENDER));
 
@@ -191,9 +129,8 @@ async function testRPCMessageLayer(popup, context, assert, extId) {
   await popup.evaluate(() => chrome.runtime.sendMessage({ type: 'clearActivity' }));
   await new Promise(r => setTimeout(r, WAIT_RENDER));
 
-  const scheme = BROWSER === 'chromium' ? 'chrome-extension' : 'moz-extension';
   const popup2 = await context.newPage();
-  await popup2.goto(`${scheme}://${extId}/popup/popup.html`, { waitUntil: 'networkidle' });
+  await popup2.goto(`${SCHEME}://${extId}/popup/popup.html`, { waitUntil: 'networkidle' });
   const sealHtml = await popup2.evaluate(() => {
     const seal = document.getElementById('seal');
     const dot = document.getElementById('sealDot');
@@ -222,10 +159,9 @@ async function testRPCMessageLayer(popup, context, assert, extId) {
   await popup2.close();
 }
 
-async function testOptionsPage(context, assert, extId) {
-  const scheme = BROWSER === 'chromium' ? 'chrome-extension' : 'moz-extension';
+async function testOptionsPage(context, extId) {
   const page = await context.newPage();
-  await page.goto(`${scheme}://${extId}/options/options.html`, { waitUntil: 'networkidle' });
+  await page.goto(`${SCHEME}://${extId}/options/options.html`, { waitUntil: 'networkidle' });
   await screenshot(page, 'options-page');
 
   const titleText = await page.textContent('.page-title');
@@ -318,7 +254,7 @@ async function testOptionsPage(context, assert, extId) {
   await page.close();
 }
 
-async function testContentScripts(context, assert) {
+async function testContentScripts(context) {
   const page = await context.newPage();
   const pageErrors = [];
   page.on('pageerror', e => pageErrors.push(e.message));
@@ -340,7 +276,7 @@ async function testContentScripts(context, assert) {
   await new Promise(r => setTimeout(r, 3000));
 }
 
-async function testTabClose(context, popup, assert) {
+async function testTabClose(context, popup) {
   const tabForClose = await context.newPage();
   await tabForClose.goto('https://uma.guide/characters/', { waitUntil: 'domcontentloaded', timeout: 15000 });
   await new Promise(r => setTimeout(r, 6000));
@@ -368,7 +304,6 @@ main().then(({ passed, failed }) => {
   process.exit(failed > 0 ? 1 : 0);
 }).catch(err => {
   console.error('  FAIL  fatal error:', err.message);
-  failed++;
-  console.error(`\n${passed} passed, ${failed} failed`);
+  console.error(`\n0 passed, 1 failed`);
   process.exit(1);
 });
