@@ -5,7 +5,7 @@ const { chromium } = require('playwright');
 const { retry } = require('./helpers/retry');
 
 const ROOT = path.resolve(__dirname, '..');
-// dist/ is the loadable extension. `npm run pretest:e2e` builds it first.
+// dist/ is the loadable extension, and pretest:e2e builds it first
 const EXT = path.join(ROOT, 'dist');
 const SCREENSHOTS = path.join(ROOT, 'test-results');
 
@@ -45,7 +45,7 @@ async function main() {
     assert('service worker registered', !!extId);
 
     if (!extId) {
-      console.error('  FAIL  extension not detected — aborting');
+      console.error('  FAIL  extension not detected, aborting');
       return { passed, failed };
     }
 
@@ -215,7 +215,7 @@ async function testOptionsPage(context, extId) {
   await new Promise(r => setTimeout(r, WAIT_RENDER));
   assert('idle timeout resets', await page.inputValue('#idleTimeout') === '0');
 
-  // trigger a save and verify toast appears
+  // Flip a setting and wait for the toast
   const toastResult = await page.evaluate(async () => {
     const el = document.getElementById('saveStatus');
     if (!el) return 'NO_EL';
@@ -228,7 +228,7 @@ async function testOptionsPage(context, extId) {
   });
   assert('save toast shown', toastResult === 'Saved', `got="${toastResult}"`);
 
-  // restore master toggle
+  // Put the master toggle back
   await page.click('#masterToggle + .slider');
   await new Promise(r => setTimeout(r, WAIT_RENDER));
 

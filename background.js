@@ -40,7 +40,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === 'presence') {
     if (sender.tab && sender.tab.id) {
       if (sender.url && (sender.url.startsWith('chrome-extension://') || sender.url.startsWith('moz-extension://'))) {
-        // Extension page (popup/options), not a content script — don't track
+        // Popup or options page, not a content script. Nothing to track.
       } else if (!state.trackTab(sender.tab.id)) {
         sendResponse({ ok: false }); return;
       }

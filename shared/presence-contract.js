@@ -59,10 +59,10 @@
  */
 
 /**
- * Validates required fields on a PresenceData object.
- * Logs a warning if required fields are missing (does not throw).
+ * Warns and returns false if `details` is missing. Never throws, because a
+ * content script should keep running after one bad extract.
  * @param {PresenceData} data
- * @returns {boolean} true if valid
+ * @returns {boolean}
  */
 function validatePresence(data) {
   if (!data || typeof data !== 'object' || !data.details) {

@@ -85,8 +85,6 @@ process.on('unhandledRejection', (err) => {
   sendMessage({ type: TYPE_ERROR, message: err.message });
 });
 
-// === Native messaging stdin handler ===
-
 let buffer = Buffer.alloc(0);
 
 process.stdin.on('data', (chunk) => {

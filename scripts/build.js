@@ -12,12 +12,12 @@ const isFirefox = TARGET === 'firefox';
 
 const SITES = JSON.parse(fs.readFileSync(path.join(ROOT, 'sites.json'), 'utf-8'));
 
-// Wipe dist/ first: a Chrome build leaves no options/ or shared/ dir, so without
-// this a previous Firefox build's files linger and get loaded by this one.
+// Wipe dist/ first. A Chrome build writes no options/ or shared/ dir, so without
+// this a Firefox build's leftovers sit there and get loaded as if they were ours.
 fs.rmSync(DIST, { recursive: true, force: true });
 fs.mkdirSync(DIST, { recursive: true });
 
-// Build manifest with content_scripts generated from sites.json
+// content_scripts and permissions come from sites.json, not from the manifest file
 const MANIFEST_SRC = isFirefox ? 'manifest.firefox.json' : 'manifest.json';
 const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, MANIFEST_SRC), 'utf-8'));
 const jsFile = (id) => isFirefox ? ['browser-polyfill.js', `content-${id}.js`] : [`content-${id}.js`];
@@ -32,8 +32,8 @@ if (isFirefox) {
   manifest.permissions = [...existing, ...matches];
 } else {
   manifest.host_permissions = matches;
-  // The manifest is written to dist/, so the service worker path must be
-  // relative to dist/ — not to the repo root it was authored in.
+  // Written to dist/, so this path is relative to dist/. Authoring it relative
+  // to the repo root was the bug behind the earlier "revert dist/ gitignore".
   manifest.background.service_worker = 'background.js';
 }
 fs.writeFileSync(path.join(DIST, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
@@ -45,9 +45,8 @@ const polyfill = fs.readFileSync(polyfillSrc, 'utf-8');
 fs.writeFileSync(path.join(DIST, 'browser-polyfill.js'), polyfill);
 console.log('-> dist/browser-polyfill.js');
 
-// The manifest lives at dist/, so every path it references must exist under dist/.
-// Both targets need this — Chrome resolves options_ui/action/icons relative to the
-// manifest too, it just doesn't require an explicit copy step in a bundler.
+// The manifest sits at dist/, so everything it points at has to sit there too.
+// Chrome resolves options_ui, action, and icons the same way Firefox does.
 copyDir('popup', 'popup');
 copyDir('options', 'options');
 copyDir('shared', 'shared');
@@ -106,9 +105,8 @@ backgroundCode += bgRaw.replace(/^importScripts\(.*?\);\n?/m, '');
 fs.writeFileSync(path.join(DIST, 'background.js'), backgroundCode);
 console.log('-> dist/background.js');
 
-// settings.js is a static source file (copied with shared/ above) and is inlined
-// into the background bundle via backgroundDeps. Nothing is generated here, so
-// the two copies cannot drift.
+// Nothing generates settings.js. It is a source file, copied above with the rest
+// of shared/ and inlined here via backgroundDeps, so there is nothing to drift.
 
 if (isFirefox) {
   const AdmZip = require('adm-zip');

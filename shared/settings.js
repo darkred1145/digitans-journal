@@ -1,8 +1,8 @@
 /** @type {SettingsObject} */
 const DEFAULTS = {
   enabled: true,
-  // Per-site opt-out only. A site absent from this map is enabled; the UI and
-  // state-manager both test `!== false`, so sites.json never needs seeding here.
+  // Opt-out map, so a site is on unless it is set to false. Both the UI and
+  // state-manager test `!== false`, which is why nothing seeds this from sites.json.
   sites: {},
   idleTimeout: 0,
   privacyMode: false,

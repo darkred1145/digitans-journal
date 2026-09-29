@@ -22,8 +22,7 @@ function formatPresence(site, data, settings) {
   let state = data.state;
 
   if (tmpl) {
-    // {total} is the documented alias for raw.totalPages — preserved because saved
-    // user templates depend on it.
+    // {total} reads better than {totalPages}, and saved templates already use it
     const vars = { ...raw, total: raw.totalPages, site };
     const render = (s) => s.replace(/\{(\w+)\}/g, (_, k) =>
       vars[k] !== undefined && vars[k] !== null ? String(vars[k]) : '');

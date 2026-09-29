@@ -10,7 +10,7 @@ A browser extension that shows what you're browsing as Discord Rich Presence. Su
 Extension (MV3 Chrome / MV2 Firefox) ↔ Native Messaging (stdin/stdout) ↔ Host Process (Node.js or standalone binary) ↔ Discord RPC (IPC)
 ```
 
-The extension communicates with a local host process via native messaging protocol — no WebSocket server, no manual startup needed.
+The extension talks to a local host process over Chrome's native messaging protocol. No WebSocket server, nothing to start by hand.
 
 ## Building
 
@@ -23,7 +23,7 @@ npm run build -- --target firefox  # Firefox MV2 (also emits digitans-journal-fi
 
 For Chrome, the polyfill is inlined into bundles. For Firefox, the manifest loads `browser-polyfill.js` as a separate script entry.
 
-**`dist/` is the extension.** It is generated output, is not committed, and is wiped and rebuilt on every run — always run the build before loading it. The manifest at the repo root is a source template only: `content_scripts` and `host_permissions` are generated from `sites.json`, and its paths are relative to `dist/`, so the root is not loadable on its own.
+**`dist/` is the extension.** It is generated, not committed, and wiped and rebuilt on every run, so run the build before loading it. The manifest at the repo root is only a source template: `content_scripts` and `host_permissions` are generated from `sites.json`, and its paths are relative to `dist/`, so the root folder cannot be loaded on its own.
 
 ## Installation
 
@@ -76,7 +76,7 @@ node cli.js --install <gecko-addon-id> --browser firefox
 
 The Gecko add-on ID is `digitans-journal@darkred1145` (defined in `manifest.firefox.json`).
 
-> **Standalone binary:** If you've built `host.exe` (`npm run build` in `native-host`), run `node cli.js --install` from the `native-host` folder using the bundled Node.js runtime — no separate Node.js install needed.
+> **Standalone binary:** If you've built `host.exe` (`npm run build` in `native-host`), run `node cli.js --install` from the `native-host` folder using the bundled Node.js runtime. No separate Node.js install needed.
 
 ### 5. Make sure Discord is running
 
@@ -116,7 +116,7 @@ Right-click the extension icon and select "Options" to:
 ## Development
 
 ```bash
-# Build for Chrome (default) — output lands in dist/
+# Build for Chrome (default). Output lands in dist/
 npm run build
 
 # Build for Firefox
@@ -126,7 +126,7 @@ npm run build -- --target firefox
 npm test
 npm run test:protocol
 
-# E2E test — builds dist/ first, then loads it in headed Chromium
+# E2E test. Builds dist/ first, then loads it in headed Chromium
 npx playwright install chromium
 npm run test:e2e
 
@@ -139,4 +139,4 @@ npm run build
 
 [webextension-polyfill](https://github.com/mozilla/webextension-polyfill) provides `browser.*` Promise-based APIs in HTML pages (popup, options) and content scripts, loaded as a separate script entry or inlined into bundles.
 
-Background listeners use `chrome.runtime.onMessage` with `sendResponse` directly — Firefox's built-in `chrome.*` compatibility shim handles this, avoiding the polyfill's listener wrapping which had subtle `sendResponse` bridging issues in service worker contexts.
+Background listeners use `chrome.runtime.onMessage` with `sendResponse` directly. Firefox's built-in `chrome.*` compatibility shim handles this, and it avoids the polyfill's listener wrapping, which caused subtle `sendResponse` bridging issues in service worker contexts.

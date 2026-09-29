@@ -4,8 +4,8 @@
 
 1. **Browser → Extension**: Content scripts read page metadata (URL, title, section) from supported sites. No credentials, cookies, or page content is collected.
 2. **Extension → Native Host**: A presence object (details, state, image keys) is sent via `chrome.runtime.sendMessage` to the service worker, then forwarded over native messaging (`stdin/stdout`) to `host.exe`.
-3. **Native Host → Discord**: The host process connects to Discord's local IPC socket and calls `setActivity()` with the presence data. This never leaves your machine.
-4. **No external servers**: No data is sent to any third-party server. The extension communicates exclusively with a local process, which communicates exclusively with the local Discord client.
+3. **Native Host → Discord**: The host process connects to Discord's local IPC socket and calls `setActivity()` with the presence data. The data never leaves your machine.
+4. **No external servers**: Nothing is sent to a third-party server. The extension talks to a local process, and that process talks to the local Discord client.
 
 ## What Data Is Transmitted
 
@@ -22,4 +22,4 @@
 
 ## Native Host
 
-The native messaging host (`host.exe` or `host.js`) runs as a local process on your machine. It does not expose any network ports, does not accept remote connections, and has no persistent storage beyond the native messaging manifest.
+The native messaging host (`host.exe` or `host.js`) runs as a local process. It opens no network ports, accepts no remote connections, and stores nothing beyond the native messaging manifest.

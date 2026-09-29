@@ -1,17 +1,14 @@
 /**
- * Generates Discord Rich Presence asset images for the Developer Portal.
+ * Renders the Rich Presence art assets for the Discord Developer Portal.
  *
- * Prerequisites:
- *   npm install playwright
- *   npx playwright install chromium
+ * Needs: npm install playwright && npx playwright install chromium
  *
- * Usage:
- *   node scripts/store-assets/generate-assets.js
+ * Run:   node scripts/store-assets/generate-assets.js
  *
- * Produces:
- *   store-assets/assets/umaguide_small.png   (512×512)
- *   store-assets/assets/umalator_small.png   (512×512)
- *   store-assets/assets/cover-image.png      (1024×576)
+ * Writes to store-assets/assets/:
+ *   umaguide_small.png    512x512
+ *   umalator_small.png    512x512
+ *   cover-image.png       1024x576
  */
 
 const { chromium } = require('playwright');

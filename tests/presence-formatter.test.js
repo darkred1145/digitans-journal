@@ -1,4 +1,4 @@
-// presence-formatter.js uses truncate as a global (browser/importScripts pattern)
+// presence-formatter.js expects truncate as a global, the way importScripts gives it
 global.truncate = require('../shared/truncate.js').truncate;
 const { formatPresence } = require('../shared/presence-formatter.js');
 
@@ -65,7 +65,7 @@ const truncResult = formatPresence('uma-guide', { details: longTitle }, defaults
 assert(truncResult.details.length <= 128, 'truncation keeps within limit');
 assert(truncResult.details.endsWith('\u2026'), 'truncation adds ellipsis');
 
-// New placeholders: type, rarity, subtitle
+// Placeholders: type, rarity, subtitle
 const metaResult = formatPresence('uma-guide', {
   details: 'ignored',
   raw: { title: 'Agnes Digital', type: 'Character', rarity: '\u2605\u2605\u2605', subtitle: 'Super versatile otaku' },

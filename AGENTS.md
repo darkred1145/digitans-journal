@@ -15,19 +15,22 @@ Character data (color palette, profile, imagery) sourced from https://umapyoi.ne
 
 ## Build Output
 
-`dist/` is the extension and is **not committed**. Always `npm run build` before
-loading it, and load the `dist/` folder (not the repo root — the root manifest is
-a source template whose paths are `dist/`-relative). `scripts/build.js` wipes and
-regenerates `dist/` on every run, so stale files from the other target cannot
-survive a build.
+`dist/` is the extension and is **not committed**. Run `npm run build` before
+loading it, and load the `dist/` folder. The repo root is not loadable: its
+manifest is a source template whose paths are relative to `dist/`.
+`scripts/build.js` wipes and regenerates `dist/` on every run, so files left over
+from the other build target cannot survive.
 
 ## Graphify
 
 Knowledge graph lives in `graphify-out/` (HTML viz at `graph.html`, audit at
-`GRAPH_REPORT.md`). It is generated output and is **not committed** — the
+`GRAPH_REPORT.md`). It is generated output and is **not committed**, so the
 directory will be absent on a fresh clone.
 
-Rebuild: run `/graphify` from project root, then read `graphify-out/GRAPH_REPORT.md`.
-Only trust query results that name real functions; a graph built purely from JS
-AST extraction has no semantic layer, so `graphify query` matches identifiers and
-can return noise like `main()`. For questions about behavior, read the source.
+Rebuild: run `/graphify` from the project root, then read
+`graphify-out/GRAPH_REPORT.md`.
+
+A graph built only from JS AST extraction has no semantic layer, so
+`graphify query` matches identifiers and can return noise like `main()`. Trust
+query output that names real functions. For questions about behavior, read the
+source.

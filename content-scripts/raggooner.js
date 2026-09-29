@@ -92,7 +92,7 @@ function getPageInfo() {
     return { ...base, details: title, state: 'Viewing tournament', raw: { title, phase: 'idle' } };
   }
 
-  // Known static pages mapped by path
+  // Static pages, matched by path
   const pageMap = {
     '/analytics': { details: 'Analytics', state: 'Browsing stats' },
     '/tools': { details: 'Tools', state: 'Using tools' },

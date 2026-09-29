@@ -1,22 +1,19 @@
 /**
- * Screenshot generation script for Chrome Web Store assets.
+ * Screenshots for the Chrome Web Store listing.
  *
- * Prerequisites:
- *   npm install playwright
- *   npx playwright install chromium
+ * Needs: npm install playwright && npx playwright install chromium
  *
- * Usage:
- *   node scripts/store-assets/generate-screenshots.js [path-to-extension-dir]
+ * Run:   node scripts/store-assets/generate-screenshots.js [path-to-extension-dir]
  *
- * Produces PNG files in store-assets/screenshots/:
- *   - screenshot-01-popup.png       (1280x800) — popup showing connected state
- *   - screenshot-02-uma-guide.png   (1280x800) — browsing uma.guide
- *   - screenshot-03-options.png     (1280x800) — settings page
- *   - screenshot-04-privacy.png     (1280x800) — privacy mode active
- *   - screenshot-05-templates.png   (1280x800) — custom template editing
- *   - promo-tile-small.png          (440x280)
- *   - promo-tile-large.png          (920x680)
- *   - promo-tile-marquee.png        (1400x560)
+ * Writes to store-assets/screenshots/:
+ *   screenshot-01-popup.png       1280x800  popup, connected
+ *   screenshot-02-uma-guide.png   1280x800  browsing uma.guide
+ *   screenshot-03-options.png     1280x800  settings page
+ *   screenshot-04-privacy.png     1280x800  privacy mode on
+ *   screenshot-05-templates.png   1280x800  editing a template
+ *   promo-tile-small.png          440x280
+ *   promo-tile-large.png          920x680
+ *   promo-tile-marquee.png        1400x560
  */
 
 const { chromium } = require('playwright');
@@ -149,11 +146,11 @@ async function capturePromoTile(context, extId, size) {
 }
 
 /**
- * Detect the extension ID from a launched browser context.
- * Checks service workers first, then falls back to page URLs.
+ * Read the extension ID off a running browser: service workers first, then any
+ * page already sitting on an extension:// URL.
  * @param {import('playwright').BrowserContext} context
  * @returns {Promise<string>}
- * @throws {Error} If extension ID cannot be detected
+ * @throws {Error} if no extension ID is found
  */
 async function getExtensionId(context) {
   for (const sw of context.serviceWorkers()) {
@@ -170,10 +167,10 @@ async function getExtensionId(context) {
 }
 
 /**
- * Render a promotional landing page for a screenshot.
+ * Load a promo page into `page`, sized for the store tile variant.
  * @param {import('playwright').Page} page
- * @param {string} extId - The extension ID
- * @param {'small'|'large'|'marquee'} size - Promo tile size variant
+ * @param {string} extId
+ * @param {'small'|'large'|'marquee'} size
  */
 async function renderPromoPage(page, extId, size) {
   const bg = '#1A1423';

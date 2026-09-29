@@ -1,6 +1,6 @@
-# Digitan's Journal — Design System
+# Digitan's Journal design system
 
-> Brand identity master reference. Inspired by Agnes Digital (Digitan), a self-described "super all-around otaku" who loves supporting her fellow Uma Musume.
+Reference for brand and UI tokens. Inspired by Agnes Digital (Digitan), a self-described "super all-around otaku" who loves supporting her fellow Uma Musume.
 
 ---
 
@@ -180,7 +180,7 @@ outline-offset: 1px;
 - `prefers-reduced-motion` disables all animations
 - Focus-visible rings use brand pink at 2px offset
 - Touch targets meet minimum sizing recommendations
-- Status is conveyed through both color AND text (not color alone)
+- Status is conveyed by color and text, never color alone
 - All form inputs have associated labels or aria-labels
 - Save notifications use `aria-live="polite"`
 
